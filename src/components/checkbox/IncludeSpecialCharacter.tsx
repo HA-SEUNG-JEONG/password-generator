@@ -1,4 +1,8 @@
-const IncludeSpecialCharacter = () => {
+const IncludeSpecialCharacter = ({
+    onCheckboxChange
+}: {
+    onCheckboxChange: (isChecked: boolean) => void;
+}) => {
     return (
         <div className="flex items-center space-x-2">
             <input
