@@ -47,6 +47,7 @@ const App = () => {
         checkboxName: PasswrodPattern,
         isChecked: boolean
     ) => {
+        setNewPasswordResult(generateRandomPassword(passwordLength));
         switch (checkboxName) {
             case "lowercase":
                 setIncludeLowercase(isChecked);
