@@ -5,7 +5,7 @@ const IncludeUppercase = ({
 }: {
     onCheckboxChange: (isChecked: boolean) => void;
 }) => {
-    const [isChecked, setChecked] = useState(false);
+    const [isChecked, setChecked] = useState(true);
 
     const handleCheckboxChange = () => {
         setChecked(!isChecked);
