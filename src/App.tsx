@@ -6,12 +6,6 @@ import IncludeUppercase from "./components/checkbox/IncludeUppercase";
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 
-type PasswrodPattern =
-    | "lowercase"
-    | "uppercase"
-    | "numbers"
-    | "specialcharacters";
-
 const App = () => {
     const [includeUppercase, setIncludeUppercase] = useState(true);
     const [includeLowercase, setIncludeLowercase] = useState(true);
@@ -43,26 +37,8 @@ const App = () => {
         setPasswordLength(value);
     };
 
-    const handleCheckBoxChange = (
-        checkboxName: PasswrodPattern,
-        isChecked: boolean
-    ) => {
-        switch (checkboxName) {
-            case "lowercase":
-                setIncludeLowercase(isChecked);
-                break;
-            case "uppercase":
-                setIncludeUppercase(isChecked);
-                break;
-            case "numbers":
-                setIncludeNumbers(isChecked);
-                break;
-            case "specialcharacters":
-                setIncludeSpecialCharacter(isChecked);
-                break;
-            default:
-                break;
-        }
+    const handleRefreshPassword = () => {
+        setNewPasswordResult(generateRandomPassword(passwordLength));
     };
 
     return (
@@ -76,7 +52,10 @@ const App = () => {
             <div className="p-6 pt-0">
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <PasswordInput value={newPasswordResult || ""} />
+                        <PasswordInput
+                            value={newPasswordResult || ""}
+                            onRefresh={handleRefreshPassword}
+                        />
                         <PasswordLength passwordLength={passwordLength} />
 
                         <input
@@ -96,26 +75,23 @@ const App = () => {
                     </div>
                     <div className="space-y-2">
                         <IncludeUppercase
-                            onCheckboxChange={(isChecked: boolean) =>
-                                handleCheckBoxChange("uppercase", isChecked)
+                            onCheckboxChange={(isChecked) =>
+                                setIncludeUppercase(isChecked)
                             }
                         />
                         <IncludeLowercase
-                            onCheckboxChange={(isChecked: boolean) =>
-                                handleCheckBoxChange("lowercase", isChecked)
+                            onCheckboxChange={(isChecked) =>
+                                setIncludeLowercase(isChecked)
                             }
                         />
                         <IncludeNumbers
-                            onCheckboxChange={(isChecked: boolean) =>
-                                handleCheckBoxChange("numbers", isChecked)
+                            onCheckboxChange={(isChecked) =>
+                                setIncludeNumbers(isChecked)
                             }
                         />
                         <IncludeSpecialCharacter
-                            onCheckboxChange={(isChecked: boolean) =>
-                                handleCheckBoxChange(
-                                    "specialcharacters",
-                                    isChecked
-                                )
+                            onCheckboxChange={(isChecked) =>
+                                setIncludeSpecialCharacter(isChecked)
                             }
                         />
                     </div>
