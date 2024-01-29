@@ -86,8 +86,9 @@ const App = () => {
                             required
                             type="range"
                             min="1"
-                            max="20"
+                            max="100"
                             value={passwordLength}
+                            step="0.1"
                             onInput={(event) => {
                                 handlePasswordLengthChange(
                                     Number(event.currentTarget.value)
