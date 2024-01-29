@@ -39,7 +39,7 @@ const App = () => {
     const [newPasswordResult, setNewPasswordResult] = useState("");
 
     const handlePasswordLengthChange = (value: number) => {
-        setNewPasswordResult(generateRandomPassword(passwordLength));
+        setNewPasswordResult(generateRandomPassword(value));
         setPasswordLength(value);
     };
 
@@ -96,16 +96,27 @@ const App = () => {
                     </div>
                     <div className="space-y-2">
                         <IncludeUppercase
-                            onCheckboxChange={(isChecked: boolean) => setIncludeUppercase(isChecked)}
+                            onCheckboxChange={(isChecked: boolean) =>
+                                handleCheckBoxChange("uppercase", isChecked)
+                            }
                         />
                         <IncludeLowercase
-                            onCheckboxChange={(isChecked: boolean) => setIncludeLowercase(isChecked)}
+                            onCheckboxChange={(isChecked: boolean) =>
+                                handleCheckBoxChange("lowercase", isChecked)
+                            }
                         />
                         <IncludeNumbers
-                            onCheckboxChange={(isChecked: boolean) => setIncludeNumbers(isChecked)}
+                            onCheckboxChange={(isChecked: boolean) =>
+                                handleCheckBoxChange("numbers", isChecked)
+                            }
                         />
                         <IncludeSpecialCharacter
-                            onCheckboxChange={(isChecked: boolean) => setIncludeSpecialCharacter(isChecked)}
+                            onCheckboxChange={(isChecked: boolean) =>
+                                handleCheckBoxChange(
+                                    "specialcharacters",
+                                    isChecked
+                                )
+                            }
                         />
                     </div>
                 </div>
