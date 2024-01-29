@@ -5,7 +5,7 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 htmlFor="length"
             >
-                Password Length: {passwordLength}
+                비밀번호 길이: {passwordLength}
             </label>
         </>
     );
