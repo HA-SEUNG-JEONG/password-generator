@@ -56,22 +56,24 @@ const App = () => {
                             value={newPasswordResult || ""}
                             onRefresh={handleRefreshPassword}
                         />
-                        <PasswordLength passwordLength={passwordLength} />
 
-                        <input
-                            type="range"
-                            className="flex cursor-pointer"
-                            id="length"
-                            placeholder="Enter password length"
-                            min="1"
-                            max="30"
-                            value={passwordLength}
-                            onChange={(event) => {
-                                handlePasswordLengthChange(
-                                    Number(event.target.value)
-                                );
-                            }}
-                        />
+                        <div className="flex items-center">
+                            <input
+                                type="range"
+                                className="flex cursor-pointer mr-3"
+                                id="length"
+                                placeholder="Enter password length"
+                                min="1"
+                                max="30"
+                                value={passwordLength}
+                                onChange={(event) => {
+                                    handlePasswordLengthChange(
+                                        Number(event.target.value)
+                                    );
+                                }}
+                            />
+                            <PasswordLength passwordLength={passwordLength} />
+                        </div>
                     </div>
                     <div className="space-y-2">
                         <IncludeUppercase
