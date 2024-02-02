@@ -8,10 +8,11 @@ const PasswordInput = ({
     value: string;
     onRefresh: () => void;
 }) => {
-    const handlePasswordCopy = async () => {
+    const handlePasswordCopy = () => {
         try {
-            await navigator.clipboard.writeText(value || "");
-            if (value === "") toast.error("Please enter a password");
+            navigator.clipboard.writeText(value || "");
+            if (value === "") toast.error("비밀번호가 비어있습니다.");
+            toast.success("비밀번호가 복사되었습니다.");
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
         }
