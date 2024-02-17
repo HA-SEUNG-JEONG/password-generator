@@ -6,6 +6,15 @@ import IncludeUppercase from "./components/checkbox/IncludeUppercase";
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 
+declare global {
+    interface Window {
+        Kakao: any;
+    }
+}
+
+window.Kakao.init(process.env.REACT_APP_JAVASCRIPT_KEY);
+window.Kakao.isInitialized();
+
 const App = () => {
     const [includeUppercase, setIncludeUppercase] = useState(true);
     const [includeLowercase, setIncludeLowercase] = useState(true);
@@ -39,6 +48,16 @@ const App = () => {
 
     const handleRefreshPassword = () => {
         setNewPasswordResult(generateRandomPassword(passwordLength));
+    };
+
+    const shareKakao = () => {
+        window.Kakao.Link.sendCustom({
+            templateId: 104457,
+            templateArgs: {
+                title: "비밀번호 생성기",
+                description: "비밀번호를 복사해보세요."
+            }
+        });
     };
 
     return (
@@ -96,6 +115,12 @@ const App = () => {
                                 setIncludeSpecialCharacter(isChecked)
                             }
                         />
+                        <button onClick={shareKakao}>
+                            <img
+                                src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                                alt="카카오링크 보내기 버튼"
+                            />
+                        </button>
                     </div>
                 </div>
             </div>
