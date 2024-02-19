@@ -47,7 +47,7 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
 
     return (
         <div
-            className={`p-2 text-white w-20 rounded-xl flex justify-center items-center text-sm ${getStrengthClass(
+            className={`p-2 text-white w-28 rounded-xl flex justify-center items-center text-sm ${getStrengthClass(
                 strength
             )} `}
         >
