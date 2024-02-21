@@ -1,13 +1,28 @@
 import { toast } from "react-toastify";
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
-
-const PasswordInput = ({
-    value,
-    onRefresh
-}: {
+import { useState } from "react";
+import Icon from "react-icons-kit";
+import { eyeOff } from "react-icons-kit/feather/eyeOff";
+import { eye } from "react-icons-kit/feather/eye";
+interface PasswordInputProps {
     value: string;
     onRefresh: () => void;
-}) => {
+}
+
+const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
+    const [type, setType] = useState("password");
+    const [icon, setIcon] = useState(eyeOff);
+
+    const handleToggle = () => {
+        if (type === "password") {
+            setIcon(eye);
+            setType("text");
+        } else {
+            setIcon(eyeOff);
+            setType("password");
+        }
+    };
+
     const handlePasswordCopy = () => {
         try {
             navigator.clipboard.writeText(value || "");
@@ -30,13 +45,22 @@ const PasswordInput = ({
                 >
                     비밀번호
                 </label>
+
                 <input
                     className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    type="text"
+                    type={type}
                     id="password"
                     readOnly
                     value={value ?? ""}
                 />
+
+                <span className="flex justify-end items-center">
+                    <Icon
+                        className="right-[4.5rem] bottom-2 absolute hover:text-gray-600 cursor-pointer"
+                        icon={icon}
+                        onClick={handleToggle}
+                    />
+                </span>
 
                 <button
                     onClick={handlePasswordCopy}
@@ -64,6 +88,7 @@ const PasswordInput = ({
                         <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
                     </svg>
                 </button>
+
                 {/* 복사하기 버튼 */}
                 <button
                     onClick={handleRefreshPassword}
