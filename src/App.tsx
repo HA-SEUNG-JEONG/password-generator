@@ -6,9 +6,24 @@ import IncludeUppercase from "./components/checkbox/IncludeUppercase";
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 
+interface KakaoLinkOptions {
+    templateId: number;
+    templateArgs: {
+        title: string;
+        description: string;
+    };
+}
+interface KakaoSDK {
+    init: (key?: string) => void;
+    isInitialized(): boolean;
+    Link: {
+        sendCustom(options: KakaoLinkOptions): void;
+    };
+}
+
 declare global {
     interface Window {
-        Kakao: any;
+        Kakao: KakaoSDK;
     }
 }
 
