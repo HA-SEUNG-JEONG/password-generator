@@ -21,6 +21,8 @@ const App = () => {
     const [includeNumbers, setIncludeNumbers] = useState(true);
     const [includeSpecialCharacter, setIncludeSpecialCharacter] =
         useState(true);
+    const [passwordLength, setPasswordLength] = useState(1);
+    const [newPasswordResult, setNewPasswordResult] = useState("");
 
     const generateRandomPassword = (length: number) => {
         let charset = "";
@@ -29,6 +31,7 @@ const App = () => {
         if (includeNumbers) charset += "0123456789";
         if (includeSpecialCharacter)
             charset += "!@#$%^&*()-_=+[]{}|;:'\",.<>/?";
+        else if (charset === "") charset = "a";
 
         let password = "";
         for (let i = 0; i < length; i++) {
@@ -38,9 +41,6 @@ const App = () => {
         return password;
     };
 
-    const [passwordLength, setPasswordLength] = useState(1);
-    const [newPasswordResult, setNewPasswordResult] = useState("");
-
     const handlePasswordLengthChange = (value: number) => {
         setNewPasswordResult(generateRandomPassword(value));
         setPasswordLength(value);
@@ -48,6 +48,12 @@ const App = () => {
 
     const handleRefreshPassword = () => {
         setNewPasswordResult(generateRandomPassword(passwordLength));
+    };
+
+    const handleChangePassword = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        handlePasswordLengthChange(Number(event.target.value));
     };
 
     const shareKakao = () => {
@@ -64,9 +70,6 @@ const App = () => {
         <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
             <div className="flex flex-col space-y-1.5 p-6">
                 <div className="text-2xl font-bold">PassWord Generator</div>
-                <div className="text-sm text-muted-foreground">
-                    Generate a strong password using the options below
-                </div>
             </div>
             <div className="p-6 pt-0">
                 <div className="space-y-4">
@@ -85,11 +88,7 @@ const App = () => {
                                 min="1"
                                 max="30"
                                 value={passwordLength}
-                                onChange={(event) => {
-                                    handlePasswordLengthChange(
-                                        Number(event.target.value)
-                                    );
-                                }}
+                                onChange={handleChangePassword}
                             />
                             <PasswordLength passwordLength={passwordLength} />
                         </div>
