@@ -1,15 +1,13 @@
-import { useState } from "react";
+import useCheckBox from "../../hooks/useCheckBox";
+import { onCheckboxChangeProps } from "../../utils";
 
 export const IncludeLowercase = ({
     onCheckboxChange
-}: {
-    onCheckboxChange: (isChecked: boolean) => void;
-}) => {
-    const handleCheckboxChange = () => {
-        setIsChecked((checked) => !checked);
-        onCheckboxChange(!isChecked);
-    };
-    const [isChecked, setIsChecked] = useState(true);
+}: onCheckboxChangeProps) => {
+    const { isChecked, handleCheckboxChange } = useCheckBox(
+        true,
+        onCheckboxChange
+    );
     return (
         <div className="flex items-center space-x-2">
             <input

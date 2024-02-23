@@ -1,15 +1,13 @@
-import { useState } from "react";
+import useCheckBox from "../../hooks/useCheckBox";
+import { onCheckboxChangeProps } from "../../utils";
 
 const IncludeSpecialCharacter = ({
     onCheckboxChange
-}: {
-    onCheckboxChange: (isChecked: boolean) => void;
-}) => {
-    const [isChecked, setIsChecked] = useState(true);
-    const handleCheckboxChange = () => {
-        setIsChecked((checked) => !checked);
-        onCheckboxChange(!isChecked);
-    };
+}: onCheckboxChangeProps) => {
+    const { isChecked, handleCheckboxChange } = useCheckBox(
+        true,
+        onCheckboxChange
+    );
 
     return (
         <div className="flex items-center space-x-2">
