@@ -1,10 +1,10 @@
-import useCheckBox from "../../hooks/useCheckBox";
+import useCheckBoxState from "../../hooks/useCheckBoxState";
 import { onCheckboxChangeProps } from "../../utils";
 
 const IncludeSpecialCharacter = ({
     onCheckboxChange
 }: onCheckboxChangeProps) => {
-    const { isChecked, handleCheckboxChange } = useCheckBox(
+    const { isChecked, handleCheckboxChange } = useCheckBoxState(
         true,
         onCheckboxChange
     );

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useCheckBox = (
+const useCheckBoxState = (
     initialState: boolean,
     onCheckboxChange: (isCheckboxChange: boolean) => void
 ) => {
@@ -17,4 +17,4 @@ const useCheckBox = (
     };
 };
 
-export default useCheckBox;
+export default useCheckBoxState;
