@@ -1,12 +1,15 @@
-import useCheckBoxState from "../../hooks/useCheckBoxState";
-import { onCheckboxChangeProps } from "../../utils";
+import React from "react";
+import useCheckBoxState from "../hooks/useCheckBoxState";
+import { onCheckboxChangeProps } from "../utils";
 
-const IncludeNumbers = ({ onCheckboxChange }: onCheckboxChangeProps) => {
+const IncludeCheckBox = ({
+    onCheckboxChange,
+    title
+}: onCheckboxChangeProps) => {
     const { isChecked, handleCheckboxChange } = useCheckBoxState(
         true,
         onCheckboxChange
     );
-
     return (
         <div className="flex items-center space-x-2">
             <input
@@ -20,10 +23,10 @@ const IncludeNumbers = ({ onCheckboxChange }: onCheckboxChangeProps) => {
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 htmlFor="numbers"
             >
-                숫자 포함
+                {title}
             </label>
         </div>
     );
 };
 
-export default IncludeNumbers;
+export default IncludeCheckBox;

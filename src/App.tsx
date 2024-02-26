@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { IncludeLowercase } from "./components/checkbox/IncludeLowercase";
-import IncludeNumbers from "./components/checkbox/IncludeNumbers";
-import IncludeSpecialCharacter from "./components/checkbox/IncludeSpecialCharacter";
-import IncludeUppercase from "./components/checkbox/IncludeUppercase";
+
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
+import IncludeCheckBox from "./components/IncludeCheckBox";
 
 interface KakaoLinkOptions {
     templateId: number;
@@ -182,16 +180,20 @@ const App = () => {
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <IncludeUppercase
+                        <IncludeCheckBox
+                            title="대문자 포함"
                             onCheckboxChange={handleIncludeUppercaseChange}
                         />
-                        <IncludeLowercase
+                        <IncludeCheckBox
+                            title="소문자 포함"
                             onCheckboxChange={handleIncludeLowercaseChange}
                         />
-                        <IncludeNumbers
+                        <IncludeCheckBox
+                            title="숫자 포함"
                             onCheckboxChange={handleIncludeNumbersChange}
                         />
-                        <IncludeSpecialCharacter
+                        <IncludeCheckBox
+                            title="특수문자 포함"
                             onCheckboxChange={
                                 handleIncludeSpecialCharacterChange
                             }
