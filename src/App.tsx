@@ -21,6 +21,13 @@ interface KakaoSDK {
     };
 }
 
+interface EmptyProps {
+    lowerCase: boolean;
+    upperCase: boolean;
+    numberCase: boolean;
+    specialCase: boolean;
+}
+
 declare global {
     interface Window {
         Kakao: KakaoSDK;
@@ -63,6 +70,15 @@ const App = () => {
             specialCharacter;
 
         return characterSet || "";
+    };
+
+    const isCharsetEmpty = ({
+        lowerCase,
+        upperCase,
+        numberCase,
+        specialCase
+    }: EmptyProps) => {
+        return !lowerCase && !upperCase && !numberCase && !specialCase;
     };
 
     const buildPassword = (length: number, charset: string) => {
@@ -155,6 +171,12 @@ const App = () => {
                                 max="30"
                                 value={passwordLength}
                                 onChange={handleChangePassword}
+                                disabled={isCharsetEmpty({
+                                    lowerCase: includeLowercase,
+                                    upperCase: includeUppercase,
+                                    numberCase: includeNumbers,
+                                    specialCase: includeSpecialCharacter
+                                })}
                             />
                             <PasswordLength passwordLength={passwordLength} />
                         </div>
