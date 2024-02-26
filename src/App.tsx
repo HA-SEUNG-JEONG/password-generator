@@ -39,21 +39,52 @@ const App = () => {
     const [passwordLength, setPasswordLength] = useState(1);
     const [newPasswordResult, setNewPasswordResult] = useState("");
 
-    const generateRandomPassword = (length: number) => {
-        let charset = "";
-        if (includeLowercase) charset += "abcdefghijklmnopqrstuvwxyz";
-        if (includeUppercase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        if (includeNumbers) charset += "0123456789";
-        if (includeSpecialCharacter)
-            charset += "!@#$%^&*()-_=+[]{}|;:'\",.<>/?";
-        else if (charset === "") charset = "a";
+    const createCharacterSet = (
+        lowerCase: boolean,
+        upperCase: boolean,
+        numbersCase: boolean,
+        specialCharacterCase: boolean
+    ) => {
+        const lowercaseCharacters = lowerCase
+            ? "abcdefghijklmnopqrstuvwxy"
+            : "";
+        const uppercaseCharacters = upperCase
+            ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            : "";
+        const numberCharacters = numbersCase ? "0123456789" : "";
+        const specialCharacter = specialCharacterCase
+            ? "!@#$%^&*()-_=+[]{}|;:'\",.<>/?"
+            : "";
 
-        let password = "";
-        for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * charset.length);
-            password += charset[randomIndex];
-        }
-        return password;
+        const characterSet =
+            lowercaseCharacters +
+            uppercaseCharacters +
+            numberCharacters +
+            specialCharacter;
+
+        return characterSet || "";
+    };
+
+    const buildPassword = (length: number, charset: string) => {
+        return Array.from(
+            { length },
+            () => charset[Math.floor(Math.random() * charset.length)]
+        ).join("");
+    };
+
+    const generateRandomPassword = (length: number) => {
+        const charset = createCharacterSet(
+            includeLowercase,
+            includeUppercase,
+            includeNumbers,
+            includeSpecialCharacter
+        );
+
+        const newPassword = buildPassword(length, charset);
+
+        setNewPasswordResult(newPassword);
+
+        return newPassword;
     };
 
     const handlePasswordLengthChange = (value: number) => {
@@ -69,6 +100,26 @@ const App = () => {
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         handlePasswordLengthChange(Number(event.target.value));
+    };
+
+    const handleIncludeUppercaseChange = (isChecked: boolean) => {
+        setIncludeUppercase(isChecked);
+        generateRandomPassword(passwordLength);
+    };
+
+    const handleIncludeLowercaseChange = (isChecked: boolean) => {
+        setIncludeLowercase(isChecked);
+        generateRandomPassword(passwordLength);
+    };
+
+    const handleIncludeNumbersChange = (isChecked: boolean) => {
+        setIncludeNumbers(isChecked);
+        generateRandomPassword(passwordLength);
+    };
+
+    const handleIncludeSpecialCharacterChange = (isChecked: boolean) => {
+        setIncludeSpecialCharacter(isChecked);
+        generateRandomPassword(passwordLength);
     };
 
     const shareKakao = () => {
@@ -110,23 +161,17 @@ const App = () => {
                     </div>
                     <div className="space-y-2">
                         <IncludeUppercase
-                            onCheckboxChange={(isChecked) =>
-                                setIncludeUppercase(isChecked)
-                            }
+                            onCheckboxChange={handleIncludeUppercaseChange}
                         />
                         <IncludeLowercase
-                            onCheckboxChange={(isChecked) =>
-                                setIncludeLowercase(isChecked)
-                            }
+                            onCheckboxChange={handleIncludeLowercaseChange}
                         />
                         <IncludeNumbers
-                            onCheckboxChange={(isChecked) =>
-                                setIncludeNumbers(isChecked)
-                            }
+                            onCheckboxChange={handleIncludeNumbersChange}
                         />
                         <IncludeSpecialCharacter
-                            onCheckboxChange={(isChecked) =>
-                                setIncludeSpecialCharacter(isChecked)
+                            onCheckboxChange={
+                                handleIncludeSpecialCharacterChange
                             }
                         />
                         <button onClick={shareKakao}>
