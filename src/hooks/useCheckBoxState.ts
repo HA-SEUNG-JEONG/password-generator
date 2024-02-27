@@ -1,10 +1,9 @@
 import { useState } from "react";
 
 const useCheckBoxState = (
-    initialState: boolean,
     onCheckboxChange: (isCheckboxChange: boolean) => void
 ) => {
-    const [isChecked, setIsChecked] = useState(initialState);
+    const [isChecked, setIsChecked] = useState(true);
 
     const handleCheckboxChange = () => {
         setIsChecked((checked) => !checked);
