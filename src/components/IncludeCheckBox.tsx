@@ -1,15 +1,12 @@
-import React from "react";
 import useCheckBoxState from "../hooks/useCheckBoxState";
 import { onCheckboxChangeProps } from "../utils";
 
 const IncludeCheckBox = ({
     onCheckboxChange,
-    title
+    pattern
 }: onCheckboxChangeProps) => {
-    const { isChecked, handleCheckboxChange } = useCheckBoxState(
-        true,
-        onCheckboxChange
-    );
+    const { isChecked, handleCheckboxChange } =
+        useCheckBoxState(onCheckboxChange);
     return (
         <div className="flex items-center space-x-2">
             <input
@@ -23,7 +20,7 @@ const IncludeCheckBox = ({
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 htmlFor="numbers"
             >
-                {title}
+                {pattern}
             </label>
         </div>
     );
