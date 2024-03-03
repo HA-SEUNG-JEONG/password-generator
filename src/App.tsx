@@ -4,18 +4,18 @@ import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 import IncludeCheckBox from "./components/IncludeCheckBox";
 
-interface KakaoLinkOptions {
-    templateId: number;
-    templateArgs: {
-        title: string;
-        description: string;
+interface KakaoShareOptions {
+    objectType?: string;
+    text: string;
+    link: {
+        webUrl: string;
     };
 }
 interface KakaoSDK {
     init: (key?: string) => void;
     isInitialized(): boolean;
-    Link: {
-        sendCustom(options: KakaoLinkOptions): void;
+    Share: {
+        sendDefault(options: KakaoShareOptions): void;
     };
 }
 
@@ -137,11 +137,11 @@ const App = () => {
     };
 
     const shareKakao = () => {
-        window.Kakao.Link.sendCustom({
-            templateId: 104457,
-            templateArgs: {
-                title: "비밀번호 생성기",
-                description: "비밀번호를 복사해보세요."
+        window.Kakao.Share.sendDefault({
+            objectType: "text",
+            text: newPasswordResult,
+            link: {
+                webUrl: "https://localhost:3000"
             }
         });
     };
