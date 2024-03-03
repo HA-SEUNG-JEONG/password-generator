@@ -141,7 +141,9 @@ const App = () => {
             objectType: "text",
             text: newPasswordResult,
             link: {
-                webUrl: "https://localhost:3000"
+                webUrl:
+                    "https://localhost:3000" ||
+                    "https://password--generator.vercel.app/"
             }
         });
     };
