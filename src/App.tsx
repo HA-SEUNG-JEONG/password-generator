@@ -41,7 +41,7 @@ const App = () => {
     const [includeNumbers, setIncludeNumbers] = useState(true);
     const [includeSpecialCharacter, setIncludeSpecialCharacter] =
         useState(true);
-    const [passwordLength, setPasswordLength] = useState(1);
+    const [passwordLength, setPasswordLength] = useState(0);
     const [newPasswordResult, setNewPasswordResult] = useState("");
 
     const createCharacterSet = (
@@ -165,7 +165,7 @@ const App = () => {
                                 className="flex cursor-pointer mr-3"
                                 id="length"
                                 placeholder="Enter password length"
-                                min="1"
+                                min="0"
                                 max="30"
                                 value={passwordLength}
                                 onChange={handleChangePassword}
