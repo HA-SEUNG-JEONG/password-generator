@@ -4,6 +4,7 @@ import { useState } from "react";
 import Icon from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
+import React from "react";
 interface PasswordInputProps {
     value: string;
     onRefresh: () => void;

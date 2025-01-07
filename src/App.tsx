@@ -3,6 +3,7 @@ import { useState } from "react";
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 import IncludeCheckBox from "./components/IncludeCheckBox";
+import React from "react";
 
 interface KakaoShareOptions {
     objectType?: string;
@@ -32,7 +33,7 @@ declare global {
     }
 }
 
-window.Kakao.init(process.env.REACT_APP_JAVASCRIPT_KEY);
+window.Kakao.init(import.meta.env.VITE_JAVASCRIPT_KEY);
 window.Kakao.isInitialized();
 
 const App = () => {
