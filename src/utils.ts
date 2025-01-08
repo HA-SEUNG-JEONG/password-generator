@@ -6,13 +6,12 @@ interface PasswordStrength {
     feedback: string[];
     warning: string | null;
 }
-
-async function sha1(message: string): Promise<string> {
+const generateSha1 = async (message: string): Promise<string> => {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest("SHA-1", msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+};
 
 export interface onCheckboxChangeProps {
     onCheckboxChange: (isChecked: boolean) => void;
@@ -21,7 +20,7 @@ export interface onCheckboxChangeProps {
 
 export const checkPwnedPassword = async (password: string) => {
     try {
-        const hash = await sha1(password);
+        const hash = await generateSha1(password);
         const prefix = hash.substring(0, 5);
         const suffix = hash.substring(5);
 
