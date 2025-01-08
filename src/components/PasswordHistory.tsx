@@ -69,7 +69,7 @@ const decryptPassword = async (
 
 const PasswordHistory = ({ currentPassword }: PasswordHistoryProps) => {
     const [history, setHistory] = useState<
-        Array<{ password: string; iv: string }>
+        Array<{ encrypted: string; iv: string }>
     >([]);
     const [key, setKey] = useState<CryptoKey | null>(null);
 
@@ -132,6 +132,7 @@ const PasswordHistory = ({ currentPassword }: PasswordHistoryProps) => {
                         key
                     );
                     const newHistory = [encrypted, ...history].slice(0, 10);
+                    console.log("newHistory: ", newHistory);
                     setHistory(newHistory);
                     localStorage.setItem(
                         "passwordHistory",
