@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Icon from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
-import React from "react";
 import { checkPwnedPassword } from "../utils";
 interface PasswordInputProps {
     value: string;
@@ -21,8 +20,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         const checkPassword = async () => {
             if (value) {
                 const pwned = await checkPwnedPassword(value);
-                console.log("pwned: ", pwned);
-
                 setIsPwned(pwned);
             }
         };
