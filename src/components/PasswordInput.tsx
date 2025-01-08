@@ -1,10 +1,11 @@
 import { toast } from "react-toastify";
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import React from "react";
+import { checkPwnedPassword } from "../utils";
 interface PasswordInputProps {
     value: string;
     onRefresh: () => void;
@@ -13,6 +14,20 @@ interface PasswordInputProps {
 const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const [type, setType] = useState("password");
     const [icon, setIcon] = useState(eyeOff);
+
+    const [isPwned, setIsPwned] = useState(false);
+
+    useEffect(() => {
+        const checkPassword = async () => {
+            if (value) {
+                const pwned = await checkPwnedPassword(value);
+                console.log("pwned: ", pwned);
+
+                setIsPwned(pwned);
+            }
+        };
+        checkPassword();
+    }, [value]);
 
     const handleToggle = () => {
         if (type === "password") {
@@ -110,6 +125,11 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                         </svg>
                     </button>
                 </div>
+                {isPwned && (
+                    <div className="text-red-500 text-sm mt-2">
+                        이 비밀번호는 알려진 비밀번호입니다.
+                    </div>
+                )}
             </div>
             <PasswordStrengthIndicator password={value} />
         </>
