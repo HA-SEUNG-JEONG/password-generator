@@ -1,4 +1,3 @@
-import { SHA1 } from "crypto-js";
 import zxcvbn from "zxcvbn";
 
 interface PasswordStrength {
@@ -8,22 +7,41 @@ interface PasswordStrength {
     warning: string | null;
 }
 
+async function sha1(message: string): Promise<string> {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest("SHA-1", msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 export interface onCheckboxChangeProps {
     onCheckboxChange: (isChecked: boolean) => void;
     pattern: string;
 }
 
 export const checkPwnedPassword = async (password: string) => {
-    const hash = SHA1(password).toString();
-    const prefix = hash.substring(0, 5);
-    const suffix = hash.substring(5);
+    try {
+        const hash = await sha1(password);
+        const prefix = hash.substring(0, 5);
+        const suffix = hash.substring(5);
 
-    const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
-    const data = await res.text();
+        const res = await fetch(
+            `https://api.pwnedpasswords.com/range/${prefix}`
+        );
 
-    return data
-        .split("\n")
-        .some((line) => line.startsWith(suffix.toUpperCase()));
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.text();
+
+        return data
+            .split("\n")
+            .some((line) => line.startsWith(suffix.toUpperCase()));
+    } catch (error) {
+        console.error("Password check failed:", error);
+        return false;
+    }
 };
 
 export const checkPasswordStrength = (password: string): PasswordStrength => {
