@@ -5,7 +5,7 @@ import Icon from "react-icons-kit";
 import { eyeOff } from "react-icons-kit/feather/eyeOff";
 import { eye } from "react-icons-kit/feather/eye";
 import { checkPwnedPassword } from "../utils";
-import PasswordHistory from "./PasswordHistory";
+
 interface PasswordInputProps {
     value: string;
     onRefresh: () => void;
@@ -130,7 +130,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                 )}
             </div>
             <PasswordStrengthIndicator password={value} />
-            <PasswordHistory currentPassword={value} />
         </>
     );
 };
