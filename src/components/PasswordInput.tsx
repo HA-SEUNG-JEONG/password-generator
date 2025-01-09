@@ -54,10 +54,20 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const [icon, setIcon] = useState(eyeOff);
 
     const [isPwned, setIsPwned] = useState(false);
-    const [rules, setRules] = useState<PasswordRule[]>(() => {
-        const savedRules = localStorage.getItem("passwordRules");
-        return savedRules ? JSON.parse(savedRules) : PASSWORD_RULES;
-    });
+    const savePasswordRules = () => {
+        try {
+            const savedRules = localStorage.getItem("passwordRules");
+            return savedRules ? JSON.parse(savedRules) : PASSWORD_RULES;
+        } catch (error) {
+            console.error(
+                "비밀번호 규칙을 불러오는 중 오류가 발생했습니다:",
+                error
+            );
+            return PASSWORD_RULES;
+        }
+    };
+
+    const [rules, setRules] = useState<PasswordRule[]>(savePasswordRules);
 
     const updateRule = (ruleId: string, isEnabled: boolean) => {
         const updatedRules = rules.map((rule) =>
@@ -65,9 +75,23 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         );
         const hasEnabledRule = updatedRules.some((rule) => rule.isEnabled);
         if (hasEnabledRule) {
-            const enabledRules = updatedRules.filter((rule) => rule.isEnabled);
+            // const enabledRules = updatedRules.filter((rule) => rule.isEnabled);
             setRules(updatedRules);
-            localStorage.setItem("passwordRules", JSON.stringify(enabledRules));
+            // localStorage.setItem("passwordRules", JSON.stringify(enabledRules));
+            try {
+                const enabledRules = updatedRules.filter(
+                    (rule) => rule.isEnabled
+                );
+                localStorage.setItem(
+                    "passwordRules",
+                    JSON.stringify(enabledRules)
+                );
+            } catch (error) {
+                console.error(
+                    "비밀번호 규칙을 저장하는 중 오류가 발생했습니다:",
+                    error
+                );
+            }
         }
     };
 
