@@ -183,18 +183,22 @@ const App = () => {
                     <div className="space-y-2">
                         <IncludeCheckBox
                             pattern="대문자 포함"
+                            checked={includeUppercase}
                             onCheckboxChange={handleIncludeUppercaseChange}
                         />
                         <IncludeCheckBox
                             pattern="소문자 포함"
+                            checked={includeLowercase}
                             onCheckboxChange={handleIncludeLowercaseChange}
                         />
                         <IncludeCheckBox
                             pattern="숫자 포함"
+                            checked={includeNumbers}
                             onCheckboxChange={handleIncludeNumbersChange}
                         />
                         <IncludeCheckBox
                             pattern="특수문자 포함"
+                            checked={includeSpecialCharacter}
                             onCheckboxChange={
                                 handleIncludeSpecialCharacterChange
                             }
