@@ -18,7 +18,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
     useEffect(() => {
         const checkPassword = async () => {
-            if (value) {
+            if (value.length > 0) {
                 const pwned = await checkPwnedPassword(value);
                 setIsPwned(pwned);
             }
@@ -38,9 +38,11 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
     const handlePasswordCopy = () => {
         try {
-            navigator.clipboard.writeText(value || "");
             if (value.length === 0) toast.error("비밀번호가 비어있습니다.");
-            else toast.success("비밀번호가 복사되었습니다.");
+            else {
+                navigator.clipboard.writeText(value);
+                toast.success("비밀번호가 복사되었습니다.");
+            }
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
         }
