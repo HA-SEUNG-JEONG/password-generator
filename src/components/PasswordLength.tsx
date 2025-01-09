@@ -1,9 +1,23 @@
+const PASSWORD_LENGTH = {
+    MIN: 8,
+    RECOMMEND: 12,
+    MAX: 16
+} as const;
+
 const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
     const getColorClass = () => {
         if (passwordLength === 0) return "text-gray-400";
-        if (passwordLength < 8) return "text-red-600";
-        if (passwordLength < 12) return "text-yellow-600";
+        if (passwordLength < PASSWORD_LENGTH.MIN) return "text-red-600";
+        if (passwordLength < PASSWORD_LENGTH.RECOMMEND)
+            return "text-yellow-600";
         return "text-green-600";
+    };
+
+    const getRecommendationMessage = (length: number) => {
+        if (length === 0) return "";
+        if (length < PASSWORD_LENGTH.MIN) return "(최소 8자 이상)";
+        if (length < PASSWORD_LENGTH.RECOMMEND) return "(추천: 12자 이상)";
+        return "(적정)";
     };
 
     return (
@@ -17,7 +31,7 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
             </span>
             <span className="text-sm font-bold">
                 {passwordLength > 0 &&
-                    `(추천: ${passwordLength < 12 ? "12자 이상" : "적정"})`}
+                    `(추천: ${getRecommendationMessage(passwordLength)})`}
             </span>
         </div>
     );
