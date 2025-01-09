@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
-import IncludeCheckBox from "./components/IncludeCheckBox";
 import React from "react";
 
 interface KakaoShareOptions {
@@ -179,36 +178,6 @@ const App = () => {
                             />
                             <PasswordLength passwordLength={passwordLength} />
                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <IncludeCheckBox
-                            pattern="대문자 포함"
-                            checked={includeUppercase}
-                            onCheckboxChange={handleIncludeUppercaseChange}
-                        />
-                        <IncludeCheckBox
-                            pattern="소문자 포함"
-                            checked={includeLowercase}
-                            onCheckboxChange={handleIncludeLowercaseChange}
-                        />
-                        <IncludeCheckBox
-                            pattern="숫자 포함"
-                            checked={includeNumbers}
-                            onCheckboxChange={handleIncludeNumbersChange}
-                        />
-                        <IncludeCheckBox
-                            pattern="특수문자 포함"
-                            checked={includeSpecialCharacter}
-                            onCheckboxChange={
-                                handleIncludeSpecialCharacterChange
-                            }
-                        />
-                        <button onClick={shareKakao}>
-                            <img
-                                src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
-                                alt="카카오링크 보내기 버튼"
-                            />
-                        </button>
                     </div>
                 </div>
             </div>
