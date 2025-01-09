@@ -128,7 +128,8 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                 </div>
                 {isPwned && (
                     <div className="text-red-500 text-sm mt-2">
-                        이 비밀번호는 알려진 비밀번호입니다.
+                        {value.length !== 0 &&
+                            "이 비밀번호는 알려진 비밀번호입니다."}
                     </div>
                 )}
             </div>
