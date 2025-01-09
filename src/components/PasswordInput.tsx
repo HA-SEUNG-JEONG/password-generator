@@ -39,8 +39,8 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const handlePasswordCopy = () => {
         try {
             navigator.clipboard.writeText(value || "");
-            if (value === "") toast.error("비밀번호가 비어있습니다.");
-            toast.success("비밀번호가 복사되었습니다.");
+            if (value.length === 0) toast.error("비밀번호가 비어있습니다.");
+            else toast.success("비밀번호가 복사되었습니다.");
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
         }
@@ -124,7 +124,8 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                 </div>
                 {isPwned && (
                     <div className="text-red-500 text-sm mt-2">
-                        이 비밀번호는 알려진 비밀번호입니다.
+                        {value.length !== 0 &&
+                            "이 비밀번호는 알려진 비밀번호입니다."}
                     </div>
                 )}
             </div>
