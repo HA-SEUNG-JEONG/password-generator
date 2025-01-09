@@ -35,13 +35,13 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
     const getStrengthClass = (strength: string) => {
         switch (strength) {
             case "강함":
-                return "bg-green-500";
+                return "bg-green-700";
             case "보통":
-                return "bg-yellow-500";
+                return "bg-yellow-600";
             case "매우 약함":
-                return "bg-red-500";
+                return "bg-red-700";
             default:
-                return "bg-gray-500";
+                return "bg-gray-700";
         }
     };
 
