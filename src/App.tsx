@@ -33,7 +33,7 @@ declare global {
     }
 }
 
-window.Kakao.init(import.meta.env.VITE_JAVASCRIPT_KEY);
+window.Kakao.init(import.meta.env.VITE_APP_KEY);
 window.Kakao.isInitialized();
 
 const App = () => {
