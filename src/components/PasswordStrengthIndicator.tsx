@@ -119,19 +119,38 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
             test(password)
         ).length;
 
-        console.log(score);
-
         const strengthLevel =
             STRENGTH_LEVELS.find((level) => score >= level.minScore) ||
             STRENGTH_LEVELS[STRENGTH_LEVELS.length - 1];
 
+        if (strengthLevel.level === "매우 강함") {
+            return {
+                level: strengthLevel.level,
+                message: strengthLevel.message,
+                score
+            };
+        }
+
+        if (failedCriteria.length) {
+            return {
+                level: strengthLevel.level,
+                message: `${strengthLevel.message}. 개선사항: ${failedCriteria
+                    .slice(0, 3)
+                    .join(", ")}`,
+                score
+            };
+        }
+
         return {
             level: strengthLevel.level,
-            message: failedCriteria.length
-                ? `${strengthLevel.message}. 개선사항: ${failedCriteria
-                      .slice(0, 3)
-                      .join(", ")}`
-                : strengthLevel.message,
+            message:
+                strengthLevel.level === "매우 강함"
+                    ? strengthLevel.message
+                    : failedCriteria.length
+                    ? `${strengthLevel.message}. 개선사항: ${failedCriteria
+                          .slice(0, 3)
+                          .join(", ")}`
+                    : strengthLevel.message,
             score
         };
     };
