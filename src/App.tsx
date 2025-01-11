@@ -168,7 +168,7 @@ const App = () => {
                                     id="length"
                                     placeholder="Enter password length"
                                     min="0"
-                                    max="30"
+                                    max="25"
                                     value={passwordLength}
                                     onChange={handleChangePassword}
                                     disabled={isCharsetEmpty({
@@ -178,10 +178,8 @@ const App = () => {
                                         specialCase: includeSpecialCharacter
                                     })}
                                 />
-                                <PasswordLength
-                                    passwordLength={passwordLength}
-                                />
                             </div>
+                            <PasswordLength passwordLength={passwordLength} />
                         </div>
                     </div>
                 </div>

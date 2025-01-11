@@ -10,8 +10,10 @@ import moon from "../../src/assets/moon.svg";
 
 interface PasswordInputProps {
     value: string;
-    onRefresh: () => void;
+    onRefresh: (value: string) => void;
 }
+
+const PASSWORD_LENGTH = 12;
 
 interface PasswordRule {
     id: string;
@@ -53,6 +55,7 @@ const PASSWORD_RULES: PasswordRule[] = [
 ];
 
 const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
+    const [hasRepeatingChars, setHasRepeatingChars] = useState(false);
     const themeContext = useContext(ThemeContext);
     if (!themeContext) {
         throw new Error("ThemeContext is undefined");
@@ -135,8 +138,33 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
     };
 
-    const handleRefreshPassword = () => {
-        onRefresh();
+    const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
+        const { password, hasRepeatingChars } =
+            generatePassword(PASSWORD_LENGTH);
+        onRefresh(password);
+        setHasRepeatingChars(hasRepeatingChars);
+    };
+
+    const generatePassword = (length: number) => {
+        const charset =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+        let password = "";
+        let hasRepeatingChars = false;
+
+        while (password.length < length) {
+            const char = charset[Math.floor(Math.random() * charset.length)];
+            if (
+                password.length >= 2 &&
+                password[password.length - 1] === char &&
+                password[password.length - 2] === char
+            ) {
+                hasRepeatingChars = true;
+                continue;
+            }
+            password += char;
+        }
+
+        return { password, hasRepeatingChars };
     };
     return (
         <>
@@ -217,7 +245,9 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                         {/* 복사하기 버튼 */}
                         <button
-                            onClick={handleRefreshPassword}
+                            onClick={() =>
+                                handleRefreshPassword(PASSWORD_LENGTH)
+                            }
                             className="flex items-center gap-2"
                             aria-label="새로고침"
                         >
@@ -244,6 +274,12 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                     <div className="text-red-500 text-sm mt-2">
                         {value.length !== 0 &&
                             "이 비밀번호는 알려진 비밀번호입니다."}
+                    </div>
+                )}
+                {hasRepeatingChars && (
+                    <div className="text-red-500 text-sm mt-2">
+                        {value.length !== 0 &&
+                            "이 비밀번호는 연속된 문자가 포함됩니다."}
                     </div>
                 )}
             </div>
