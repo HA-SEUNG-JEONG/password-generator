@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
 import { useEffect, useState } from "react";
-import Eye from "../../public/eye 1.svg";
-import EyeOff from "../../public/eye-off 1.svg";
+import Eye from "../../src/assets/eye-1.svg";
+import EyeOff from "../../src/assets/eye-off-1.svg";
 import { checkPwnedPassword } from "../utils";
 interface PasswordInputProps {
     value: string;
@@ -148,7 +148,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                 />
 
                 <div className="flex justify-end items-center">
-                    <div className="right-[4.5rem] bottom-2 absolute hover:text-gray-600 cursor-pointer">
+                    <div className="right-[4.5rem] bottom-[2px] absolute hover:text-gray-600 cursor-pointer">
                         <button
                             onClick={handleToggle}
                             className="w-6 h-6"
