@@ -142,20 +142,21 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         <>
             <button
                 onClick={toggleTheme}
+                aria-label={
+                    theme === "light"
+                        ? "다크 모드로 전환"
+                        : "라이트 모드로 전환"
+                }
                 className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
                 {theme === "light" ? (
                     <img
                         src={moon}
                         alt="moon"
-                        className="w-6 h-6 text-gray-700"
+                        className="w-6 h-6 dark:invert"
                     />
                 ) : (
-                    <img
-                        src={sun}
-                        alt="sun"
-                        className="w-6 h-6 text-yellow-400"
-                    />
+                    <img src={sun} alt="sun" className="w-6 h-6 dark:invert" />
                 )}
             </button>
             <div className="flex flex-col gap-2">
@@ -181,7 +182,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                                 <img
                                     src={icon}
                                     alt=""
-                                    className="w-6 h-6 dark:text-red-500"
+                                    className="w-6 h-6 dark:invert"
                                 />
                             </button>
                         </div>
