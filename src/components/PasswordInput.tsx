@@ -149,7 +149,17 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                 <div className="flex justify-end items-center">
                     <div className="right-[4.5rem] bottom-2 absolute hover:text-gray-600 cursor-pointer">
-                        <img src={icon} onClick={handleToggle} />
+                        <button
+                            onClick={handleToggle}
+                            className="w-6 h-6"
+                            aria-label={
+                                type === "password"
+                                    ? "비밀번호 표시"
+                                    : "비밀번호 숨기기"
+                            }
+                        >
+                            <img src={icon} alt="" className="w-full h-full" />
+                        </button>
                     </div>
 
                     <button
