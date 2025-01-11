@@ -3,6 +3,7 @@ import { useState } from "react";
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 import React from "react";
+import { ThemeProvider } from "./context/ThemeContext";
 
 interface KakaoShareOptions {
     objectType?: string;
@@ -147,41 +148,45 @@ const App = () => {
     };
 
     return (
-        <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-            <div className="flex flex-col space-y-1.5 p-6">
-                <div className="text-2xl font-bold">PassWord Generator</div>
-            </div>
-            <div className="p-6 pt-0">
-                <div className="space-y-4">
-                    <div className="space-y-2">
-                        <PasswordInput
-                            value={newPasswordResult || ""}
-                            onRefresh={handleRefreshPassword}
-                        />
-
-                        <div className="flex items-center">
-                            <input
-                                type="range"
-                                className="flex cursor-pointer mr-3"
-                                id="length"
-                                placeholder="Enter password length"
-                                min="0"
-                                max="30"
-                                value={passwordLength}
-                                onChange={handleChangePassword}
-                                disabled={isCharsetEmpty({
-                                    lowerCase: includeLowercase,
-                                    upperCase: includeUppercase,
-                                    numberCase: includeNumbers,
-                                    specialCase: includeSpecialCharacter
-                                })}
+        <ThemeProvider>
+            <div className="min-h-screen transition-colors duration-200  rounded-lg border bg-card text-card-foreground shadow-sm dark:bg-dark-bg dark:text-dark-text">
+                <div className="flex flex-col space-y-1.5 p-6">
+                    <div className="text-2xl font-bold">PassWord Generator</div>
+                </div>
+                <div className="p-6 pt-0">
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <PasswordInput
+                                value={newPasswordResult || ""}
+                                onRefresh={handleRefreshPassword}
                             />
-                            <PasswordLength passwordLength={passwordLength} />
+
+                            <div className="flex items-center">
+                                <input
+                                    type="range"
+                                    className="flex cursor-pointer mr-3"
+                                    id="length"
+                                    placeholder="Enter password length"
+                                    min="0"
+                                    max="30"
+                                    value={passwordLength}
+                                    onChange={handleChangePassword}
+                                    disabled={isCharsetEmpty({
+                                        lowerCase: includeLowercase,
+                                        upperCase: includeUppercase,
+                                        numberCase: includeNumbers,
+                                        specialCase: includeSpecialCharacter
+                                    })}
+                                />
+                                <PasswordLength
+                                    passwordLength={passwordLength}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </ThemeProvider>
     );
 };
 
