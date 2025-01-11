@@ -13,6 +13,8 @@ interface PasswordInputProps {
     onRefresh: (value: string) => void;
 }
 
+const PASSWORD_LENGTH = 12;
+
 interface PasswordRule {
     id: string;
     name: string;
@@ -136,8 +138,9 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
     };
 
-    const handleRefreshPassword = () => {
-        const { password, hasRepeatingChars } = generatePassword(12); // 예시로 길이 12의 비밀번호 생성
+    const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
+        const { password, hasRepeatingChars } =
+            generatePassword(PASSWORD_LENGTH);
         onRefresh(password);
         setHasRepeatingChars(hasRepeatingChars);
     };
@@ -242,7 +245,9 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                         {/* 복사하기 버튼 */}
                         <button
-                            onClick={handleRefreshPassword}
+                            onClick={() =>
+                                handleRefreshPassword(PASSWORD_LENGTH)
+                            }
                             className="flex items-center gap-2"
                             aria-label="새로고침"
                         >

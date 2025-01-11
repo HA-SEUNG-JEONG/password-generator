@@ -178,10 +178,8 @@ const App = () => {
                                         specialCase: includeSpecialCharacter
                                     })}
                                 />
-                                <PasswordLength
-                                    passwordLength={passwordLength}
-                                />
                             </div>
+                            <PasswordLength passwordLength={passwordLength} />
                         </div>
                     </div>
                 </div>
