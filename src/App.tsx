@@ -120,18 +120,22 @@ const App = () => {
 
     const handleIncludeUppercaseChange = (isChecked: boolean) => {
         setIncludeUppercase(isChecked);
+        generateRandomPassword(passwordLength);
     };
 
     const handleIncludeLowercaseChange = (isChecked: boolean) => {
         setIncludeLowercase(isChecked);
+        generateRandomPassword(passwordLength);
     };
 
     const handleIncludeNumbersChange = (isChecked: boolean) => {
         setIncludeNumbers(isChecked);
+        generateRandomPassword(passwordLength);
     };
 
     const handleIncludeSpecialCharacterChange = (isChecked: boolean) => {
         setIncludeSpecialCharacter(isChecked);
+        generateRandomPassword(passwordLength);
     };
 
     useEffect(() => {
@@ -221,8 +225,15 @@ const App = () => {
                     />
                 </div>
                 <div className="p-6">
-                    <button onClick={shareKakao}>
-                        <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" />
+                    <button
+                        onClick={shareKakao}
+                        aria-label="카카오톡으로 공유하기"
+                        title="카카오톡으로 공유하기"
+                    >
+                        <img
+                            src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                            alt="카카오톡 공유하기 버튼"
+                        />
                     </button>
                 </div>
             </div>
