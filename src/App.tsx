@@ -5,7 +5,7 @@ import PasswordLength from "./components/PasswordLength";
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
 import IncludeCheckBox from "./components/IncludeCheckBox";
-import { createCharacterSet } from "./utils/password";
+import { createCharacterSet, generatePassword } from "./utils/password";
 
 interface KakaoShareOptions {
     objectType?: string;
@@ -64,55 +64,15 @@ const App = () => {
         ).join("");
     };
 
-    const generatePassword = useCallback(
-        (length: number) => {
-            if (length <= 0) return "";
-            const charset = createCharacterSet({
-                lowercase: includeLowercase,
-                uppercase: includeUppercase,
-                numbers: includeNumbers,
-                special: includeSpecialCharacter
-            });
-            return buildPassword(length, charset);
-        },
-        [
-            includeLowercase,
-            includeUppercase,
-            includeNumbers,
-            includeSpecialCharacter
-        ]
-    );
-
-    const hasRepeatingCharacters = (password: string, char: string) => {
-        return (
-            password.length >= 2 &&
-            password[password.length - 1] === char &&
-            password[password.length - 2] === char
-        );
-    };
-
     const generateRandomPassword = (length: number) => {
-        const charset = createCharacterSet({
-            lowercase: includeLowercase,
-            uppercase: includeUppercase,
-            numbers: includeNumbers,
-            special: includeSpecialCharacter
-        });
+        const { password, hasRepeatingChars } = generatePassword(
+            length,
+            PASSWORD_CHARSET
+        );
+        setHasRepeatingChars(hasRepeatingChars);
+        setNewPasswordResult(password);
 
-        const newPassword = generatePassword(length);
-
-        const char =
-            PASSWORD_CHARSET[
-                Math.floor(Math.random() * PASSWORD_CHARSET.length)
-            ];
-
-        if (hasRepeatingCharacters(newPassword, char)) {
-            setHasRepeatingChars(true);
-        }
-
-        setNewPasswordResult(newPassword);
-
-        return newPassword;
+        return password;
     };
 
     const handlePasswordLengthChange = (value: number) => {
@@ -161,7 +121,15 @@ const App = () => {
             const newPassword = buildPassword(passwordLength, charset);
             setNewPasswordResult(newPassword);
         }
-    }, [generatePassword, passwordLength]);
+    }, [
+        generatePassword,
+        passwordLength,
+        ,
+        includeLowercase,
+        includeUppercase,
+        includeNumbers,
+        includeSpecialCharacter
+    ]);
 
     const shareKakao = () => {
         window.Kakao.Share.sendDefault({
