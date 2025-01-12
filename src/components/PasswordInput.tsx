@@ -181,6 +181,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
         return { password, hasRepeatingChars };
     };
+
     return (
         <>
             <button
@@ -279,9 +280,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                         {/* 복사하기 버튼 */}
                         <button
-                            onClick={() =>
-                                handleRefreshPassword(PASSWORD_LENGTH)
-                            }
+                            onClick={() => handleRefreshPassword}
                             className="flex items-center gap-2"
                             aria-label="새로고침"
                         >
