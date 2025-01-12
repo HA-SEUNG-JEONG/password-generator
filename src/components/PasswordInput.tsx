@@ -10,7 +10,7 @@ import moon from "../../src/assets/moon.svg";
 
 interface PasswordInputProps {
     value: string;
-    onRefresh: () => void;
+    onRefresh: (value: string) => void;
 }
 
 const PASSWORD_LENGTH = 12;
@@ -142,12 +142,22 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         // alert("정말 제거하시겠습니까?");
         try {
             const clipboardContent = await navigator.clipboard.readText();
-            if (clipboardContent === value)
+            if (clipboardContent === value && value.length !== 0) {
                 await navigator.clipboard.writeText("");
-            toast.success("클립보드가 비워졌습니다.");
+                toast.success("클립보드가 비워졌습니다.");
+            } else {
+                toast.info("클립보드에 현재 비밀번호가 없습니다.");
+            }
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
         }
+    };
+
+    const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
+        const { password, hasRepeatingChars } =
+            generatePassword(PASSWORD_LENGTH);
+        onRefresh(password);
+        setHasRepeatingChars(hasRepeatingChars);
     };
 
     const generatePassword = (length: number) => {
@@ -170,10 +180,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
 
         return { password, hasRepeatingChars };
-    };
-
-    const handleRefreshPassword = () => {
-        onRefresh();
     };
 
     return (
@@ -199,13 +205,31 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
             </button>
             <div className="flex flex-col gap-2">
                 <div className="relative w-full">
+                    <button
+                        onClick={handleRemoveClipboard}
+                        className="flex items-center gap-2"
+                        aria-label="클립보드 지우기"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+                        </svg>
+                    </button>
                     <input
                         className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-dark-input dark:border-dark-border"
                         type={type}
                         id="password"
                         readOnly
                         value={value ?? ""}
-                        onClick={handleRemoveClipboard}
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex justify-end items-center gap-2">
                         <div className=" hover:text-gray-600 cursor-pointer">
@@ -256,7 +280,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                         {/* 복사하기 버튼 */}
                         <button
-                            onClick={handleRefreshPassword}
+                            onClick={() => handleRefreshPassword}
                             className="flex items-center gap-2"
                             aria-label="새로고침"
                         >
