@@ -7,13 +7,10 @@ import { checkPwnedPassword } from "../utils/utils";
 import { ThemeContext } from "../context/ThemeContext";
 import sun from "../../src/assets/sun.svg";
 import moon from "../../src/assets/moon.svg";
-import { generatePassword } from "../utils/password";
-
-const PASSWORD_LENGTH = 16;
 
 interface PasswordInputProps {
     value: string;
-    onRefresh: (value: string) => void;
+    onRefresh: (value?: string) => void;
 }
 
 export const PASSWORD_CHARSET =
@@ -61,30 +58,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
         }
-    };
-
-    const handleRemoveClipboard = async () => {
-        // alert("정말 제거하시겠습니까?");
-        try {
-            const clipboardContent = await navigator.clipboard.readText();
-            if (clipboardContent === value && value.length !== 0) {
-                await navigator.clipboard.writeText("");
-                toast.success("클립보드가 비워졌습니다.");
-            } else {
-                toast.info("클립보드에 현재 비밀번호가 없습니다.");
-            }
-        } catch (err) {
-            if (err instanceof Error) toast.error(err.message);
-        }
-    };
-
-    const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
-        const { password, hasRepeatingChars } = generatePassword(
-            length,
-            PASSWORD_CHARSET
-        );
-        onRefresh(password);
-        setHasRepeatingChars(hasRepeatingChars);
     };
 
     return (
@@ -166,9 +139,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                         {/* 복사하기 버튼 */}
                         <button
-                            onClick={() =>
-                                handleRefreshPassword(PASSWORD_LENGTH)
-                            }
+                            onClick={() => onRefresh()}
                             className="flex items-center gap-2"
                             aria-label="새로고침"
                         >

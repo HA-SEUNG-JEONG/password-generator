@@ -58,12 +58,11 @@ const App = () => {
             !includePattern.includeSpecialCase
         );
     };
-    const buildPassword = (length: number, charset: string) => {
-        return Array.from(
-            { length },
-            () => charset[Math.floor(Math.random() * charset.length)]
-        ).join("");
-    };
+    const buildPassword = (length: number, charset: string) =>
+        Array(length)
+            .fill(0)
+            .map(() => charset[Math.floor(Math.random() * charset.length)])
+            .join("");
 
     const generateRandomPassword = (length: number) => {
         const { password, hasRepeatingChars } = generatePassword(
@@ -76,11 +75,6 @@ const App = () => {
         return password;
     };
 
-    const handlePasswordLengthChange = (value: number) => {
-        setNewPasswordResult(generateRandomPassword(value));
-        setPasswordLength(value);
-    };
-
     const handleRefreshPassword = () => {
         setNewPasswordResult(generateRandomPassword(passwordLength));
     };
@@ -88,7 +82,9 @@ const App = () => {
     const handleChangePassword = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        handlePasswordLengthChange(Number(event.target.value));
+        const value = Number(event.target.value);
+        setNewPasswordResult(generateRandomPassword(value));
+        setPasswordLength(value);
     };
 
     const handleIncludeUppercaseChange = (isChecked: boolean) => {
@@ -119,7 +115,6 @@ const App = () => {
             setNewPasswordResult(newPassword);
         }
     }, [
-        generatePassword,
         passwordLength,
         includePattern.includeLowerCase,
         includePattern.includeUpperCase,
