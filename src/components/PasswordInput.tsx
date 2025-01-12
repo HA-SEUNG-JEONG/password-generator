@@ -13,8 +13,6 @@ interface PasswordInputProps {
     onRefresh: () => void;
 }
 
-const PASSWORD_LENGTH = 12;
-
 interface PasswordRule {
     id: string;
     name: string;
@@ -22,37 +20,6 @@ interface PasswordRule {
     pattern: RegExp | ((value: string) => boolean);
     message: string;
 }
-
-const PASSWORD_RULES: PasswordRule[] = [
-    {
-        id: "uppercase",
-        name: "대문자 포함",
-        isEnabled: true,
-        pattern: /[A-Z]/,
-        message: "대문자 포함"
-    },
-    {
-        id: "lowercase",
-        name: "소문자 포함",
-        isEnabled: true,
-        pattern: /[a-z]/,
-        message: "소문자 포함"
-    },
-    {
-        id: "numbers",
-        name: "숫자 포함",
-        isEnabled: true,
-        pattern: /[0-9]/,
-        message: "숫자 포함"
-    },
-    {
-        id: "special",
-        name: "특수문자 포함",
-        isEnabled: true,
-        pattern: /[^A-Za-z0-9]/,
-        message: "특수문자 포함"
-    }
-];
 
 const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const [hasRepeatingChars, setHasRepeatingChars] = useState(false);
@@ -65,46 +32,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const [icon, setIcon] = useState(EyeOff);
 
     const [isPwned, setIsPwned] = useState(false);
-    const savePasswordRules = () => {
-        try {
-            const savedRules = localStorage.getItem("passwordRules");
-            return savedRules ? JSON.parse(savedRules) : PASSWORD_RULES;
-        } catch (error) {
-            console.error(
-                "비밀번호 규칙을 불러오는 중 오류가 발생했습니다:",
-                error
-            );
-            return PASSWORD_RULES;
-        }
-    };
-
-    const [rules, setRules] = useState<PasswordRule[]>(savePasswordRules);
-
-    const updateRule = (ruleId: string, isEnabled: boolean) => {
-        const updatedRules = rules.map((rule) =>
-            rule.id === ruleId ? { ...rule, isEnabled } : rule
-        );
-        const hasEnabledRule = updatedRules.some((rule) => rule.isEnabled);
-        if (hasEnabledRule) {
-            // const enabledRules = updatedRules.filter((rule) => rule.isEnabled);
-            setRules(updatedRules);
-            // localStorage.setItem("passwordRules", JSON.stringify(enabledRules));
-            try {
-                const enabledRules = updatedRules.filter(
-                    (rule) => rule.isEnabled
-                );
-                localStorage.setItem(
-                    "passwordRules",
-                    JSON.stringify(enabledRules)
-                );
-            } catch (error) {
-                console.error(
-                    "비밀번호 규칙을 저장하는 중 오류가 발생했습니다:",
-                    error
-                );
-            }
-        }
-    };
 
     useEffect(() => {
         const checkPassword = async () => {
@@ -148,28 +75,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
         }
-    };
-
-    const generatePassword = (length: number) => {
-        const charset =
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-        let password = "";
-        let hasRepeatingChars = false;
-
-        while (password.length < length) {
-            const char = charset[Math.floor(Math.random() * charset.length)];
-            if (
-                password.length >= 2 &&
-                password[password.length - 1] === char &&
-                password[password.length - 2] === char
-            ) {
-                hasRepeatingChars = true;
-                continue;
-            }
-            password += char;
-        }
-
-        return { password, hasRepeatingChars };
     };
 
     const handleRefreshPassword = () => {
@@ -293,20 +198,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                 )}
             </div>
             <PasswordStrengthIndicator password={value} />
-            {rules.map((rule) => (
-                <div key={rule.id} className="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        id={rule.id}
-                        checked={rule.isEnabled}
-                        onChange={(e) => updateRule(rule.id, e.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300"
-                    />
-                    <label htmlFor={rule.id} className="text-sm">
-                        {rule.name}
-                    </label>
-                </div>
-            ))}
         </>
     );
 };

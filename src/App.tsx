@@ -4,6 +4,7 @@ import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
+import IncludeCheckBox from "./components/IncludeCheckBox";
 
 interface KakaoShareOptions {
     objectType?: string;
@@ -52,7 +53,7 @@ const App = () => {
         specialCharacterCase: boolean
     ) => {
         const lowercaseCharacters = lowerCase
-            ? "abcdefghijklmnopqrstuvwxy"
+            ? "abcdefghijklmnopqrstuvwxyz"
             : "";
         const uppercaseCharacters = upperCase
             ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -182,6 +183,32 @@ const App = () => {
                             <PasswordLength passwordLength={passwordLength} />
                         </div>
                     </div>
+
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeUppercaseChange}
+                        pattern="Include Uppercase"
+                        checked={includeUppercase}
+                    />
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeLowercaseChange}
+                        pattern="Include Lowercase"
+                        checked={includeLowercase}
+                    />
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeNumbersChange}
+                        pattern="Include Numbers"
+                        checked={includeNumbers}
+                    />
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeSpecialCharacterChange}
+                        pattern="Include Special Characters"
+                        checked={includeSpecialCharacter}
+                    />
+                </div>
+                <div className="p-6">
+                    <button onClick={shareKakao}>
+                        <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" />
+                    </button>
                 </div>
             </div>
         </ThemeProvider>
