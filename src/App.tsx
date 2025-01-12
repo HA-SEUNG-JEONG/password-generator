@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PasswordInput from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
@@ -133,6 +133,25 @@ const App = () => {
     const handleIncludeSpecialCharacterChange = (isChecked: boolean) => {
         setIncludeSpecialCharacter(isChecked);
     };
+
+    useEffect(() => {
+        if (passwordLength > 0) {
+            const charset = createCharacterSet(
+                includeLowercase,
+                includeUppercase,
+                includeNumbers,
+                includeSpecialCharacter
+            );
+            const newPassword = buildPassword(passwordLength, charset);
+            setNewPasswordResult(newPassword);
+        }
+    }, [
+        includeUppercase,
+        includeLowercase,
+        includeNumbers,
+        includeSpecialCharacter,
+        passwordLength
+    ]);
 
     const shareKakao = () => {
         window.Kakao.Share.sendDefault({
