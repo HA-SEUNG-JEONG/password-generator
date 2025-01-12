@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import PasswordInput from "./components/PasswordInput";
+import PasswordInput, { PASSWORD_CHARSET } from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
+import IncludeCheckBox from "./components/IncludeCheckBox";
+import { createCharacterSet, generatePassword } from "./utils/password";
 
 interface KakaoShareOptions {
     objectType?: string;
@@ -45,41 +47,16 @@ const App = () => {
     const [passwordLength, setPasswordLength] = useState(0);
     const [newPasswordResult, setNewPasswordResult] = useState("");
 
-    const createCharacterSet = (
-        lowerCase: boolean,
-        upperCase: boolean,
-        numbersCase: boolean,
-        specialCharacterCase: boolean
-    ) => {
-        const lowercaseCharacters = lowerCase
-            ? "abcdefghijklmnopqrstuvwxy"
-            : "";
-        const uppercaseCharacters = upperCase
-            ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            : "";
-        const numberCharacters = numbersCase ? "0123456789" : "";
-        const specialCharacter = specialCharacterCase
-            ? "!@#$%^&*()-_=+[]{}|;:'\",.<>/?"
-            : "";
+    const [hasRepeatingChars, setHasRepeatingChars] = useState(false);
 
-        const characterSet =
-            lowercaseCharacters +
-            uppercaseCharacters +
-            numberCharacters +
-            specialCharacter;
-
-        return characterSet || "";
+    const isCharsetEmpty = (isChecked: boolean) => {
+        return !(
+            includeLowercase ||
+            includeUppercase ||
+            includeNumbers ||
+            includeSpecialCharacter
+        );
     };
-
-    const isCharsetEmpty = ({
-        lowerCase,
-        upperCase,
-        numberCase,
-        specialCase
-    }: EmptyProps) => {
-        return !lowerCase && !upperCase && !numberCase && !specialCase;
-    };
-
     const buildPassword = (length: number, charset: string) => {
         return Array.from(
             { length },
@@ -88,18 +65,14 @@ const App = () => {
     };
 
     const generateRandomPassword = (length: number) => {
-        const charset = createCharacterSet(
-            includeLowercase,
-            includeUppercase,
-            includeNumbers,
-            includeSpecialCharacter
+        const { password, hasRepeatingChars } = generatePassword(
+            length,
+            PASSWORD_CHARSET
         );
+        setHasRepeatingChars(hasRepeatingChars);
+        setNewPasswordResult(password);
 
-        const newPassword = buildPassword(length, charset);
-
-        setNewPasswordResult(newPassword);
-
-        return newPassword;
+        return password;
     };
 
     const handlePasswordLengthChange = (value: number) => {
@@ -119,23 +92,44 @@ const App = () => {
 
     const handleIncludeUppercaseChange = (isChecked: boolean) => {
         setIncludeUppercase(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
 
     const handleIncludeLowercaseChange = (isChecked: boolean) => {
         setIncludeLowercase(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
 
     const handleIncludeNumbersChange = (isChecked: boolean) => {
         setIncludeNumbers(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
 
     const handleIncludeSpecialCharacterChange = (isChecked: boolean) => {
         setIncludeSpecialCharacter(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
+
+    useEffect(() => {
+        if (passwordLength > 0) {
+            const charset = createCharacterSet({
+                lowercase: includeLowercase,
+                uppercase: includeUppercase,
+                numbers: includeNumbers,
+                special: includeSpecialCharacter
+            });
+            const newPassword = buildPassword(passwordLength, charset);
+            setNewPasswordResult(newPassword);
+        }
+    }, [
+        generatePassword,
+        passwordLength,
+        ,
+        includeLowercase,
+        includeUppercase,
+        includeNumbers,
+        includeSpecialCharacter
+    ]);
 
     const shareKakao = () => {
         window.Kakao.Share.sendDefault({
@@ -171,18 +165,56 @@ const App = () => {
                                     max="25"
                                     value={passwordLength}
                                     onChange={handleChangePassword}
-                                    disabled={isCharsetEmpty({
-                                        lowerCase: includeLowercase,
-                                        upperCase: includeUppercase,
-                                        numberCase: includeNumbers,
-                                        specialCase: includeSpecialCharacter
-                                    })}
+                                    disabled={isCharsetEmpty(
+                                        includeLowercase ||
+                                            includeUppercase ||
+                                            includeNumbers ||
+                                            includeSpecialCharacter
+                                    )}
                                 />
                             </div>
                             <PasswordLength passwordLength={passwordLength} />
                         </div>
                     </div>
+
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeUppercaseChange}
+                        pattern="Include Uppercase"
+                        checked={includeUppercase}
+                    />
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeLowercaseChange}
+                        pattern="Include Lowercase"
+                        checked={includeLowercase}
+                    />
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeNumbersChange}
+                        pattern="Include Numbers"
+                        checked={includeNumbers}
+                    />
+                    <IncludeCheckBox
+                        onCheckboxChange={handleIncludeSpecialCharacterChange}
+                        pattern="Include Special Characters"
+                        checked={includeSpecialCharacter}
+                    />
                 </div>
+                <div className="p-6">
+                    <button
+                        onClick={shareKakao}
+                        aria-label="카카오톡으로 공유하기"
+                        title="카카오톡으로 공유하기"
+                    >
+                        <img
+                            src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"
+                            alt="카카오톡 공유하기 버튼"
+                        />
+                    </button>
+                </div>
+                {hasRepeatingChars && (
+                    <div className="p-6 text-red-500">
+                        비밀번호에 동일한 문자가 3번 이상 반복되었습니다.
+                    </div>
+                )}
             </div>
         </ThemeProvider>
     );
