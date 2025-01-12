@@ -15,16 +15,8 @@ interface PasswordInputProps {
     onRefresh: (value: string) => void;
 }
 
-const PASSWORD_CHARSET =
+export const PASSWORD_CHARSET =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-
-interface PasswordRule {
-    id: string;
-    name: string;
-    isEnabled: boolean;
-    pattern: RegExp | ((value: string) => boolean);
-    message: string;
-}
 
 const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const [hasRepeatingChars, setHasRepeatingChars] = useState(false);
@@ -85,6 +77,14 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
     };
 
+    const hasRepeatingCharacters = (password: string, char: string) => {
+        return (
+            password.length >= 2 &&
+            password[password.length - 1] === char &&
+            password[password.length - 2] === char
+        );
+    };
+
     const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
         const { password, hasRepeatingChars } = generatePassword(length);
         onRefresh(password);
@@ -94,14 +94,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const generatePassword = (length: number) => {
         let password = "";
         let hasRepeatingChars = false;
-
-        const hasRepeatingCharacters = (password: string, char: string) => {
-            return (
-                password.length >= 2 &&
-                password[password.length - 1] === char &&
-                password[password.length - 2] === char
-            );
-        };
 
         while (password.length < length) {
             const char =

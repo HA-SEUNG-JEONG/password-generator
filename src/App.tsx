@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import PasswordInput from "./components/PasswordInput";
+import PasswordInput, { PASSWORD_CHARSET } from "./components/PasswordInput";
 import PasswordLength from "./components/PasswordLength";
 import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -46,6 +46,8 @@ const App = () => {
     const [passwordLength, setPasswordLength] = useState(0);
     const [newPasswordResult, setNewPasswordResult] = useState("");
 
+    const [hasRepeatingChars, setHasRepeatingChars] = useState(false);
+
     const createCharacterSet = (
         lowerCase: boolean,
         upperCase: boolean,
@@ -72,20 +74,27 @@ const App = () => {
         return characterSet || "";
     };
 
-    const isCharsetEmpty = ({
-        lowerCase,
-        upperCase,
-        numberCase,
-        specialCase
-    }: EmptyProps) => {
-        return !lowerCase && !upperCase && !numberCase && !specialCase;
+    const isCharsetEmpty = (isChecked: boolean) => {
+        return !(
+            includeLowercase ||
+            includeUppercase ||
+            includeNumbers ||
+            includeSpecialCharacter
+        );
     };
-
     const buildPassword = (length: number, charset: string) => {
         return Array.from(
             { length },
             () => charset[Math.floor(Math.random() * charset.length)]
         ).join("");
+    };
+
+    const hasRepeatingCharacters = (password: string, char: string) => {
+        return (
+            password.length >= 2 &&
+            password[password.length - 1] === char &&
+            password[password.length - 2] === char
+        );
     };
 
     const generateRandomPassword = (length: number) => {
@@ -97,6 +106,15 @@ const App = () => {
         );
 
         const newPassword = buildPassword(length, charset);
+
+        const char =
+            PASSWORD_CHARSET[
+                Math.floor(Math.random() * PASSWORD_CHARSET.length)
+            ];
+
+        if (hasRepeatingCharacters(newPassword, char)) {
+            setHasRepeatingChars(true);
+        }
 
         setNewPasswordResult(newPassword);
 
@@ -120,22 +138,22 @@ const App = () => {
 
     const handleIncludeUppercaseChange = (isChecked: boolean) => {
         setIncludeUppercase(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
 
     const handleIncludeLowercaseChange = (isChecked: boolean) => {
         setIncludeLowercase(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
 
     const handleIncludeNumbersChange = (isChecked: boolean) => {
         setIncludeNumbers(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
 
     const handleIncludeSpecialCharacterChange = (isChecked: boolean) => {
         setIncludeSpecialCharacter(isChecked);
-        generateRandomPassword(passwordLength);
+        // generateRandomPassword(passwordLength);
     };
 
     useEffect(() => {
@@ -191,12 +209,12 @@ const App = () => {
                                     max="25"
                                     value={passwordLength}
                                     onChange={handleChangePassword}
-                                    disabled={isCharsetEmpty({
-                                        lowerCase: includeLowercase,
-                                        upperCase: includeUppercase,
-                                        numberCase: includeNumbers,
-                                        specialCase: includeSpecialCharacter
-                                    })}
+                                    disabled={isCharsetEmpty(
+                                        includeLowercase ||
+                                            includeUppercase ||
+                                            includeNumbers ||
+                                            includeSpecialCharacter
+                                    )}
                                 />
                             </div>
                             <PasswordLength passwordLength={passwordLength} />
@@ -236,6 +254,11 @@ const App = () => {
                         />
                     </button>
                 </div>
+                {hasRepeatingChars && (
+                    <div className="p-6 text-red-500">
+                        비밀번호에 동일한 문자가 3번 이상 반복되었습니다.
+                    </div>
+                )}
             </div>
         </ThemeProvider>
     );
