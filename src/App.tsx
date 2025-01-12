@@ -120,22 +120,18 @@ const App = () => {
 
     const handleIncludeUppercaseChange = (isChecked: boolean) => {
         setIncludeUppercase(isChecked);
-        generateRandomPassword(passwordLength);
     };
 
     const handleIncludeLowercaseChange = (isChecked: boolean) => {
         setIncludeLowercase(isChecked);
-        generateRandomPassword(passwordLength);
     };
 
     const handleIncludeNumbersChange = (isChecked: boolean) => {
         setIncludeNumbers(isChecked);
-        generateRandomPassword(passwordLength);
     };
 
     const handleIncludeSpecialCharacterChange = (isChecked: boolean) => {
         setIncludeSpecialCharacter(isChecked);
-        generateRandomPassword(passwordLength);
     };
 
     const shareKakao = () => {
