@@ -22,17 +22,17 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
 
     return (
         <div
-            className={`flex items-center gap-2 text-sm font-medium ${getColorClass()}`}
+            className={`flex items-center text-sm font-medium ${getColorClass()}`}
         >
-            <span className="min-w-[7rem]">
+            <div className="min-w-[7rem]">
                 {passwordLength === 0
                     ? "길이를 선택하세요"
                     : `비밀번호 길이: ${passwordLength}`}
-            </span>
-            <span className="text-sm font-bold">
+            </div>
+            <div className="text-sm font-bold">
                 {passwordLength > 0 &&
-                    `(추천: ${getRecommendationMessage(passwordLength)})`}
-            </span>
+                    `${getRecommendationMessage(passwordLength)}`}
+            </div>
         </div>
     );
 };
