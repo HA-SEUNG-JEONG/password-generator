@@ -138,11 +138,28 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
     };
 
-    const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
-        const { password, hasRepeatingChars } =
-            generatePassword(PASSWORD_LENGTH);
-        onRefresh(password);
-        setHasRepeatingChars(hasRepeatingChars);
+   const handlePasswordCopy = () => {
+        try {
+            if (value.length === 0) toast.error("비밀번호가 비어있습니다.");
+            else {
+                navigator.clipboard.writeText(value);
+                toast.success("비밀번호가 복사되었습니다.");
+            }
+        } catch (err) {
+            if (err instanceof Error) toast.error(err.message);
+        }
+    };
+
+    const handleRemoveClipboard = async () => {
+        // alert("정말 제거하시겠습니까?");
+        try {
+            const clipboardContent = await navigator.clipboard.readText();
+            if (clipboardContent === value)
+                await navigator.clipboard.writeText("");
+            toast.success("클립보드가 비워졌습니다.");
+        } catch (err) {
+            if (err instanceof Error) toast.error(err.message);
+        }
     };
 
     const generatePassword = (length: number) => {
@@ -165,6 +182,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
 
         return { password, hasRepeatingChars };
+      
     };
     return (
         <>
@@ -195,6 +213,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                         id="password"
                         readOnly
                         value={value ?? ""}
+                        onClick={handleRemoveClipboard}
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex justify-end items-center gap-2">
                         <div className=" hover:text-gray-600 cursor-pointer">
