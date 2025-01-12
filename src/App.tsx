@@ -179,22 +179,22 @@ const App = () => {
 
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeUppercaseChange}
-                        pattern="Include Uppercase"
+                        pattern="대문자 포함"
                         checked={includeUppercase}
                     />
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeLowercaseChange}
-                        pattern="Include Lowercase"
+                        pattern="소문자 포함"
                         checked={includeLowercase}
                     />
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeNumbersChange}
-                        pattern="Include Numbers"
+                        pattern="숫자 포함"
                         checked={includeNumbers}
                     />
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeSpecialCharacterChange}
-                        pattern="Include Special Characters"
+                        pattern="특수 문자 포함"
                         checked={includeSpecialCharacter}
                     />
                 </div>
