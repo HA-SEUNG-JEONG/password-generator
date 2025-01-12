@@ -171,7 +171,7 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
             >
                 강도: {strength.level}
             </div>
-            <div className="text-sm text-gray-600">{strength.message}</div>
+            <div className="text-sm">{strength.message}</div>
             <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
                 <div
                     className={`h-full transition-all duration-300 ${currentLevel.color}`}
