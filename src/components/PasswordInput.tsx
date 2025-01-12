@@ -209,7 +209,9 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                         {/* 복사하기 버튼 */}
                         <button
-                            onClick={() => handleRefreshPassword}
+                            onClick={() =>
+                                handleRefreshPassword(PASSWORD_LENGTH)
+                            }
                             className="flex items-center gap-2"
                             aria-label="새로고침"
                         >
