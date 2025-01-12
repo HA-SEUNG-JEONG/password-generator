@@ -7,6 +7,7 @@ import { checkPwnedPassword } from "../utils";
 import { ThemeContext } from "../context/ThemeContext";
 import sun from "../../src/assets/sun.svg";
 import moon from "../../src/assets/moon.svg";
+import { generatePassword } from "../utils/password";
 
 const PASSWORD_LENGTH = 16;
 
@@ -77,37 +78,13 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
     };
 
-    const hasRepeatingCharacters = (password: string, char: string) => {
-        return (
-            password.length >= 2 &&
-            password[password.length - 1] === char &&
-            password[password.length - 2] === char
-        );
-    };
-
     const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
-        const { password, hasRepeatingChars } = generatePassword(length);
+        const { password, hasRepeatingChars } = generatePassword(
+            length,
+            PASSWORD_CHARSET
+        );
         onRefresh(password);
         setHasRepeatingChars(hasRepeatingChars);
-    };
-
-    const generatePassword = (length: number) => {
-        let password = "";
-        let hasRepeatingChars = false;
-
-        while (password.length < length) {
-            const char =
-                PASSWORD_CHARSET[
-                    Math.floor(Math.random() * PASSWORD_CHARSET.length)
-                ];
-            if (hasRepeatingCharacters(password, char)) {
-                hasRepeatingChars = true;
-                continue;
-            }
-            password += char;
-        }
-
-        return { password, hasRepeatingChars };
     };
 
     return (
