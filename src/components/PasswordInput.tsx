@@ -60,6 +60,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const { theme, toggleTheme } = themeContext;
     const [type, setType] = useState("password");
     const [icon, setIcon] = useState(EyeOff);
+    const [emptyPassword, setEmptyPassword] = useState(null);
 
     const [isPwned, setIsPwned] = useState(false);
     const savePasswordRules = () => {
@@ -129,6 +130,14 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
             else {
                 navigator.clipboard.writeText(value);
                 toast.success("비밀번호가 복사되었습니다.");
+
+                // 비밀번호 복사 후 복사된 비밀번호는 제거
+                setTimeout(() => {
+                    navigator.clipboard.writeText("").then(() => {
+                        setEmptyPassword(null);
+                        toast.success("복사된 비밀번호가 제거되었습니다.");
+                    });
+                }, 3000);
             }
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
