@@ -82,8 +82,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
     };
 
-    const handleRefreshPassword = () => {
-        onRefresh();
     const handleRefreshPassword = (length: number = PASSWORD_LENGTH) => {
         const { password, hasRepeatingChars } =
             generatePassword(PASSWORD_LENGTH);
