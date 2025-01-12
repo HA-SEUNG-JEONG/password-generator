@@ -1,4 +1,4 @@
-import { onCheckboxChangeProps } from "../utils";
+import { onCheckboxChangeProps } from "../utils/utils";
 
 interface IncludeCheckBoxProps extends onCheckboxChangeProps {
     checked: boolean;

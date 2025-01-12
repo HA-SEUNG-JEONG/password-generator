@@ -39,22 +39,23 @@ window.Kakao.init(import.meta.env.VITE_APP_KEY);
 window.Kakao.isInitialized();
 
 const App = () => {
-    const [includeUppercase, setIncludeUppercase] = useState(true);
-    const [includeLowercase, setIncludeLowercase] = useState(true);
-    const [includeNumbers, setIncludeNumbers] = useState(true);
-    const [includeSpecialCharacter, setIncludeSpecialCharacter] =
-        useState(true);
+    const [includePattern, setIncludePattern] = useState({
+        includeLowerCase: true,
+        includeUpperCase: true,
+        includeNumberCase: true,
+        includeSpecialCase: true
+    });
     const [passwordLength, setPasswordLength] = useState(0);
     const [newPasswordResult, setNewPasswordResult] = useState("");
 
     const [hasRepeatingChars, setHasRepeatingChars] = useState(false);
 
     const isCharsetEmpty = (isChecked: boolean) => {
-        return !(
-            includeLowercase ||
-            includeUppercase ||
-            includeNumbers ||
-            includeSpecialCharacter
+        return (
+            !includePattern.includeLowerCase &&
+            !includePattern.includeUpperCase &&
+            !includePattern.includeNumberCase &&
+            !includePattern.includeSpecialCase
         );
     };
     const buildPassword = (length: number, charset: string) => {
@@ -91,32 +92,28 @@ const App = () => {
     };
 
     const handleIncludeUppercaseChange = (isChecked: boolean) => {
-        setIncludeUppercase(isChecked);
-        // generateRandomPassword(passwordLength);
+        setIncludePattern({ ...includePattern, includeUpperCase: isChecked });
     };
 
     const handleIncludeLowercaseChange = (isChecked: boolean) => {
-        setIncludeLowercase(isChecked);
-        // generateRandomPassword(passwordLength);
+        setIncludePattern({ ...includePattern, includeLowerCase: isChecked });
     };
 
     const handleIncludeNumbersChange = (isChecked: boolean) => {
-        setIncludeNumbers(isChecked);
-        // generateRandomPassword(passwordLength);
+        setIncludePattern({ ...includePattern, includeNumberCase: isChecked });
     };
 
     const handleIncludeSpecialCharacterChange = (isChecked: boolean) => {
-        setIncludeSpecialCharacter(isChecked);
-        // generateRandomPassword(passwordLength);
+        setIncludePattern({ ...includePattern, includeSpecialCase: isChecked });
     };
 
     useEffect(() => {
         if (passwordLength > 0) {
             const charset = createCharacterSet({
-                lowercase: includeLowercase,
-                uppercase: includeUppercase,
-                numbers: includeNumbers,
-                special: includeSpecialCharacter
+                lowercase: includePattern.includeLowerCase,
+                uppercase: includePattern.includeUpperCase,
+                numbers: includePattern.includeNumberCase,
+                special: includePattern.includeSpecialCase
             });
             const newPassword = buildPassword(passwordLength, charset);
             setNewPasswordResult(newPassword);
@@ -124,11 +121,10 @@ const App = () => {
     }, [
         generatePassword,
         passwordLength,
-        ,
-        includeLowercase,
-        includeUppercase,
-        includeNumbers,
-        includeSpecialCharacter
+        includePattern.includeLowerCase,
+        includePattern.includeUpperCase,
+        includePattern.includeNumberCase,
+        includePattern.includeSpecialCase
     ]);
 
     const shareKakao = () => {
@@ -166,10 +162,10 @@ const App = () => {
                                     value={passwordLength}
                                     onChange={handleChangePassword}
                                     disabled={isCharsetEmpty(
-                                        includeLowercase ||
-                                            includeUppercase ||
-                                            includeNumbers ||
-                                            includeSpecialCharacter
+                                        includePattern.includeLowerCase ||
+                                            includePattern.includeUpperCase ||
+                                            includePattern.includeNumberCase ||
+                                            includePattern.includeSpecialCase
                                     )}
                                 />
                             </div>
@@ -180,22 +176,22 @@ const App = () => {
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeUppercaseChange}
                         pattern="대문자 포함"
-                        checked={includeUppercase}
+                        checked={includePattern.includeUpperCase}
                     />
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeLowercaseChange}
                         pattern="소문자 포함"
-                        checked={includeLowercase}
+                        checked={includePattern.includeLowerCase}
                     />
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeNumbersChange}
                         pattern="숫자 포함"
-                        checked={includeNumbers}
+                        checked={includePattern.includeNumberCase}
                     />
                     <IncludeCheckBox
                         onCheckboxChange={handleIncludeSpecialCharacterChange}
                         pattern="특수 문자 포함"
-                        checked={includeSpecialCharacter}
+                        checked={includePattern.includeSpecialCase}
                     />
                 </div>
                 <div className="p-6">

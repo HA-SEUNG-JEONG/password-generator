@@ -3,7 +3,7 @@ import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
 import { useContext, useEffect, useState } from "react";
 import Eye from "../../src/assets/eye-1.svg";
 import EyeOff from "../../src/assets/eye-off-1.svg";
-import { checkPwnedPassword } from "../utils";
+import { checkPwnedPassword } from "../utils/utils";
 import { ThemeContext } from "../context/ThemeContext";
 import sun from "../../src/assets/sun.svg";
 import moon from "../../src/assets/moon.svg";
