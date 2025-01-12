@@ -60,7 +60,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
     const { theme, toggleTheme } = themeContext;
     const [type, setType] = useState("password");
     const [icon, setIcon] = useState(EyeOff);
-    const [emptyPassword, setEmptyPassword] = useState(null);
 
     const [isPwned, setIsPwned] = useState(false);
     const savePasswordRules = () => {
@@ -130,15 +129,19 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
             else {
                 navigator.clipboard.writeText(value);
                 toast.success("비밀번호가 복사되었습니다.");
-
-                // 비밀번호 복사 후 복사된 비밀번호는 제거
-                setTimeout(() => {
-                    navigator.clipboard.writeText("").then(() => {
-                        setEmptyPassword(null);
-                        toast.success("복사된 비밀번호가 제거되었습니다.");
-                    });
-                }, 3000);
             }
+        } catch (err) {
+            if (err instanceof Error) toast.error(err.message);
+        }
+    };
+
+    const handleRemoveClipboard = async () => {
+        // alert("정말 제거하시겠습니까?");
+        try {
+            const clipboardContent = await navigator.clipboard.readText();
+            if (clipboardContent === value)
+                await navigator.clipboard.writeText("");
+            toast.success("클립보드가 비워졌습니다.");
         } catch (err) {
             if (err instanceof Error) toast.error(err.message);
         }
@@ -176,6 +179,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                         id="password"
                         readOnly
                         value={value ?? ""}
+                        onClick={handleRemoveClipboard}
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex justify-end items-center gap-2">
                         <div className=" hover:text-gray-600 cursor-pointer">
