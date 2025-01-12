@@ -85,8 +85,8 @@ const App = () => {
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const value = Number(event.target.value);
-        setNewPasswordResult(generateRandomPassword(value));
         setPasswordLength(value);
+        setNewPasswordResult(generateRandomPassword(value));
     };
 
     const handleIncludeUppercaseChange = (isChecked: boolean) => {
