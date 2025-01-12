@@ -58,11 +58,13 @@ const App = () => {
             !includePattern.includeSpecialCase
         );
     };
-    const buildPassword = (length: number, charset: string) =>
-        Array(length)
-            .fill(0)
-            .map(() => charset[Math.floor(Math.random() * charset.length)])
-            .join("");
+    const buildPassword = (length: number, charset: string) => {
+        const array = new Uint32Array(length);
+        crypto.getRandomValues(array);
+        return Array.from(array, (num) => charset[num % charset.length]).join(
+            ""
+        );
+    };
 
     const generateRandomPassword = (length: number) => {
         const { password, hasRepeatingChars } = generatePassword(
