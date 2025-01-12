@@ -10,7 +10,7 @@ import moon from "../../src/assets/moon.svg";
 
 interface PasswordInputProps {
     value: string;
-    onRefresh: (value: string) => void;
+    onRefresh: () => void;
 }
 
 const PASSWORD_LENGTH = 12;
@@ -138,18 +138,6 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
     };
 
-   const handlePasswordCopy = () => {
-        try {
-            if (value.length === 0) toast.error("비밀번호가 비어있습니다.");
-            else {
-                navigator.clipboard.writeText(value);
-                toast.success("비밀번호가 복사되었습니다.");
-            }
-        } catch (err) {
-            if (err instanceof Error) toast.error(err.message);
-        }
-    };
-
     const handleRemoveClipboard = async () => {
         // alert("정말 제거하시겠습니까?");
         try {
@@ -182,8 +170,12 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
         }
 
         return { password, hasRepeatingChars };
-      
     };
+
+    const handleRefreshPassword = () => {
+        onRefresh();
+    };
+
     return (
         <>
             <button
@@ -264,9 +256,7 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
                         {/* 복사하기 버튼 */}
                         <button
-                            onClick={() =>
-                                handleRefreshPassword(PASSWORD_LENGTH)
-                            }
+                            onClick={handleRefreshPassword}
                             className="flex items-center gap-2"
                             aria-label="새로고침"
                         >
