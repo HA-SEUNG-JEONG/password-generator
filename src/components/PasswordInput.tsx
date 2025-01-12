@@ -62,29 +62,47 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
 
     return (
         <>
-            <button
-                onClick={toggleTheme}
-                aria-label={
-                    theme === "light"
-                        ? "다크 모드로 전환"
-                        : "라이트 모드로 전환"
-                }
-                className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-                {theme === "light" ? (
-                    <img
-                        src={moon}
-                        alt="moon"
-                        className="w-6 h-6 dark:invert"
-                    />
-                ) : (
-                    <img src={sun} alt="sun" className="w-6 h-6 dark:invert" />
+            <div className="flex items-center gap-2">
+                <button
+                    onClick={toggleTheme}
+                    aria-label={
+                        theme === "light"
+                            ? "다크 모드로 전환"
+                            : "라이트 모드로 전환"
+                    }
+                    className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                >
+                    {theme === "light" ? (
+                        <img
+                            src={moon}
+                            alt="moon"
+                            className="w-6 h-6 dark:invert"
+                        />
+                    ) : (
+                        <img
+                            src={sun}
+                            alt="sun"
+                            className="w-6 h-6 dark:invert"
+                        />
+                    )}
+                </button>
+                {isPwned && (
+                    <div className="text-red-500 text-sm">
+                        {value.length !== 0 &&
+                            "이 비밀번호는 알려진 비밀번호입니다."}
+                    </div>
                 )}
-            </button>
+                {hasRepeatingChars && (
+                    <div className="text-red-500 text-sm mt-2">
+                        {value.length !== 0 &&
+                            "이 비밀번호는 연속된 문자가 포함됩니다."}
+                    </div>
+                )}
+            </div>
             <div className="flex flex-col gap-2">
                 <div className="relative w-full">
                     <input
-                        className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-dark-input dark:border-dark-border"
+                        className="mb-8 flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-dark-input dark:border-dark-border"
                         type={type}
                         id="password"
                         readOnly
@@ -162,20 +180,8 @@ const PasswordInput = ({ value, onRefresh }: PasswordInputProps) => {
                         </button>
                     </div>
                 </div>
-                {isPwned && (
-                    <div className="text-red-500 text-sm mt-2">
-                        {value.length !== 0 &&
-                            "이 비밀번호는 알려진 비밀번호입니다."}
-                    </div>
-                )}
-                {hasRepeatingChars && (
-                    <div className="text-red-500 text-sm mt-2">
-                        {value.length !== 0 &&
-                            "이 비밀번호는 연속된 문자가 포함됩니다."}
-                    </div>
-                )}
+                <PasswordStrengthIndicator password={value} />
             </div>
-            <PasswordStrengthIndicator password={value} />
         </>
     );
 };
