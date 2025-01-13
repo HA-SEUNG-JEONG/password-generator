@@ -1,8 +1,5 @@
-// components/PasswordOptions/index.tsx
-
 import PasswordCharacterOptions from "./PasswordCharacterOptions";
 import PasswordLengthControl from "./PasswordControls";
-import PasswordLength from "./PasswordLength";
 
 interface CharacterOptions {
     lowercase: boolean;

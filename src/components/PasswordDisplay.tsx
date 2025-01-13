@@ -1,4 +1,3 @@
-// components/PasswordDisplay/index.tsx
 import { useState } from "react";
 import { toast } from "react-toastify";
 import EyeOn from "../assets/eye-1.svg";
