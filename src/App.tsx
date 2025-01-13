@@ -1,11 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-
-import PasswordInput, { PASSWORD_CHARSET } from "./components/PasswordInput";
-import PasswordLength from "./components/PasswordLength";
-import React from "react";
 import { ThemeProvider } from "./context/ThemeContext";
-import IncludeCheckBox from "./components/IncludeCheckBox";
-import { createCharacterSet, generatePassword } from "./utils/password";
 import PasswordGenerator from "./components/PasswordGenerator";
 
 interface KakaoShareOptions {
@@ -21,13 +14,6 @@ interface KakaoSDK {
     Share: {
         sendDefault(options: KakaoShareOptions): void;
     };
-}
-
-interface EmptyProps {
-    lowerCase: boolean;
-    upperCase: boolean;
-    numberCase: boolean;
-    specialCase: boolean;
 }
 
 declare global {
