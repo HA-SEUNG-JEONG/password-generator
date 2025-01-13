@@ -6,7 +6,7 @@ const OPTIONS = [
     { key: "numbers" as const, label: "숫자 포함" },
     { key: "special" as const, label: "특수문자 포함" }
 ];
-1;
+
 interface CharacterOptions {
     lowercase: boolean;
     uppercase: boolean;
