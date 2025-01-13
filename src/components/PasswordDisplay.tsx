@@ -9,14 +9,24 @@ interface PasswordDisplayProps {
     onRefresh: () => void;
 }
 
+interface PasswordValidationOptions {
+    maxRepeats?: number;
+    checkPatterns?: boolean;
+    checkSequential?: boolean;
+}
+
 const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
     const [showPassword, setShowPassword] = useState(false);
 
-    const handlePasswordCopy = () => {
+    const handlePasswordCopy = async () => {
+        if (!navigator.clipboard) {
+            toast.error("클립보드 지원이 되지 않는 브라우저입니다.");
+            return;
+        }
         try {
             if (password.length === 0) toast.error("비밀번호가 비어있습니다.");
             else {
-                navigator.clipboard.writeText(password);
+                await navigator.clipboard.writeText(password);
                 toast.success("비밀번호가 복사되었습니다.");
             }
         } catch (err) {
@@ -25,10 +35,26 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
     };
 
     // 특정 문자/숫자 반복 감지
-    const hasRepeatingCharacters = (password: string) => {
+    const hasRepeatingCharacters = (
+        password: string,
+        options: PasswordValidationOptions = {
+            maxRepeats: 2,
+            checkPatterns: true,
+            checkSequential: true
+        }
+    ) => {
         // 특정 알파벳이나 특정 숫자 특정 특수문자가 2번 이상 반복되는지 확인
-        const regex = /(.)\1{1,}/g;
-        return regex.test(password);
+
+        const repeatingChars = new RegExp(
+            `(.)\\1{${options?.maxRepeats ?? 2},}`
+        );
+        const sequentialPattern =
+            /(?:abc|bcd|cde|def|efg|123|234|345|456|567|678|789)/i;
+
+        if (repeatingChars.test(password)) return "반복된 문자가 있습니다";
+        if (options?.checkSequential && sequentialPattern.test(password))
+            return "연속된 문자나 숫자가 있습니다";
+        return null;
     };
 
     return (
@@ -38,20 +64,39 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 className="w-full p-2 border rounded"
                 value={password}
                 readOnly
+                aria-label="생성된 비밀번호"
+                aria-describedby={
+                    hasRepeatingCharacters(password)
+                        ? "password-warning"
+                        : undefined
+                }
             />
             {hasRepeatingCharacters(password) && (
-                <span className="text-xs text-red-500">
+                <span
+                    id="password-warning"
+                    role="alert"
+                    className="text-xs text-red-500"
+                >
                     반복되는 문자/숫자가 있습니다.
                 </span>
             )}
+
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex space-x-2">
-                <button onClick={() => setShowPassword(!showPassword)}>
+                <button
+                    type="button"
+                    aria-label={
+                        showPassword ? "비밀번호 숨기기" : "비밀번호 표시"
+                    }
+                    onClick={() => setShowPassword(!showPassword)}
+                >
                     <img
                         src={showPassword ? EyeOn : EyeOff}
                         alt="Toggle Password"
+                        aria-hidden="true"
                     />
                 </button>
                 <button
+                    type="button"
                     onClick={handlePasswordCopy}
                     className="flex items-center gap-2"
                     aria-label="복사하기"
