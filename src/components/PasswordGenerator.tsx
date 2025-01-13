@@ -1,18 +1,28 @@
 // components/PasswordGenerator/index.tsx
 import { useEffect, useState } from "react";
-import { createCharacterSet, generatePassword } from "../utils/password";
+import { checkPwnedPassword, createCharacterSet } from "../utils/password";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./PasswordOption";
 
+interface CharacterOptions {
+    length: number;
+    lowercase: boolean;
+    uppercase: boolean;
+    numbers: boolean;
+    special: boolean;
+}
+
 const PasswordGenerator = () => {
     const [password, setPassword] = useState("");
-    const [options, setOptions] = useState({
+    const [options, setOptions] = useState<CharacterOptions>({
         length: 12,
         lowercase: true,
         uppercase: true,
         numbers: true,
         special: true
     });
+
+    const [isPwned, setIsPwned] = useState<boolean | undefined>(false);
 
     const buildPassword = (length: number, charset: string) => {
         const array = new Uint32Array(length);
@@ -28,6 +38,20 @@ const PasswordGenerator = () => {
         const newPassword = buildPassword(options.length, charset);
         setPassword(newPassword);
     };
+    const onChangeOptions = async (newOptions: {
+        length?: number;
+        lowercase?: boolean;
+        uppercase?: boolean;
+        numbers?: boolean;
+        special?: boolean;
+    }) => {
+        const check = await checkPwnedPassword(password);
+        setOptions((prevOptions) => ({
+            ...prevOptions,
+            ...newOptions
+        }));
+        setIsPwned(check);
+    };
 
     useEffect(() => {
         handleGeneratePassword();
@@ -39,7 +63,13 @@ const PasswordGenerator = () => {
                 password={password}
                 onRefresh={handleGeneratePassword}
             />
-            <PasswordOptions options={options} onChange={setOptions} />
+            {isPwned && (
+                <div className="text-red-500 text-sm">
+                    {password.length !== 0 &&
+                        "이 비밀번호는 알려진 비밀번호입니다."}
+                </div>
+            )}
+            <PasswordOptions options={options} onChange={onChangeOptions} />
         </div>
     );
 };
