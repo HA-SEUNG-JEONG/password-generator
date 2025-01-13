@@ -26,18 +26,6 @@ const PasswordInput = ({ value }: PasswordInputProps) => {
     const [type, setType] = useState("password");
     const [icon, setIcon] = useState(EyeOff);
 
-    const [isPwned, setIsPwned] = useState(false);
-
-    useEffect(() => {
-        const checkPassword = async () => {
-            if (value.length > 0) {
-                const pwned = await checkPwnedPassword(value);
-                setIsPwned(pwned);
-            }
-        };
-        checkPassword();
-    }, [value]);
-
     const handleToggle = () => {
         if (type === "password") {
             setIcon(Eye);
@@ -74,12 +62,6 @@ const PasswordInput = ({ value }: PasswordInputProps) => {
                         />
                     )}
                 </button>
-                {isPwned && (
-                    <div className="text-red-500 text-sm">
-                        {value.length !== 0 &&
-                            "이 비밀번호는 알려진 비밀번호입니다."}
-                    </div>
-                )}
                 {hasRepeatingCharacters(value) && (
                     <div className="text-red-500 text-sm mt-2">
                         {value.length !== 0 &&
