@@ -1,5 +1,5 @@
 const PASSWORD_LENGTH = {
-    MIN: 8,
+    MIN: 3,
     RECOMMEND: 12,
     MAX: 16
 } as const;

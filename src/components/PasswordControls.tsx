@@ -12,7 +12,7 @@ const PasswordLengthControl = ({
     <div className="space-y-2">
         <input
             type="range"
-            min={8}
+            min={3}
             max={30}
             value={length}
             onChange={(e) => onLengthChange(Number(e.target.value))}
