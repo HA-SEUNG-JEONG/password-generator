@@ -34,7 +34,7 @@ const PasswordGenerator = () => {
     }, [options]);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-1.5 flex flex-col p-6">
             <PasswordDisplay
                 password={password}
                 onRefresh={handleGeneratePassword}
