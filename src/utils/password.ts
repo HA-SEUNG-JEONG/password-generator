@@ -66,24 +66,36 @@ export interface onCheckboxChangeProps {
 }
 
 export const checkPwnedPassword = async (password: string) => {
+    const delay = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+    const MAX_RETRIES = 3;
+    let retries = 0;
     try {
         const hash = await generateSha1(password);
         const prefix = hash.substring(0, 5);
         const suffix = hash.substring(5);
-
-        const res = await fetch(
-            `https://api.pwnedpasswords.com/range/${prefix}`
-        );
-
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
+        while (retries < MAX_RETRIES) {
+            try {
+                const res = await fetch(
+                    `https://api.pwnedpasswords.com/range/${prefix}`
+                );
+                if (res.status === 429) {
+                    retries++;
+                    await delay(Math.pow(2, retries) * 1000);
+                    continue;
+                } else if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                const data = await res.text();
+                return data
+                    .split("\n")
+                    .some((line) => line.startsWith(suffix.toUpperCase()));
+            } catch (error) {
+                retries++;
+                if (retries === MAX_RETRIES) throw error;
+                await delay(Math.pow(2, retries) * 1000);
+            }
         }
-
-        const data = await res.text();
-
-        return data
-            .split("\n")
-            .some((line) => line.startsWith(suffix.toUpperCase()));
     } catch (error) {
         console.error("Password check failed:", error);
         return false;
@@ -91,6 +103,15 @@ export const checkPwnedPassword = async (password: string) => {
 };
 
 export const checkPasswordStrength = (password: string): PasswordStrength => {
+    if (!password) {
+        return {
+            score: 0,
+            crackTime: "즉시",
+            feedback: ["유효하지 않은 비밀번호입니다."],
+            warning: "비밀번호가 없습니다."
+        };
+    }
+
     const result = zxcvbn(password);
 
     return {
@@ -100,6 +121,20 @@ export const checkPasswordStrength = (password: string): PasswordStrength => {
         feedback: result.feedback.suggestions,
         warning: result.feedback.warning
     };
+};
+
+const getSecureRandom = (max: number) => {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return Math.floor((array[0] / (0xffffffff + 1)) * max);
+};
+
+const secureShuffleArray = (array: string[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = getSecureRandom(i + 1);
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 };
 
 // 비밀번호 생성 함수
@@ -113,19 +148,16 @@ export const generateSecurePassword = (length: number = 16): string => {
     let password = "";
 
     // 각 문자 유형별로 최소 1개씩 포함
-    password += uppercase[Math.floor(Math.random() * uppercase.length)];
-    password += lowercase[Math.floor(Math.random() * lowercase.length)];
-    password += numbers[Math.floor(Math.random() * numbers.length)];
-    password += special[Math.floor(Math.random() * special.length)];
+    password += uppercase[getSecureRandom(uppercase.length)];
+    password += lowercase[getSecureRandom(lowercase.length)];
+    password += numbers[getSecureRandom(numbers.length)];
+    password += special[getSecureRandom(special.length)];
 
     // 나머지 길이만큼 랜덤 문자 추가
     for (let i = password.length; i < length; i++) {
-        password += allChars[Math.floor(Math.random() * allChars.length)];
+        password += allChars[getSecureRandom(allChars.length)];
     }
 
     // 문자열을 랜덤하게 섞기
-    return password
-        .split("")
-        .sort(() => Math.random() - 0.5)
-        .join("");
+    return secureShuffleArray(password.split("")).join("");
 };
