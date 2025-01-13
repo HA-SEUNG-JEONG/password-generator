@@ -1,4 +1,4 @@
-import PasswordLength from "./PasswordLength";
+import PasswordLength from "../input/PasswordLength";
 
 interface PasswordLengthControlProps {
     length: number;

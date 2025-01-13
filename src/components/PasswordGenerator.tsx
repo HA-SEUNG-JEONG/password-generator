@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { checkPwnedPassword, createCharacterSet } from "../utils/password";
 import PasswordDisplay from "./PasswordDisplay";
-import PasswordOptions from "./PasswordOption";
+import PasswordOptions from "./options/PasswordOption";
 
 interface CharacterOptions {
     length: number;

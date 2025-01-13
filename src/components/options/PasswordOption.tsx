@@ -1,5 +1,5 @@
 import PasswordCharacterOptions from "./PasswordCharacterOptions";
-import PasswordLengthControl from "./PasswordControls";
+import PasswordLengthControl from "../controls/PasswordControls";
 
 interface CharacterOptions {
     lowercase: boolean;
