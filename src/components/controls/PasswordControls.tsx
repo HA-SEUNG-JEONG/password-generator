@@ -1,3 +1,5 @@
+import NumberInput from "../input/NumberInput";
+import RangeInput from "../input/RangeInput";
 import PasswordLength from "../PasswordLength";
 
 interface PasswordLengthControlProps {
@@ -8,23 +10,17 @@ interface PasswordLengthControlProps {
 const PasswordLengthControl = ({
     length,
     onLengthChange
-}: PasswordLengthControlProps) => (
-    <div className="space-y-2">
-        <input
-            type="range"
-            min={8}
-            max={30}
-            role="slider"
-            aria-label="비밀번호 길이"
-            aria-valuemin={8}
-            aria-valuemax={30}
-            aria-valuenow={length}
-            value={length}
-            onChange={(e) => onLengthChange(Number(e.target.value))}
-            className="w-full"
-        />
-        <PasswordLength passwordLength={length} />
-    </div>
-);
+}: PasswordLengthControlProps) => {
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        return onLengthChange(Number(e.target.value));
+    };
+    return (
+        <div className="space-y-2">
+            <RangeInput handlePasswordChange={handlePasswordChange} />
+            <NumberInput handlePasswordChange={handlePasswordChange} />
+            <PasswordLength passwordLength={length} />
+        </div>
+    );
+};
 
 export default PasswordLengthControl;
