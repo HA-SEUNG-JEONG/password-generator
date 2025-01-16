@@ -1,3 +1,5 @@
+import NumberInput from "../input/NumberInput";
+import RangeInput from "../input/RangeInput";
 import PasswordLength from "../PasswordLength";
 
 interface PasswordLengthControlProps {
@@ -14,30 +16,8 @@ const PasswordLengthControl = ({
     };
     return (
         <div className="space-y-2">
-            <input
-                type="range"
-                min={8}
-                max={30}
-                role="slider"
-                aria-label="비밀번호 길이"
-                aria-valuemin={8}
-                aria-valuemax={30}
-                aria-valuenow={length}
-                value={length}
-                onChange={handlePasswordChange}
-                className="w-full"
-            />
-            <div className="flex items-center">
-                <label htmlFor="" className="mr-2">
-                    생성할 비밀번호 길이를 입력해주세요
-                </label>
-                <input
-                    type="number"
-                    placeholder="0"
-                    className="border border-black p-1 rounded-md"
-                    onChange={handlePasswordChange}
-                />
-            </div>
+            <RangeInput handlePasswordChange={handlePasswordChange} />
+            <NumberInput handlePasswordChange={handlePasswordChange} />
             <PasswordLength passwordLength={length} />
         </div>
     );
