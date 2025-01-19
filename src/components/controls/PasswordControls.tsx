@@ -10,11 +10,12 @@ const PasswordLengthControl = ({
     onLengthChange
 }: PasswordLengthControlProps) => {
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!(Number(e.target.value) >= 8 && Number(e.target.value) <= 30)) {
+        const value = Number(e.target.value);
+
+        if (!(value >= 8 && value <= 30)) {
             alert("비밀번호 길이는 8자 이상 30자 이하로 입력해주세요.");
         }
-        if (Number(e.target.value) >= 8 && Number(e.target.value) <= 30)
-            return onLengthChange(Number(e.target.value));
+        if (value >= 8 && value <= 30) return onLengthChange(value);
     };
     return (
         <div className="space-y-2">
