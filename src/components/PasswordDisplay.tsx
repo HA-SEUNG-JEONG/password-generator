@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import EyeOn from "../assets/eye-1.svg";
 import EyeOff from "../assets/eye-off-1.svg";
+import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
 
 interface PasswordDisplayProps {
     password: string;
@@ -60,7 +61,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         <div className="relative">
             <input
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded mb-4"
                 value={password}
                 readOnly
                 aria-label="생성된 비밀번호"
@@ -80,7 +81,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 </span>
             )}
 
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex space-x-2">
+            <div className="absolute right-2 top-5 -translate-y-1/2 flex space-x-2">
                 <button
                     type="button"
                     aria-label={
@@ -145,6 +146,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                     </svg>
                 </button>
             </div>
+            <PasswordStrengthIndicator password={password} />
         </div>
     );
 };

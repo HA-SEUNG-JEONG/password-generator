@@ -123,14 +123,6 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
             STRENGTH_LEVELS.find((level) => score >= level.minScore) ||
             STRENGTH_LEVELS[STRENGTH_LEVELS.length - 1];
 
-        if (strengthLevel.level === "매우 강함") {
-            return {
-                level: strengthLevel.level,
-                message: strengthLevel.message,
-                score
-            };
-        }
-
         if (failedCriteria.length) {
             return {
                 level: strengthLevel.level,
