@@ -1,5 +1,3 @@
-import NumberInput from "../input/NumberInput";
-import RangeInput from "../input/RangeInput";
 import PasswordLength from "../PasswordLength";
 
 interface PasswordLengthControlProps {
@@ -12,13 +10,30 @@ const PasswordLengthControl = ({
     onLengthChange
 }: PasswordLengthControlProps) => {
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        return onLengthChange(Number(e.target.value));
+        if (!(Number(e.target.value) >= 8 && Number(e.target.value) <= 30)) {
+            alert("비밀번호 길이는 8자 이상 30자 이하로 입력해주세요.");
+        }
+        if (Number(e.target.value) >= 8 && Number(e.target.value) <= 30)
+            return onLengthChange(Number(e.target.value));
     };
     return (
         <div className="space-y-2">
-            <RangeInput handlePasswordChange={handlePasswordChange} />
-            <NumberInput handlePasswordChange={handlePasswordChange} />
-            <PasswordLength passwordLength={length} />
+            <input
+                type="range"
+                min={8}
+                max={30}
+                role="slider"
+                aria-label="비밀번호 길이"
+                aria-valuemin={8}
+                aria-valuemax={30}
+                aria-valuenow={length}
+                value={length}
+                onChange={handlePasswordChange}
+                className="w-full"
+                step={0.1}
+            />
+
+            <PasswordLength passwordLength={Math.round(length)} />
         </div>
     );
 };
