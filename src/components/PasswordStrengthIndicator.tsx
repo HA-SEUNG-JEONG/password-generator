@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { css } from "../../styled-system/css";
 
 interface PasswordStrength {
     level: string;
@@ -139,10 +140,10 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                 strengthLevel.level === "매우 강함"
                     ? strengthLevel.message
                     : failedCriteria.length
-                    ? `${strengthLevel.message}. 개선사항: ${failedCriteria
-                          .slice(0, 3)
-                          .join(", ")}`
-                    : strengthLevel.message,
+                      ? `${strengthLevel.message}. 개선사항: ${failedCriteria
+                            .slice(0, 3)
+                            .join(", ")}`
+                      : strengthLevel.message,
             score
         };
     };
@@ -151,22 +152,68 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
         setStrength(calculatePasswordStrength(password));
     }, [password]);
 
-    const currentLevel = STRENGTH_LEVELS.find(
-        (level) => level.level === strength.level
-    ) || { color: "bg-gray-400" };
+    const strengthIndicatorStyles = css({
+        p: "2",
+        color: "white",
+        borderRadius: "xl",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontSize: "sm",
+        bg:
+            strength.level === "매우 강함"
+                ? "blue.600"
+                : strength.level === "강함"
+                  ? "green.600"
+                  : strength.level === "보통"
+                    ? "yellow.500"
+                    : strength.level === "약함"
+                      ? "orange.500"
+                      : strength.level === "매우 취약"
+                        ? "red.600"
+                        : "gray.400"
+    });
+
+    const progressBarStyles = css({
+        h: "1.5",
+        transition: "all 300ms",
+        bg:
+            strength.level === "매우 강함"
+                ? "blue.600"
+                : strength.level === "강함"
+                  ? "green.600"
+                  : strength.level === "보통"
+                    ? "yellow.500"
+                    : strength.level === "약함"
+                      ? "orange.500"
+                      : strength.level === "매우 취약"
+                        ? "red.600"
+                        : "gray.400"
+    });
 
     return (
-        <div className="space-y-2">
-            <div
-                className={`p-2 text-white rounded-xl flex justify-center items-center text-sm
-                    ${currentLevel.color}`}
-            >
+        <div
+            className={css({
+                gap: "2",
+                display: "flex",
+                flexDirection: "column"
+            })}
+        >
+            <div className={strengthIndicatorStyles}>
                 강도: {strength.level}
             </div>
-            <div className="text-sm">{strength.message}</div>
-            <div className="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+            <div className={css({ fontSize: "sm" })}>{strength.message}</div>
+            <div
+                className={css({
+                    w: "full",
+                    bg: "gray.200",
+                    h: "1.5",
+                    borderRadius: "full",
+                    overflow: "hidden"
+                })}
+            >
                 <div
-                    className={`h-full transition-all duration-300 ${currentLevel.color}`}
+                    className={progressBarStyles}
                     style={{ width: `${(strength.score / 10) * 100}%` }}
                 />
             </div>

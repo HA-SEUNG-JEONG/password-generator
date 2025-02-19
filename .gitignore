@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+## Panda
+styled-system
+styled-system-studio

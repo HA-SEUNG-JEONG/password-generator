@@ -1,5 +1,6 @@
 import { ThemeProvider } from "./context/ThemeContext";
 import PasswordGenerator from "./components/PasswordGenerator";
+import "../styled-system/styles.css";
 
 const App = () => {
     return (

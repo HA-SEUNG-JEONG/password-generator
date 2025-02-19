@@ -18,6 +18,9 @@
         "zxcvbn": "^4.4.2"
     },
     "scripts": {
+        "prepare": "panda codegen",
+        "panda": "npx panda",
+        "panda:dev": "npx panda --watch",
         "dev": "vite",
         "build": "tsc && vite build",
         "serve": "vite preview"
@@ -41,11 +44,12 @@
         ]
     },
     "devDependencies": {
+        "@pandacss/dev": "^0.53.0",
         "@types/crypto-js": "^4.2.2",
         "@types/zxcvbn": "^4.4.5",
         "@vitejs/plugin-react": "^4.3.4",
         "autoprefixer": "^10.4.20",
-        "postcss": "^8.4.49",
+        "postcss": "^8.5.2",
         "tailwindcss": "^3.4.17",
         "vite": "^6.0.0"
     }

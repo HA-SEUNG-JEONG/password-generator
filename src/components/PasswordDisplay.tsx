@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import EyeOn from "../assets/eye-1.svg";
 import EyeOff from "../assets/eye-off-1.svg";
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
+import { css } from "../../styled-system/css";
 
 interface PasswordDisplayProps {
     password: string;
@@ -61,7 +62,16 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         <div className="relative">
             <input
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 border rounded mb-4"
+                className={css({
+                    width: "full",
+                    padding: "2",
+                    border: "1px solid token(colors.gray.300)",
+                    borderRadius: "md",
+                    marginBottom: "4",
+                    _focusVisible: {
+                        outline: "2px solid token(colors.blue.500)"
+                    }
+                })}
                 value={password}
                 readOnly
                 aria-label="생성된 비밀번호"
@@ -75,13 +85,22 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 <span
                     id="password-warning"
                     role="alert"
-                    className="text-xs text-red-500"
+                    className={css({ fontSize: "xs", color: "red.500" })}
                 >
                     반복되는 문자/숫자가 있습니다.
                 </span>
             )}
 
-            <div className="absolute right-2 top-5 -translate-y-1/2 flex space-x-2">
+            <div
+                className={css({
+                    position: "absolute",
+                    right: "2",
+                    top: "5",
+                    transform: "translateY(-50%)",
+                    display: "flex",
+                    gap: 2
+                })}
+            >
                 <button
                     type="button"
                     aria-label={
@@ -98,7 +117,11 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 <button
                     type="button"
                     onClick={handlePasswordCopy}
-                    className="flex items-center gap-2"
+                    className={css({
+                        alignItems: "center",
+                        gap: 2,
+                        display: "flex"
+                    })}
                     aria-label="복사하기"
                 >
                     <svg
@@ -125,7 +148,11 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 </button>
                 <button
                     onClick={() => onRefresh()}
-                    className="flex items-center gap-2"
+                    className={css({
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "2"
+                    })}
                     aria-label="새로고침"
                 >
                     <svg

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { checkPwnedPassword, createCharacterSet } from "../utils/password";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
+import { css } from "../../styled-system/css";
 
 interface CharacterOptions {
     length: number;
@@ -58,16 +59,23 @@ const PasswordGenerator = () => {
     }, [options]);
 
     return (
-        <div className="space-y-1.5 flex flex-col p-6">
+        // <div className="space-y-1.5 flex flex-col p-6">
+        <div
+            className={css({
+                spaceY: "1.5",
+                display: "flex",
+                flexDirection: "column",
+                padding: "2"
+            })}
+        >
             <PasswordDisplay
                 password={password}
                 onRefresh={handleGeneratePassword}
             />
             {isPwned && (
-                <div className="text-red-500 text-sm">
-                    {password.length !== 0 &&
-                        "이 비밀번호는 알려진 비밀번호입니다."}
-                </div>
+                <div
+                    className={css({ fontSize: "sm", color: "red.500" })}
+                ></div>
             )}
             <PasswordOptions options={options} onChange={onChangeOptions} />
         </div>
