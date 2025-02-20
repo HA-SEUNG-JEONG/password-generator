@@ -29,7 +29,7 @@ const strengthStyles = {
     약함: css({ bg: "orange.500" }),
     매우_취약: css({ bg: "red.600" }),
     "입력 전": css({ bg: "gray.400" })
-} as const;
+};
 
 const PasswordStrengthIndicator = ({ password }: { password: string }) => {
     const initialStrength = (): PasswordStrength => ({
