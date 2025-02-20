@@ -9,6 +9,28 @@ interface PasswordStrength {
     score: number;
 }
 
+const strengthStyles = {
+    base: css({
+        h: "1.5",
+        transition: "all 300ms"
+    }),
+    indicator: css({
+        p: "2",
+        color: "white",
+        borderRadius: "xl",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontSize: "sm"
+    }),
+    매우_강함: css({ bg: "blue.600" }),
+    강함: css({ bg: "green.600" }),
+    보통: css({ bg: "yellow.500" }),
+    약함: css({ bg: "orange.500" }),
+    매우_취약: css({ bg: "red.600" }),
+    "입력 전": css({ bg: "gray.400" })
+} as const;
+
 const PasswordStrengthIndicator = ({ password }: { password: string }) => {
     const initialStrength = (): PasswordStrength => ({
         level: "입력 전",
@@ -63,40 +85,6 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
         setStrength(calculateStrength(password));
     }, [password]);
 
-    const getStrengthColor = (level: string) => {
-        switch (level) {
-            case "매우 강함":
-                return "blue.600";
-            case "강함":
-                return "green.600";
-            case "보통":
-                return "yellow.500";
-            case "약함":
-                return "orange.500";
-            case "매우 취약":
-                return "red.600";
-            default:
-                return "gray.400";
-        }
-    };
-
-    const strengthIndicatorStyles = css({
-        p: "2",
-        color: "white",
-        borderRadius: "xl",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        fontSize: "sm",
-        bg: getStrengthColor(strength.level)
-    });
-
-    const progressBarStyles = css({
-        h: "1.5",
-        transition: "all 300ms",
-        bg: getStrengthColor(strength.level)
-    });
-
     return (
         <div
             className={css({
@@ -105,7 +93,9 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                 flexDirection: "column"
             })}
         >
-            <div className={strengthIndicatorStyles}>
+            <div
+                className={`${strengthStyles.indicator} ${strengthStyles[strength.level.replace(" ", "_") as keyof typeof strengthStyles]}`}
+            >
                 강도: {strength.level}
             </div>
             <div className={css({ fontSize: "sm" })}>{strength.message}</div>
@@ -119,7 +109,7 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                 })}
             >
                 <div
-                    className={progressBarStyles}
+                    className={`${strengthStyles.base} ${strengthStyles[strength.level.replace(" ", "_") as keyof typeof strengthStyles]}`}
                     style={{ width: `${(strength.score / 10) * 100}%` }}
                 />
             </div>
