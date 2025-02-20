@@ -112,9 +112,13 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
             };
         }
 
-        const failedCriteria = Object.entries(CRITERIA_MAP)
-            .filter(([_, { test }]) => !test(password))
-            .map(([_, { message }]) => message);
+        const failedCriteriaList = Object.entries(CRITERIA_MAP).filter(
+            ([_, { test }]) => !test(password)
+        );
+
+        const failedCriteriaMessages = failedCriteriaList.map(
+            ([_, { message }]) => message
+        );
 
         const score = Object.values(CRITERIA_MAP).filter(({ test }) =>
             test(password)
@@ -124,26 +128,25 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
             STRENGTH_LEVELS.find((level) => score >= level.minScore) ||
             STRENGTH_LEVELS[STRENGTH_LEVELS.length - 1];
 
-        if (failedCriteria.length) {
-            return {
-                level: strengthLevel.level,
-                message: `${strengthLevel.message}. 개선사항: ${failedCriteria
-                    .slice(0, 3)
-                    .join(", ")}`,
-                score
-            };
-        }
+        const improvementMessage = `${strengthLevel.message}. 개선사항: ${failedCriteriaMessages
+            .slice(0, 3)
+            .join(", ")}`;
 
+        let finalMessage = "";
+
+        if (
+            strengthLevel.level === "매우 강함" ||
+            score === strengthLevel.minScore
+        ) {
+            finalMessage = strengthLevel.message;
+        } else if (strengthLevel.level === "강함") {
+            finalMessage = improvementMessage;
+        } else if (strengthLevel.level === "보통") {
+            finalMessage = improvementMessage;
+        }
         return {
             level: strengthLevel.level,
-            message:
-                strengthLevel.level === "매우 강함"
-                    ? strengthLevel.message
-                    : failedCriteria.length
-                      ? `${strengthLevel.message}. 개선사항: ${failedCriteria
-                            .slice(0, 3)
-                            .join(", ")}`
-                      : strengthLevel.message,
+            message: finalMessage,
             score
         };
     };
@@ -151,6 +154,23 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
     useEffect(() => {
         setStrength(calculatePasswordStrength(password));
     }, [password]);
+
+    const getStrengthColor = (level: string) => {
+        switch (level) {
+            case "매우 강함":
+                return "blue.600";
+            case "강함":
+                return "green.600";
+            case "보통":
+                return "yellow.500";
+            case "약함":
+                return "orange.500";
+            case "매우 취약":
+                return "red.600";
+            default:
+                return "gray.400";
+        }
+    };
 
     const strengthIndicatorStyles = css({
         p: "2",
@@ -160,35 +180,13 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
         justifyContent: "center",
         alignItems: "center",
         fontSize: "sm",
-        bg:
-            strength.level === "매우 강함"
-                ? "blue.600"
-                : strength.level === "강함"
-                  ? "green.600"
-                  : strength.level === "보통"
-                    ? "yellow.500"
-                    : strength.level === "약함"
-                      ? "orange.500"
-                      : strength.level === "매우 취약"
-                        ? "red.600"
-                        : "gray.400"
+        bg: getStrengthColor(strength.level)
     });
 
     const progressBarStyles = css({
         h: "1.5",
         transition: "all 300ms",
-        bg:
-            strength.level === "매우 강함"
-                ? "blue.600"
-                : strength.level === "강함"
-                  ? "green.600"
-                  : strength.level === "보통"
-                    ? "yellow.500"
-                    : strength.level === "약함"
-                      ? "orange.500"
-                      : strength.level === "매우 취약"
-                        ? "red.600"
-                        : "gray.400"
+        bg: getStrengthColor(strength.level)
     });
 
     return (
