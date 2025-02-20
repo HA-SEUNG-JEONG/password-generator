@@ -22,7 +22,7 @@
         "panda": "npx panda",
         "panda:dev": "npx panda --watch",
         "dev": "vite",
-        "build": "panda codegen && tsc && vite build",
+        "build": "panda codegen && npm run build",
         "serve": "vite preview"
     },
     "eslintConfig": {
