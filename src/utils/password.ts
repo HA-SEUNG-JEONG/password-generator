@@ -102,27 +102,6 @@ export const checkPwnedPassword = async (password: string) => {
     }
 };
 
-export const checkPasswordStrength = (password: string): PasswordStrength => {
-    if (!password) {
-        return {
-            score: 0,
-            crackTime: "즉시",
-            feedback: ["유효하지 않은 비밀번호입니다."],
-            warning: "비밀번호가 없습니다."
-        };
-    }
-
-    const result = zxcvbn(password);
-
-    return {
-        score: result.score,
-        crackTime:
-            result.crack_times_display.offline_slow_hashing_1e4_per_second,
-        feedback: result.feedback.suggestions,
-        warning: result.feedback.warning
-    };
-};
-
 const getSecureRandom = (max: number) => {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
