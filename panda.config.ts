@@ -1,15 +1,6 @@
 import { defineConfig } from "@pandacss/dev";
 
 export default defineConfig({
-    staticCss: {
-        css: [
-            {
-                properties: {
-                    color: ["red.300"]
-                }
-            }
-        ]
-    },
     // Whether to use css reset
     preflight: true,
 
