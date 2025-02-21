@@ -1,3 +1,4 @@
+import { css } from "../../../styled-system/css";
 import PasswordLength from "../PasswordLength";
 
 interface PasswordLengthControlProps {
@@ -18,7 +19,11 @@ const PasswordLengthControl = ({
         if (value >= 8 && value <= 30) return onLengthChange(value);
     };
     return (
-        <div className="space-y-2">
+        <div
+            className={css({
+                spaceY: "2"
+            })}
+        >
             <input
                 type="range"
                 min={8}
@@ -30,7 +35,9 @@ const PasswordLengthControl = ({
                 aria-valuenow={length}
                 value={length}
                 onChange={handlePasswordChange}
-                className="w-full"
+                className={css({
+                    w: "full"
+                })}
                 step={0.1}
             />
 

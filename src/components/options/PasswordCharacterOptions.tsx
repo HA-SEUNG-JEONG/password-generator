@@ -1,3 +1,4 @@
+import { css } from "../../../styled-system/css";
 import CheckboxOption from "./CheckboxOption";
 
 const OPTIONS = [
@@ -23,7 +24,11 @@ const PasswordCharacterOptions = ({
     options,
     onOptionsChange
 }: PasswordCharacterOptionsProps) => (
-    <div className="space-y-2">
+    <div
+        className={css({
+            spaceY: "2"
+        })}
+    >
         {OPTIONS.map(({ key, label }) => (
             <CheckboxOption
                 key={key}

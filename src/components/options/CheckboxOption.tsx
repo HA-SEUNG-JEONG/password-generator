@@ -1,3 +1,5 @@
+import { css } from "../../../styled-system/css";
+
 interface CheckboxOptionProps {
     checked: boolean;
     onChange: (checked: boolean) => void;
@@ -6,7 +8,18 @@ interface CheckboxOptionProps {
 
 const CheckboxOption = ({ checked, onChange, label }: CheckboxOptionProps) => {
     return (
-        <label className="flex items-center space-x-2">
+        <label
+            className={css({
+                display: "flex",
+                alignItems: "center",
+                gap: "2",
+                spaceX: "2",
+                cursor: "pointer",
+                "&:hover": {
+                    color: "gray.900"
+                }
+            })}
+        >
             <input
                 type="checkbox"
                 checked={checked}
@@ -15,7 +28,20 @@ const CheckboxOption = ({ checked, onChange, label }: CheckboxOptionProps) => {
                 aria-checked={checked}
                 aria-label={label}
             />
-            <span>{label}</span>
+            <span
+                className={css({
+                    fontSize: "sm",
+                    fontWeight: "medium",
+                    color: "gray.700",
+                    userSelect: "none",
+                    cursor: "pointer",
+                    "&:hover": {
+                        color: "gray.900"
+                    }
+                })}
+            >
+                {label}
+            </span>
         </label>
     );
 };

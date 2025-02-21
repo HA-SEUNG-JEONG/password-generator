@@ -96,8 +96,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
             <div
                 className={css({
                     position: "absolute",
-                    right: "2",
-                    top: "5",
+                    right: "4",
+                    top: "7",
                     transform: "translateY(-50%)",
                     display: "flex",
                     gap: 2
