@@ -19,10 +19,8 @@
     },
     "scripts": {
         "prepare": "panda codegen",
-        "panda": "npx panda",
-        "panda:dev": "npx panda --watch",
         "dev": "vite",
-        "build": "panda codegen && npm run build",
+        "build": "tsc && vite build",
         "serve": "vite preview"
     },
     "eslintConfig": {
