@@ -19,6 +19,8 @@
     },
     "scripts": {
         "prepare": "panda codegen",
+        "panda": "npx panda",
+        "panda:dev": "npx panda --watch",
         "dev": "vite",
         "build": "tsc && vite build",
         "serve": "vite preview"
