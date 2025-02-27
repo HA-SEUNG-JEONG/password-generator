@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { css } from "../../styled-system/css";
 import { criteriaMap } from "../utils/criteria";
 import { StrengthLevel, strengthLevels } from "../utils/strengthLevel";
+import zxcvbn from "zxcvbn";
 
 interface PasswordStrength {
     level: string;
@@ -32,6 +33,11 @@ const strengthStyles = {
 };
 
 const PasswordStrengthIndicator = ({ password }: { password: string }) => {
+    const getCracklingTime = (password: string) => {
+        return zxcvbn(password).crack_times_display
+            .offline_fast_hashing_1e10_per_second;
+    };
+
     const initialStrength = (): PasswordStrength => ({
         level: "입력 전",
         message: "비밀번호를 입력해주세요",
@@ -41,44 +47,37 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
     const [strength, setStrength] =
         useState<PasswordStrength>(initialStrength());
 
-    const calculateStrength = (pwd: string): PasswordStrength => {
-        if (!pwd) return initialStrength();
+    const calculateStrength = (password: string): PasswordStrength => {
+        if (!password) return initialStrength();
 
-        const failedCriteria = getFailedCriteria(pwd);
-        const score = Object.values(criteriaMap).filter(({ test }) =>
-            test(pwd)
-        ).length;
+        const crackTime = getCracklingTime(password); // 소문자로 변환
+
+        const crackTimeMapping: { [key: string]: StrengthLevel } = {
+            centuries: strengthLevels.find(
+                (level) => level.level === "매우 강함"
+            )!,
+            years: strengthLevels.find((level) => level.level === "강함")!,
+            months: strengthLevels.find((level) => level.level === "보통")!,
+            days: strengthLevels.find((level) => level.level === "보통")!,
+            minutes: strengthLevels.find((level) => level.level === "약함")!,
+            seconds: strengthLevels.find(
+                (level) => level.level === "매우 취약"
+            )!
+        };
+
+        const normalizedCrackTime = Object.keys(crackTimeMapping).find((key) =>
+            crackTime.includes(key)
+        );
 
         const strengthLevel =
-            strengthLevels.find((level) => score >= level.minScore) ||
-            strengthLevels[strengthLevels.length - 1];
-        const improvementMessage = getImprovementMessage(
-            strengthLevel,
-            failedCriteria
-        );
+            normalizedCrackTime && crackTimeMapping[normalizedCrackTime]
+                ? crackTimeMapping[normalizedCrackTime]
+                : crackTimeMapping["seconds"]; // 기본값은 "매우 취약"
 
         return {
             level: strengthLevel.level,
-            message: improvementMessage,
-            score
+            score: strengthLevel.score
         };
-    };
-
-    const getFailedCriteria = (pwd: string) => {
-        return Object.entries(criteriaMap)
-            .filter(([_, { test }]) => !test(pwd))
-            .map(([_, { message }]) => message);
-    };
-
-    const getImprovementMessage = (
-        strengthLevel: StrengthLevel,
-        failedCriteriaMessages: string[]
-    ) => {
-        const improvementMessage = `${strengthLevel.message}. 개선사항: ${failedCriteriaMessages.slice(0, 3).join(", ")}`;
-        return strengthLevel.level === "매우 강함" ||
-            strength.score === strengthLevel.minScore
-            ? strengthLevel.message
-            : improvementMessage;
     };
 
     useEffect(() => {
@@ -94,11 +93,29 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
             })}
         >
             <div
-                className={`${strengthStyles.indicator} ${strengthStyles[strength.level.replace(" ", "_") as keyof typeof strengthStyles]}`}
+                className={`${strengthStyles.indicator} ${
+                    strengthStyles[
+                        strength.level.replace(
+                            " ",
+                            "_"
+                        ) as keyof typeof strengthStyles
+                    ]
+                }`}
             >
                 강도: {strength.level}
             </div>
-            <div className={css({ fontSize: "sm" })}>{strength.message}</div>
+            <div className={css({ fontSize: "sm" })}>
+                <span
+                    className={css({
+                        fontSize: "md",
+                        fontWeight: "semibold",
+                        color: "gray.500",
+                        marginLeft: "1"
+                    })}
+                >
+                    해킹 가능 예상 시간 : ({getCracklingTime(password)})
+                </span>
+            </div>
             <div
                 className={css({
                     w: "full",
@@ -109,8 +126,15 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                 })}
             >
                 <div
-                    className={`${strengthStyles.base} ${strengthStyles[strength.level.replace(" ", "_") as keyof typeof strengthStyles]}`}
-                    style={{ width: `${(strength.score / 10) * 100}%` }}
+                    className={`${strengthStyles.base} ${
+                        strengthStyles[
+                            strength.level.replace(
+                                " ",
+                                "_"
+                            ) as keyof typeof strengthStyles
+                        ]
+                    }`}
+                    style={{ width: `${(strength.score / 9) * 100}%` }}
                 />
             </div>
         </div>
