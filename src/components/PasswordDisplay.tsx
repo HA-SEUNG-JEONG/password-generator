@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { toast } from "react-toastify";
-import EyeOn from "../assets/eye-1.svg";
-import EyeOff from "../assets/eye-off-1.svg";
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
 import { css } from "../../styled-system/css";
 import CopyIcon from "./CopyIcon";
 import RefreshIcon from "./RefreshIcon";
+import { toast } from "react-toastify";
+import EyeOn from "../assets/eye-1.svg";
+import EyeOff from "../assets/eye-off-1.svg";
 
 interface PasswordDisplayProps {
     password: string;
@@ -69,7 +69,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                     padding: "2",
                     border: "1px solid token(colors.gray.300)",
                     borderRadius: "md",
-                    marginBottom: "4",
+                    marginBottom: "2",
                     _focusVisible: {
                         outline: "2px solid token(colors.blue.500)"
                     }
@@ -87,7 +87,12 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 <span
                     id="password-warning"
                     role="alert"
-                    className={css({ fontSize: "xs", color: "red.500" })}
+                    className={css({
+                        fontSize: "sm",
+                        color: "red.600",
+                        fontWeight: "semibold",
+                        marginBottom: "2"
+                    })}
                 >
                     반복되는 문자/숫자가 있습니다.
                 </span>
@@ -96,8 +101,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
             <div
                 className={css({
                     position: "absolute",
-                    right: "4",
-                    top: "7",
+                    right: "5",
+                    top: "8",
                     transform: "translateY(-50%)",
                     display: "flex",
                     gap: 2

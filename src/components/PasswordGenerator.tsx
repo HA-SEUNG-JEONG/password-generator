@@ -65,7 +65,7 @@ const PasswordGenerator = () => {
                 spaceY: "1.5",
                 display: "flex",
                 flexDirection: "column",
-                padding: "2"
+                padding: "3"
             })}
         >
             <PasswordDisplay
