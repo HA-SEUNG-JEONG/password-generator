@@ -27,6 +27,12 @@ const CheckboxOption = ({ checked, onChange, label }: CheckboxOptionProps) => {
                 role="checkbox"
                 aria-checked={checked}
                 aria-label={label}
+                className={css({
+                    width: "1.2rem",
+                    height: "1.2rem",
+                    borderRadius: "0.25rem",
+                    border: "1px solid #E2E8F0"
+                })}
             />
             <span
                 className={css({
