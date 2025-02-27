@@ -19,7 +19,7 @@
     },
     "scripts": {
         "prepare": "panda codegen",
-        "dev": "panda codegen --watch && vite",
+        "dev": "panda codegen && vite",
         "build": "panda codegen && tsc && vite build",
         "panda": "npx panda",
         "panda:dev": "npx panda --watch",

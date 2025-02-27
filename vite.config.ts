@@ -5,5 +5,10 @@ export default defineConfig({
     plugins: [react()],
     build: {
         outDir: "build"
+    },
+    resolve: {
+        alias: {
+            "styled-system": "/styled-system"
+        }
     }
 });
