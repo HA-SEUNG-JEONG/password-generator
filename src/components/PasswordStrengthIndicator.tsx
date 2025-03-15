@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { css } from "../../styled-system/css";
-import { criteriaMap } from "../utils/criteria";
 import { StrengthLevel, strengthLevels } from "../utils/strengthLevel";
 import zxcvbn from "zxcvbn";
 
 interface PasswordStrength {
     level: string;
-    message: string;
     score: number;
 }
 
@@ -40,7 +38,6 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
 
     const initialStrength = (): PasswordStrength => ({
         level: "입력 전",
-        message: "비밀번호를 입력해주세요",
         score: 0
     });
 
@@ -66,7 +63,7 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
         };
 
         const normalizedCrackTime = Object.keys(crackTimeMapping).find((key) =>
-            crackTime.includes(key)
+            String(crackTime).includes(key)
         );
 
         const strengthLevel =

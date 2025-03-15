@@ -23,19 +23,16 @@ interface PasswordOptionsProps {
 }
 
 const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
-    return (
-        // <div className="space-y-4">
-        //     <PasswordLengthControl
-        //         length={options.length}
-        //         onLengthChange={(length) => onChange({ ...options, length })}
-        //     />
+    const containerStyles = css({
+        spaceY: "4"
+    });
 
-        //     <PasswordCharacterOptions
-        //         options={options}
-        //         onOptionsChange={onChange}
-        //     />
-        // </div>
-        <div className={css({ spaceY: "4" })}>
+    return (
+        <div
+            className={containerStyles}
+            role="group"
+            aria-label="비밀번호 생성 옵션"
+        >
             <PasswordLengthControl
                 length={options.length}
                 onLengthChange={(length) => onChange({ ...options, length })}
