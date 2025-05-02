@@ -15,6 +15,7 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
         fontSize: "lg",
         fontWeight: "semibold",
         minWidth: "7rem",
+        bg: "red.100",
         color:
             passwordLength === 0
                 ? "red.700"
