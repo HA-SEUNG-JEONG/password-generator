@@ -33,7 +33,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
     };
 
     const handleKakaoShare = () => {
-        if (!window.Kakao?.isInitialized() || !window.Kakao?.isInitialized()) {
+        if (!window.Kakao?.isInitialized() || !window.Kakao?.Share) {
             toast.error("카카오톡 공유를 사용할 수 없습니다.");
 
             return;
