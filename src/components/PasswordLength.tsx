@@ -1,4 +1,4 @@
-import { when } from "@/utils/when";
+import { when } from "@/utils";
 import { css } from "../../styled-system/css";
 
 const PASSWORD_LENGTH = {

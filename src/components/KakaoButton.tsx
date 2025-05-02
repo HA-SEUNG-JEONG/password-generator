@@ -1,5 +1,5 @@
 import { css } from "../../styled-system/css";
-import { when } from "@/utils/when";
+import { when } from "@/utils";
 import { KakaoShareOptions } from "../global.d";
 import { toast } from "react-toastify";
 
