@@ -28,7 +28,7 @@ const App = () => {
     useEffect(() => {
         const initKakao = () => {
             const kakaoKey = import.meta.env.VITE_REST_API_KEY;
-            console.log("Kakao 키:", kakaoKey);
+
             if (window.Kakao && !window.Kakao.isInitialized()) {
                 try {
                     const result = window.Kakao.init(kakaoKey);
