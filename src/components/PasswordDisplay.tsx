@@ -6,6 +6,7 @@ import RefreshIcon from "./RefreshIcon";
 import { toast } from "react-toastify";
 import EyeOn from "../assets/eye-1.svg";
 import EyeOff from "../assets/eye-off-1.svg";
+import KakaoButton from "./KakaoButton";
 
 interface PasswordDisplayProps {
     password: string;
@@ -32,7 +33,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
     };
 
     const handleKakaoShare = () => {
-        if (!window.Kakao || !window.Kakao.isInitialized()) {
+        if (!window.Kakao?.isInitialized() || !window.Kakao?.isInitialized()) {
             toast.error("카카오톡 공유를 사용할 수 없습니다.");
 
             return;
@@ -40,6 +41,17 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         if (!password) {
             toast.error("비밀번호가 비어있습니다.");
             return;
+        }
+        try {
+            window.Kakao.Share.sendDefault({
+                objectType: "text",
+                text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
+                link: {
+                    webUrl: window.location.href
+                }
+            });
+        } catch (error) {
+            toast.error("카카오톡 공유를 사용할 수 없습니다.");
         }
         window.Kakao.Share.sendDefault({
             objectType: "text",
@@ -94,18 +106,19 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         })}
                     >
                         {password ? (
-                            <span
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                readOnly
                                 className={css({
-                                    letterSpacing: showPassword
-                                        ? "normal"
-                                        : "0.25em",
-                                    fontFamily: "monospace"
+                                    width: "100%",
+                                    textAlign: "center",
+                                    border: "none",
+                                    background: "transparent",
+                                    fontFamily: "monospace",
+                                    outline: "none"
                                 })}
-                            >
-                                {showPassword
-                                    ? password
-                                    : "•".repeat(password.length)}
-                            </span>
+                            />
                         ) : (
                             "비밀번호를 생성해주세요"
                         )}
@@ -125,6 +138,11 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                             alignItems: "center",
                             _hover: {
                                 opacity: 0.8
+                            },
+                            _focus: {
+                                outline: "2px solid",
+                                outlineColor: "blue.500",
+                                outlineOffset: "2px"
                             }
                         })}
                         aria-label={
@@ -250,22 +268,15 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                     })}
                     aria-label="카카오톡으로 공유하기"
                 >
-                    <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 40 40"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                        focusable="false"
-                    >
-                        <circle cx="20" cy="20" r="20" fill="#3C1E1E" />
-                        <path
-                            d="M20 10C14.4772 10 10 13.5899 10 18.0001C10 20.6352 11.9302 22.9172 14.7352 24.1842C14.3672 25.4292 13.5702 27.4292 13.5702 27.4292C13.5702 27.4292 13.5072 27.5702 13.5702 27.5702C13.6332 27.5702 13.7352 27.5072 13.7352 27.5072C15.3672 26.5702 16.3672 25.9292 16.7352 25.6842C17.7892 25.8942 18.8772 26.0001 20 26.0001C25.5228 26.0001 30 22.4102 30 18.0001C30 13.5899 25.5228 10 20 10Z"
-                            fill="#FEE500"
-                        />
-                    </svg>
-                    공유하기
+                    <KakaoButton
+                        options={{
+                            objectType: "text",
+                            text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
+                            link: {
+                                webUrl: window.location.href
+                            }
+                        }}
+                    />
                 </button>
             </div>
         </div>

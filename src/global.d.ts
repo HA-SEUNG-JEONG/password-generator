@@ -1,4 +1,4 @@
-interface KakaoShareOptions {
+export interface KakaoShareOptions {
     objectType?: string;
     text: string;
     link: {

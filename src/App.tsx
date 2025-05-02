@@ -1,6 +1,7 @@
 import { css } from "../styled-system/css";
 import PasswordGenerator from "./components/PasswordGenerator";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 const App = () => {
     useEffect(() => {
@@ -9,10 +10,10 @@ const App = () => {
 
             if (window.Kakao && !window.Kakao.isInitialized()) {
                 try {
-                    const result = window.Kakao.init(kakaoKey);
-                    console.log("Kakao 초기화 결과:", result);
+                    window.Kakao.init(kakaoKey);
                 } catch (error) {
-                    console.error("Kakao 초기화 실패:", error);
+                    // throw new Error("카카오 SDK 초기화 실패");
+                    toast.error("카카오 SDK 초기화 실패");
                 }
             }
         };
