@@ -1,7 +1,55 @@
 import { css } from "../styled-system/css";
 import PasswordGenerator from "./components/PasswordGenerator";
+import { useEffect } from "react";
+
+interface KakaoSDK {
+    init: (key: string) => boolean;
+    isInitialized(): boolean;
+    Share: {
+        sendDefault(options: KakaoShareOptions): void;
+    };
+}
+
+interface KakaoShareOptions {
+    objectType?: string;
+    text: string;
+    link: {
+        webUrl: string;
+    };
+}
+
+declare global {
+    interface Window {
+        Kakao: KakaoSDK;
+    }
+}
 
 const App = () => {
+    useEffect(() => {
+        const initKakao = () => {
+            const kakaoKey = import.meta.env.VITE_REST_API_KEY;
+            console.log("Kakao 키:", kakaoKey);
+            if (window.Kakao && !window.Kakao.isInitialized()) {
+                try {
+                    const result = window.Kakao.init(kakaoKey);
+                    console.log("Kakao 초기화 결과:", result);
+                } catch (error) {
+                    console.error("Kakao 초기화 실패:", error);
+                }
+            }
+        };
+
+        if (document.readyState === "complete") {
+            initKakao();
+        } else {
+            window.addEventListener("load", initKakao);
+        }
+
+        return () => {
+            window.removeEventListener("load", initKakao);
+        };
+    }, []);
+
     return (
         <div
             className={css({
