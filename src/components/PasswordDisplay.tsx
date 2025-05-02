@@ -12,12 +12,6 @@ interface PasswordDisplayProps {
     onRefresh: () => void;
 }
 
-interface PasswordValidationOptions {
-    maxRepeats?: number;
-    checkPatterns?: boolean;
-    checkSequential?: boolean;
-}
-
 const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -54,29 +48,6 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 webUrl: window.location.href
             }
         });
-    };
-
-    // 특정 문자/숫자 반복 감지
-    const hasRepeatingCharacters = (
-        password: string,
-        options: PasswordValidationOptions = {
-            maxRepeats: 2,
-            checkPatterns: true,
-            checkSequential: true
-        }
-    ) => {
-        // 특정 알파벳이나 특정 숫자 특정 특수문자가 2번 이상 반복되는지 확인
-
-        const repeatingChars = new RegExp(
-            `(.)\\1{${options?.maxRepeats ?? 2},}`
-        );
-        const sequentialPattern =
-            /(?:abc|bcd|cde|def|efg|123|234|345|456|567|678|789)/i;
-
-        if (repeatingChars.test(password)) return "반복된 문자가 있습니다";
-        if (options?.checkSequential && sequentialPattern.test(password))
-            return "연속된 문자나 숫자가 있습니다";
-        return null;
     };
 
     return (
@@ -116,16 +87,24 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         userSelect: "none"
                     })}
                 >
-                    <div className={css({
-                        width: "100%",
-                        textAlign: "center"
-                    })}>
+                    <div
+                        className={css({
+                            width: "100%",
+                            textAlign: "center"
+                        })}
+                    >
                         {password ? (
-                            <span className={css({
-                                letterSpacing: showPassword ? "normal" : "0.25em",
-                                fontFamily: "monospace"
-                            })}>
-                                {showPassword ? password : "•".repeat(password.length)}
+                            <span
+                                className={css({
+                                    letterSpacing: showPassword
+                                        ? "normal"
+                                        : "0.25em",
+                                    fontFamily: "monospace"
+                                })}
+                            >
+                                {showPassword
+                                    ? password
+                                    : "•".repeat(password.length)}
                             </span>
                         ) : (
                             "비밀번호를 생성해주세요"
@@ -148,11 +127,17 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                                 opacity: 0.8
                             }
                         })}
-                        aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+                        aria-label={
+                            showPassword ? "비밀번호 숨기기" : "비밀번호 보기"
+                        }
                     >
-                        <img 
-                            src={showPassword ? EyeOff : EyeOn} 
-                            alt={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+                        <img
+                            src={showPassword ? EyeOff : EyeOn}
+                            alt={
+                                showPassword
+                                    ? "비밀번호 숨기기"
+                                    : "비밀번호 보기"
+                            }
                             width="20"
                             height="20"
                         />
