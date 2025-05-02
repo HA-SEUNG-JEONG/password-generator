@@ -1,15 +1,40 @@
 import { css } from "../../styled-system/css";
 import { KakaoShareOptions } from "../global.d";
+import { toast } from "react-toastify";
 
 interface KakaoButtonProps {
     options: KakaoShareOptions;
 }
 
 const KakaoButton = ({ options }: KakaoButtonProps) => {
+    const handleKakaoShare = () => {
+        const kakaoKey = import.meta.env.VITE_REST_API_KEY;
+
+        if (!window.Kakao) {
+            toast.error("카카오 SDK를 불러오지 못했습니다.");
+            return;
+        }
+
+        if (!window.Kakao.isInitialized()) {
+            try {
+                window.Kakao.init(kakaoKey);
+            } catch (error) {
+                toast.error("카카오 SDK 초기화 실패");
+                return;
+            }
+        }
+
+        try {
+            window.Kakao.Share.sendDefault(options);
+        } catch (error) {
+            toast.error("카카오톡 공유를 사용할 수 없습니다.");
+        }
+    };
+
     return (
         <button
             type="button"
-            onClick={() => window.Kakao.Share.sendDefault(options)}
+            onClick={handleKakaoShare}
             className={css({
                 display: "flex",
                 alignItems: "center",

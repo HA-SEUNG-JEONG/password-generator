@@ -3,7 +3,7 @@ import { css } from "../../styled-system/css";
 const PASSWORD_LENGTH = {
     MIN: 8,
     RECOMMEND: 12,
-    MAX: 16
+    MAX: 30
 } as const;
 
 const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
@@ -16,11 +16,11 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
         minWidth: "7rem",
         color:
             passwordLength === 0
-                ? "red.700" // 더 진한 빨간색으로 변경
+                ? "red.700"
                 : passwordLength < PASSWORD_LENGTH.MIN ||
                     passwordLength > PASSWORD_LENGTH.MAX
-                  ? "orange.700" // 경고 메시지용 주황색
-                  : "gray.800" // 더 진한 회색으로 변경
+                  ? "orange.700"
+                  : "gray.800"
     });
 
     const lengthDisplayStyles = css({
