@@ -106,25 +106,6 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                     {strength.level} ({getCracklingTime(password)})
                 </div>
             </div>
-            <div
-                className={css({
-                    display: "grid",
-                    gridTemplateColumns: "repeat(5, 1fr)",
-                    gap: "1"
-                })}
-            >
-                {Array.from({ length: 5 }).map((_, index) => (
-                    <div
-                        key={index}
-                        className={css({
-                            height: "2",
-                            bg: index < strength.score ? "current" : "gray.200",
-                            transition: "background-color 0.3s ease",
-                            borderRadius: "full"
-                        })}
-                    />
-                ))}
-            </div>
         </div>
     );
 };

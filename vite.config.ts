@@ -8,7 +8,8 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "styled-system": "/styled-system"
+            "styled-system": "/styled-system",
+            "@": "/src"
         }
     }
 });

@@ -32,29 +32,6 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         }
     };
 
-    const handleKakaoShare = () => {
-        if (!window.Kakao?.isInitialized() || !window.Kakao?.Share) {
-            toast.error("카카오톡 공유를 사용할 수 없습니다.");
-
-            return;
-        }
-        if (!password) {
-            toast.error("비밀번호가 비어있습니다.");
-            return;
-        }
-        try {
-            window.Kakao.Share.sendDefault({
-                objectType: "text",
-                text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
-                link: {
-                    webUrl: window.location.href
-                }
-            });
-        } catch (error) {
-            toast.error("카카오톡 공유를 사용할 수 없습니다.");
-        }
-    };
-
     return (
         <div
             className={css({
@@ -233,44 +210,15 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                     <RefreshIcon />
                     새로 생성
                 </button>
-                <button
-                    type="button"
-                    onClick={handleKakaoShare}
-                    className={css({
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 2,
-                        minWidth: "120px",
-                        background: "#FEE500",
-                        borderRadius: "full",
-                        px: 4,
-                        py: 2,
-                        fontWeight: "bold",
-                        color: "#181600",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "sm",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                        transition: "all 0.2s",
-                        _hover: {
-                            background: "#FFE812",
-                            transform: "translateY(-1px)",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+                <KakaoButton
+                    options={{
+                        objectType: "text",
+                        text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
+                        link: {
+                            webUrl: window.location.href
                         }
-                    })}
-                    aria-label="카카오톡으로 공유하기"
-                >
-                    <KakaoButton
-                        options={{
-                            objectType: "text",
-                            text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
-                            link: {
-                                webUrl: window.location.href
-                            }
-                        }}
-                    />
-                </button>
+                    }}
+                />
             </div>
         </div>
     );
