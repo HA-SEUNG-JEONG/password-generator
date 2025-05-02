@@ -2,28 +2,6 @@ import { css } from "../styled-system/css";
 import PasswordGenerator from "./components/PasswordGenerator";
 import { useEffect } from "react";
 
-interface KakaoSDK {
-    init: (key: string) => boolean;
-    isInitialized(): boolean;
-    Share: {
-        sendDefault(options: KakaoShareOptions): void;
-    };
-}
-
-interface KakaoShareOptions {
-    objectType?: string;
-    text: string;
-    link: {
-        webUrl: string;
-    };
-}
-
-declare global {
-    interface Window {
-        Kakao: KakaoSDK;
-    }
-}
-
 const App = () => {
     useEffect(() => {
         const initKakao = () => {
