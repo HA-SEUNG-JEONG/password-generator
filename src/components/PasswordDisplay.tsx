@@ -32,29 +32,6 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         }
     };
 
-    const handleKakaoShare = () => {
-        if (!window.Kakao?.isInitialized() || !window.Kakao?.Share) {
-            toast.error("카카오톡 공유를 사용할 수 없습니다.");
-
-            return;
-        }
-        if (!password) {
-            toast.error("비밀번호가 비어있습니다.");
-            return;
-        }
-        try {
-            window.Kakao.Share.sendDefault({
-                objectType: "text",
-                text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
-                link: {
-                    webUrl: window.location.href
-                }
-            });
-        } catch (error) {
-            toast.error("카카오톡 공유를 사용할 수 없습니다.");
-        }
-    };
-
     return (
         <div
             className={css({
