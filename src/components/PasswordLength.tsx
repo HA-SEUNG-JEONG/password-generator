@@ -1,3 +1,4 @@
+import { when } from "@/utils/when";
 import { css } from "../../styled-system/css";
 
 const PASSWORD_LENGTH = {
@@ -28,13 +29,22 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
     });
 
     const getLengthMessage = (length: number) => {
-        if (length === 0) return "비밀번호 길이를 선택해주세요.";
-        if (length < PASSWORD_LENGTH.MIN)
-            return `비밀번호는 최소 ${PASSWORD_LENGTH.MIN}자 이상이어야 합니다 (현재: ${length}자)`;
-        if (length > PASSWORD_LENGTH.MAX)
-            return `비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다 (현재: ${length}자)`;
-        if (length < PASSWORD_LENGTH.RECOMMEND)
-            return `비밀번호 길이: ${length}자 (권장: ${PASSWORD_LENGTH.RECOMMEND}자 이상)`;
+        when(length === 0, () => "비밀번호 길이를 선택해주세요.");
+        when(
+            length < PASSWORD_LENGTH.MIN,
+            () =>
+                `비밀번호는 최소 ${PASSWORD_LENGTH.MIN}자 이상이어야 합니다 (현재: ${length}자)`
+        );
+        when(
+            length > PASSWORD_LENGTH.MAX,
+            () =>
+                `비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다 (현재: ${length}자)`
+        );
+        when(
+            length < PASSWORD_LENGTH.RECOMMEND,
+            () =>
+                `비밀번호 길이: ${length}자 (권장: ${PASSWORD_LENGTH.RECOMMEND}자 이상)`
+        );
         return `비밀번호 길이: ${length}자`;
     };
 
