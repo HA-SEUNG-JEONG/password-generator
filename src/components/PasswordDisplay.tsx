@@ -53,13 +53,6 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         } catch (error) {
             toast.error("카카오톡 공유를 사용할 수 없습니다.");
         }
-        window.Kakao.Share.sendDefault({
-            objectType: "text",
-            text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
-            link: {
-                webUrl: window.location.href
-            }
-        });
     };
 
     return (
