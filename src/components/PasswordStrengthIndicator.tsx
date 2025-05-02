@@ -86,7 +86,10 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
             className={css({
                 gap: "2",
                 display: "flex",
-                flexDirection: "column"
+                flexDirection: "column",
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto"
             })}
         >
             <div
@@ -99,40 +102,28 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                     ]
                 }`}
             >
-                강도: {strength.level}
-            </div>
-            <div className={css({ fontSize: "sm" })}>
-                <span
-                    className={css({
-                        fontSize: "md",
-                        fontWeight: "semibold",
-                        color: "gray.500",
-                        marginLeft: "1"
-                    })}
-                >
-                    해킹 가능 예상 시간 : ({getCracklingTime(password)})
-                </span>
+                <div className={css({ fontWeight: "bold" })}>
+                    {strength.level} ({getCracklingTime(password)})
+                </div>
             </div>
             <div
                 className={css({
-                    w: "full",
-                    bg: "gray.200",
-                    h: "1.5",
-                    borderRadius: "full",
-                    overflow: "hidden"
+                    display: "grid",
+                    gridTemplateColumns: "repeat(5, 1fr)",
+                    gap: "1"
                 })}
             >
-                <div
-                    className={`${strengthStyles.base} ${
-                        strengthStyles[
-                            strength.level.replace(
-                                " ",
-                                "_"
-                            ) as keyof typeof strengthStyles
-                        ]
-                    }`}
-                    style={{ width: `${(strength.score / 9) * 100}%` }}
-                />
+                {Array.from({ length: 5 }).map((_, index) => (
+                    <div
+                        key={index}
+                        className={css({
+                            height: "2",
+                            bg: index < strength.score ? "current" : "gray.200",
+                            transition: "background-color 0.3s ease",
+                            borderRadius: "full"
+                        })}
+                    />
+                ))}
             </div>
         </div>
     );
