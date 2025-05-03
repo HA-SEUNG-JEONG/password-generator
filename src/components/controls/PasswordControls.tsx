@@ -16,9 +16,7 @@ const PasswordLengthControl = ({
     length,
     onLengthChange
 }: PasswordLengthControlProps) => {
-    const containerStyles = css({
-        spaceY: "2"
-    });
+    const containerStyles = css({ spaceY: "2" });
 
     const inputStyles = css({
         w: "full",
