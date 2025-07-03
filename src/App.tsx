@@ -39,7 +39,7 @@ const App = () => {
                 border: "1px solid",
                 bg: "card",
                 color: "card-foreground",
-                shadow: "sm"
+                shadow: "sm",
             })}
         >
             <PasswordGenerator />

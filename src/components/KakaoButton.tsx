@@ -65,8 +65,8 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
                 transitionDuration: "200ms",
                 _hover: {
                     background: "#FFE812",
-                    transform: "translateY(-1px)"
-                }
+                    transform: "translateY(-1px)",
+                },
             })}
             aria-label="카카오톡 공유"
         >

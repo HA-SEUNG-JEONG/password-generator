@@ -23,13 +23,13 @@ const PasswordGenerator = () => {
         special: true
     });
 
-    const [isPwned, setIsPwned] = useState<boolean | undefined>(false);
+    const [isPwned, setIsPwned] = useState<boolean>(false);
 
     const handleGeneratePassword = useCallback(async () => {
-        const newPassword = generateSecurePassword(options.length);
+        const newPassword = generateSecurePassword(options);
         setPassword(newPassword);
         const check = await checkPwnedPassword(newPassword);
-        setIsPwned(check);
+        setIsPwned(check ?? false);
     }, [options.length]);
 
     const onChangeOptions = useCallback(
@@ -58,7 +58,7 @@ const PasswordGenerator = () => {
                 spaceY: "1.5",
                 display: "flex",
                 flexDirection: "column",
-                padding: "3"
+                padding: "3",
             }),
         []
     );
@@ -67,7 +67,7 @@ const PasswordGenerator = () => {
         () =>
             css({
                 fontSize: "sm",
-                color: "red.500"
+                color: "red.500",
             }),
         []
     );
@@ -80,7 +80,7 @@ const PasswordGenerator = () => {
             />
             {isPwned && (
                 <div className={warningStyles}>
-                    이 비밀번호는 데이터 유출 사고에 노출되었을 수 있습니다.
+                    이 비밀번호는 데이터 유출 사고에 노출되었을 수 있습니다. 다른 비밀번호를 사용하거나, 이 비밀번호를 사용하는 다른 서비스의 비밀번호를 변경하세요.
                 </div>
             )}
             <PasswordOptions options={options} onChange={onChangeOptions} />

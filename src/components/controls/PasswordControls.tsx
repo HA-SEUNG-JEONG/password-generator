@@ -24,7 +24,7 @@ const PasswordLengthControl = ({
         cursor: "pointer",
         "&:focus-visible": {
             outline: "2px solid token(colors.blue.600)",
-            outlineOffset: "2px"
+            outlineOffset: "2px",
         },
         border: "2px solid token(colors.gray.200)",
         borderRadius: "md",
@@ -34,8 +34,8 @@ const PasswordLengthControl = ({
         fontSize: "md",
         color: "gray.800",
         _hover: {
-            bg: "gray.100"
-        }
+            bg: "gray.100",
+        },
     });
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {

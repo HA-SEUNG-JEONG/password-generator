@@ -20,22 +20,19 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
                 : passwordLength < PASSWORD_LENGTH.MIN ||
                     passwordLength > PASSWORD_LENGTH.MAX
                   ? "orange.700"
-                  : "gray.800"
+                  : "gray.800",
     });
 
     const lengthDisplayStyles = css({
-        minWidth: "7rem"
+        minWidth: "7rem",
     });
 
     const getLengthMessage = (length: number) => {
-        if (length === 0) {
-            return "비밀번호 길이를 선택해주세요.";
-        }
         if (length < PASSWORD_LENGTH.MIN) {
-            return `비밀번호는 최소 ${PASSWORD_LENGTH.MIN}자 이상이어야 합니다 (현재: ${length}자)`;
+            return `최소 ${PASSWORD_LENGTH.MIN}자`;
         }
         if (length > PASSWORD_LENGTH.MAX) {
-            return `비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다 (현재: ${length}자)`;
+            return `최대 ${PASSWORD_LENGTH.MAX}자`;
         }
         if (length < PASSWORD_LENGTH.RECOMMEND) {
             return `비밀번호 길이: ${length}자 (권장: ${PASSWORD_LENGTH.RECOMMEND}자 이상)`;

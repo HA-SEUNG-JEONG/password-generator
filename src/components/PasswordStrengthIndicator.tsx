@@ -6,12 +6,13 @@ import zxcvbn from "zxcvbn";
 interface PasswordStrength {
     level: string;
     score: number;
+    feedback: string;
 }
 
 const strengthStyles: { [key: string]: string } = {
     base: css({
         h: "1.5",
-        transition: "all 300ms"
+        transition: "all 300ms",
     }),
     indicator: css({
         p: "2",
@@ -20,7 +21,7 @@ const strengthStyles: { [key: string]: string } = {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        fontSize: "sm"
+        fontSize: "sm",
     }),
     "매우 강함": css({ bg: "blue.600" }),
     강함: css({ bg: "green.600" }),
@@ -33,7 +34,8 @@ const strengthStyles: { [key: string]: string } = {
 const PasswordStrengthIndicator = ({ password }: { password: string }) => {
     const initialStrength = (): PasswordStrength => ({
         level: "입력 전",
-        score: 0
+        score: 0,
+        feedback: "비밀번호를 입력해주세요."
     });
 
     const [strength, setStrength] =
@@ -51,7 +53,8 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
 
         return {
             level: strengthLevel.level,
-            score: strengthLevel.score
+            score: strengthLevel.score,
+            feedback: result.feedback.suggestions.join(" ") || ""
         };
     };
 
@@ -67,7 +70,7 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                 flexDirection: "column",
                 width: "100%",
                 maxWidth: "400px",
-                margin: "0 auto"
+                margin: "0 auto",
             })}
         >
             <div
@@ -79,6 +82,11 @@ const PasswordStrengthIndicator = ({ password }: { password: string }) => {
                     {strength.level}
                 </div>
             </div>
+            {strength.feedback && (
+                <div className={css({ fontSize: "sm", color: "gray.600" })}>
+                    {strength.feedback}
+                </div>
+            )}
         </div>
     );
 };
