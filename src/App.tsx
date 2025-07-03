@@ -1,9 +1,23 @@
 import { css } from "../styled-system/css";
 import PasswordGenerator from "./components/PasswordGenerator";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const App = () => {
+    const [theme, setTheme] = useState(() => {
+        const savedTheme = localStorage.getItem("theme");
+        return savedTheme || "light";
+    });
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    }, [theme]);
+
+    const toggleTheme = () => {
+        setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    };
+
     useEffect(() => {
         const initKakao = () => {
             const kakaoKey = import.meta.env.VITE_REST_API_KEY;
@@ -12,7 +26,6 @@ const App = () => {
                 try {
                     window.Kakao.init(kakaoKey);
                 } catch (error) {
-                    // throw new Error("카카오 SDK 초기화 실패");
                     toast.error("카카오 SDK 초기화 실패");
                 }
             }
@@ -40,8 +53,26 @@ const App = () => {
                 bg: "card",
                 color: "card-foreground",
                 shadow: "sm",
+                p: { base: "4", md: "8" },
+                maxWidth: "500px",
+                margin: "0 auto",
             })}
         >
+            <button
+                onClick={toggleTheme}
+                className={css({
+                    position: "absolute",
+                    top: "4",
+                    right: "4",
+                    bg: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "xl",
+                    color: "text",
+                })}
+            >
+                {theme === "light" ? "🌙" : "☀️"}
+            </button>
             <PasswordGenerator />
         </div>
     );

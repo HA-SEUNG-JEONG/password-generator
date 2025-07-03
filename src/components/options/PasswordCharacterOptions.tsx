@@ -1,12 +1,12 @@
-import React from "react";
-import { css } from "../../../styled-system/css";
+import { css } from "styled-system/css";
 import CheckboxOption from "./CheckboxOption";
 
 const OPTIONS = [
     { key: "lowercase" as const, label: "소문자 포함", description: "a-z" },
     { key: "uppercase" as const, label: "대문자 포함", description: "A-Z" },
     { key: "numbers" as const, label: "숫자 포함", description: "0-9" },
-    { key: "special" as const, label: "특수문자 포함", description: "!@#$%^&*" }
+    { key: "special" as const, label: "특수문자 포함", description: "!@#$%^&*" },
+    { key: "excludeAmbiguous" as const, label: "모호한 문자 제외", description: "l, 1, o, 0, i, O, I" }
 ];
 
 interface CharacterOptions {
@@ -14,6 +14,7 @@ interface CharacterOptions {
     uppercase: boolean;
     numbers: boolean;
     special: boolean;
+    excludeAmbiguous: boolean;
 }
 
 interface PasswordCharacterOptionsProps {

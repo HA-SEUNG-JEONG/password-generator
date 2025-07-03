@@ -63,13 +63,18 @@ export const generateSecurePassword = (options: {
     uppercase: boolean;
     numbers: boolean;
     special: boolean;
+    excludeAmbiguous: boolean;
 }): string => {
-    const { length, lowercase, uppercase, numbers, special } = options;
+    const { length, lowercase, uppercase, numbers, special, excludeAmbiguous } = options;
     let allChars = "";
     if (lowercase) allChars += "abcdefghijklmnopqrstuvwxyz";
     if (uppercase) allChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     if (numbers) allChars += "0123456789";
     if (special) allChars += "!@#$%^&*";
+
+    if (excludeAmbiguous) {
+        allChars = allChars.replace(/[l1o0iOI]/g, "");
+    }
 
     if (allChars.length === 0) {
         return ""; // 모든 옵션이 비활성화된 경우 빈 문자열 반환

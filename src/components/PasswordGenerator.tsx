@@ -11,6 +11,7 @@ interface CharacterOptions {
     uppercase: boolean;
     numbers: boolean;
     special: boolean;
+    excludeAmbiguous: boolean;
 }
 
 const PasswordGenerator = () => {
@@ -20,7 +21,8 @@ const PasswordGenerator = () => {
         lowercase: true,
         uppercase: true,
         numbers: true,
-        special: true
+        special: true,
+        excludeAmbiguous: false
     });
 
     const [isPwned, setIsPwned] = useState<boolean>(false);
@@ -39,6 +41,7 @@ const PasswordGenerator = () => {
             uppercase?: boolean;
             numbers?: boolean;
             special?: boolean;
+            excludeAmbiguous?: boolean;
         }) => {
             setOptions((prevOptions) => ({
                 ...prevOptions,

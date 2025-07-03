@@ -7,6 +7,7 @@ interface CharacterOptions {
     uppercase: boolean;
     numbers: boolean;
     special: boolean;
+    excludeAmbiguous: boolean;
 }
 
 interface PasswordOptionsProps {
@@ -19,6 +20,7 @@ interface PasswordOptionsProps {
         uppercase?: boolean;
         numbers?: boolean;
         special?: boolean;
+        excludeAmbiguous?: boolean;
     }) => void;
 }
 
