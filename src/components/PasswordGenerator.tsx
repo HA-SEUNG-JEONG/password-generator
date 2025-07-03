@@ -30,7 +30,7 @@ const PasswordGenerator = () => {
         setPassword(newPassword);
         const check = await checkPwnedPassword(newPassword);
         setIsPwned(check ?? false);
-    }, [options.length]);
+    }, [options]);
 
     const onChangeOptions = useCallback(
         (newOptions: {
