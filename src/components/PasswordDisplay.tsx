@@ -16,10 +16,22 @@ interface PasswordDisplayProps {
 const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
     const [showPassword, setShowPassword] = useState(false);
 
-    const handlePasswordCopy = () => {
-        navigator.clipboard.writeText(password);
-        toast.success("비밀번호가 복사되었습니다.");
-        
+    const handlePasswordCopy = async () => {
+        if (!password) {
+            toast.error("복사할 비밀번호가 없습니다.");
+            return;
+        }
+        if (!navigator.clipboard) {
+            toast.error("클립보드 기능을 사용할 수 없습니다.");
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(password);
+            toast.success("비밀번호가 복사되었습니다.");
+        } catch (error) {
+            toast.error("비밀번호 복사에 실패했습니다.");
+        }
     };
 
     return (
