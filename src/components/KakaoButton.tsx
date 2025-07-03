@@ -1,5 +1,5 @@
 import { css } from "../../styled-system/css";
-import { when } from "@/utils";
+
 import { KakaoShareOptions } from "../global.d";
 import { toast } from "react-toastify";
 
@@ -11,20 +11,20 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
     const handleKakaoShare = () => {
         const kakaoKey = import.meta.env.VITE_REST_API_KEY;
 
-        when(!window.Kakao, () => {
+        if (!window.Kakao) {
             toast.error("카카오 SDK를 불러오지 못했습니다.");
             return;
-        });
+        }
 
-        when(!kakaoKey, () => {
+        if (!kakaoKey) {
             toast.error("카카오 API 키가 설정되지 않았습니다.");
             return;
-        });
+        }
 
-        when(!options.text, () => {
+        if (!options.text) {
             toast.error("공유할 비밀번호가 없습니다.");
             return;
-        });
+        }
 
         if (!window.Kakao.isInitialized()) {
             try {
