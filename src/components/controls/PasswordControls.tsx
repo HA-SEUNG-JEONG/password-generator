@@ -1,6 +1,7 @@
 import React from "react";
 import { css } from "../../../styled-system/css";
 import PasswordLength from "../PasswordLength";
+import { toast } from "react-toastify";
 
 interface PasswordLengthControlProps {
     length: number;
@@ -41,7 +42,7 @@ const PasswordLengthControl = ({
         const value = Number(e.target.value);
 
         if (value > PASSWORD_LENGTH.MAX) {
-            alert(`비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다.`);
+            toast.error(`비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다.`);
             return;
         }
 
