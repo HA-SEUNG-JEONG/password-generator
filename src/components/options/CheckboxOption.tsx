@@ -24,12 +24,12 @@ const CheckboxOption = ({
         borderRadius: "md",
         "&:hover": {
             color: "gray.900",
-            backgroundColor: "gray.100",
+            backgroundColor: "gray.100"
         },
         "&:focus-within": {
             outline: "2px solid token(colors.blue.500)",
-            outlineOffset: "2px",
-        },
+            outlineOffset: "2px"
+        }
     });
 
     const checkboxStyles = css({
@@ -40,31 +40,31 @@ const CheckboxOption = ({
         cursor: "pointer",
         "&:focus-visible": {
             outline: "2px solid token(colors.blue.500)",
-            outlineOffset: "2px",
-        },
+            outlineOffset: "2px"
+        }
     });
 
     const labelContainerStyles = css({
         display: "flex",
         flexDirection: "column",
-        gap: "0.5",
+        gap: "0.5"
     });
 
     const labelStyles = css({
         fontSize: "sm",
         fontWeight: "medium",
-        color: "gray.700",
+        color: "text",
         userSelect: "none",
         cursor: "pointer",
         "&:hover": {
-            color: "gray.900",
-        },
+            color: "gray.900"
+        }
     });
 
     const descriptionStyles = css({
         fontSize: "xs",
-        color: "gray.500",
-        userSelect: "none",
+        color: "text",
+        userSelect: "none"
     });
 
     return (

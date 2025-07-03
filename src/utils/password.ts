@@ -63,13 +63,37 @@ export const generateSecurePassword = (options: {
     uppercase: boolean;
     numbers: boolean;
     special: boolean;
+    excludeAmbiguous: boolean;
 }): string => {
-    const { length, lowercase, uppercase, numbers, special } = options;
+    const { length, lowercase, uppercase, numbers, special, excludeAmbiguous } =
+        options;
+    // let allChars = "";
+    // if (lowercase) allChars += "abcdefghijklmnopqrstuvwxyz";
+    // if (uppercase) allChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    // if (numbers) allChars += "0123456789";
+    // if (special) allChars += "!@#$%^&*";
+
+    // if (excludeAmbiguous) {
+    //     allChars = allChars.replace(/[l1o0iOI]/g, "");
+    // }
+
+    let lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    let uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let numberChars = "0123456789";
+    let specialChars = "!@#$%^&*";
+
+    if (excludeAmbiguous) {
+        lowercaseChars = lowercaseChars.replace(/[l1o0iOI]/g, "");
+        uppercaseChars = uppercaseChars.replace(/[l1o0iOI]/g, "");
+        numberChars = numberChars.replace(/[l1o0iOI]/g, "");
+        specialChars = specialChars.replace(/[l1o0iOI]/g, "");
+    }
+
     let allChars = "";
-    if (lowercase) allChars += "abcdefghijklmnopqrstuvwxyz";
-    if (uppercase) allChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (numbers) allChars += "0123456789";
-    if (special) allChars += "!@#$%^&*";
+    if (lowercase) allChars += lowercaseChars;
+    if (uppercase) allChars += uppercaseChars;
+    if (numbers) allChars += numberChars;
+    if (special) allChars += specialChars;
 
     if (allChars.length === 0) {
         return ""; // 모든 옵션이 비활성화된 경우 빈 문자열 반환
@@ -91,12 +115,14 @@ export const generateSecurePassword = (options: {
     const passwordChars: string[] = [];
 
     // 각 문자 유형별로 최소 1개씩 포함 (선택된 경우에만)
-    if (lowercase)
-        passwordChars.push(getRandomChar("abcdefghijklmnopqrstuvwxyz"));
-    if (uppercase)
-        passwordChars.push(getRandomChar("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-    if (numbers) passwordChars.push(getRandomChar("0123456789"));
-    if (special) passwordChars.push(getRandomChar("!@#$%^&*"));
+    if (lowercase && lowercaseChars.length > 0)
+        passwordChars.push(getRandomChar(lowercaseChars));
+    if (uppercase && uppercaseChars.length > 0)
+        passwordChars.push(getRandomChar(uppercaseChars));
+    if (numbers && numberChars.length > 0)
+        passwordChars.push(getRandomChar(numberChars));
+    if (special && specialChars.length > 0)
+        passwordChars.push(getRandomChar(specialChars));
 
     // 나머지 길이만큼 랜덤 문자 추가
     for (let i = passwordChars.length; i < length; i++) {

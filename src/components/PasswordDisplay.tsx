@@ -36,19 +36,19 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 p: 6,
                 display: "flex",
                 flexDirection: "column",
-                gap: 4,
+                gap: 4
             })}
         >
             <div
                 className={css({
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                p: 4,
-                borderRadius: "md",
-                bg: "muted",
-                position: "relative",
-            })}
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                    p: 4,
+                    borderRadius: "md",
+                    bg: "muted",
+                    position: "relative"
+                })}
             >
                 <div
                     className={css({
@@ -58,19 +58,19 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         textAlign: "center",
                         p: 2,
                         borderRadius: "md",
-                        bg: "white",
+                        bg: "card",
                         minHeight: "60px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         position: "relative",
-                        userSelect: "none",
+                        userSelect: "none"
                     })}
                 >
                     <div
                         className={css({
                             width: "100%",
-                            textAlign: "center",
+                            textAlign: "center"
                         })}
                     >
                         {password ? (
@@ -82,9 +82,10 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                                     width: "100%",
                                     textAlign: "center",
                                     border: "none",
-                                    background: "transparent",
+                                    color: "text",
                                     fontFamily: "monospace",
                                     outline: "none",
+                                    bg: "transparent"
                                 })}
                             />
                         ) : (
@@ -104,14 +105,15 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                             padding: "2",
                             display: "flex",
                             alignItems: "center",
+                            color: "text", // Add this line
                             _hover: {
-                                opacity: 0.8,
+                                opacity: 0.8
                             },
                             _focus: {
                                 outline: "2px solid",
                                 outlineColor: "blue.500",
-                                outlineOffset: "2px",
-                            },
+                                outlineOffset: "2px"
+                            }
                         })}
                         aria-label={
                             showPassword ? "비밀번호 숨기기" : "비밀번호 보기"
@@ -124,8 +126,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                                     ? "비밀번호 숨기기"
                                     : "비밀번호 보기"
                             }
-                            width="20"
-                            height="20"
+                            width="24"
+                            height="24"
                         />
                     </button>
                 </div>
@@ -135,16 +137,16 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
 
             <div
                 className={css({
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: {
-                    base: "1fr",
-                    sm: "repeat(auto-fit, minmax(120px, 1fr))",
-                },
-                width: "100%",
-                maxWidth: "400px",
-                margin: "0 auto",
-            })}
+                    display: "grid",
+                    gap: 2,
+                    gridTemplateColumns: {
+                        base: "1fr",
+                        sm: "repeat(auto-fit, minmax(120px, 1fr))"
+                    },
+                    width: "100%",
+                    maxWidth: "400px",
+                    margin: "0 auto"
+                })}
             >
                 <button
                     type="button"
@@ -170,8 +172,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         _hover: {
                             background: "primary-hover",
                             transform: "translateY(-1px)",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                        },
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+                        }
                     })}
                     aria-label="비밀번호 복사하기"
                 >
@@ -201,8 +203,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         _hover: {
                             background: "secondary-hover",
                             transform: "translateY(-1px)",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                        },
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+                        }
                     })}
                     aria-label="새로운 비밀번호 생성하기"
                 >
