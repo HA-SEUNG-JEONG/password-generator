@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { strengthLevels, StrengthLevel } from "@/utils/strengthLevel";
 import zxcvbn from "zxcvbn";
 
