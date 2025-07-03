@@ -1,18 +1,27 @@
 import { strengthLevels, StrengthLevel } from "@/utils/strengthLevel";
 import zxcvbn from "zxcvbn";
+import { useMemo } from "react";
 
 interface PasswordStrengthIndicatorProps {
     password: string;
 }
 
-const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({ password }) => {
+const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
+    password
+}) => {
     const { score } = zxcvbn(password);
 
     const getStrengthLevel = (score: number): StrengthLevel => {
-        return strengthLevels.find(level => level.score === score) || strengthLevels[0];
+        return (
+            strengthLevels.find((level) => level.score === score) ||
+            strengthLevels[0]
+        );
     };
 
-    const currentStrength = getStrengthLevel(score);
+    const currentStrength = useMemo(() => {
+        const { score } = zxcvbn(password);
+        return getStrengthLevel(score);
+    }, [password]);
 
     return (
         <div className="flex flex-col items-center mt-4">

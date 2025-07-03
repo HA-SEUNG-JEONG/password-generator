@@ -55,11 +55,13 @@ const App = () => {
                 shadow: "sm",
                 p: { base: "4", md: "8" },
                 maxWidth: "500px",
-                margin: "0 auto",
+                margin: "0 auto"
             })}
         >
             <button
                 onClick={toggleTheme}
+                aria-label={`Switch to ${theme === "light" ? "dark" : "light"}`}
+                title={`Switch to ${theme === "light" ? "dark" : "light"}`}
                 className={css({
                     position: "absolute",
                     top: "4",
@@ -69,6 +71,11 @@ const App = () => {
                     cursor: "pointer",
                     fontSize: "xl",
                     color: "text",
+                    "&:focus": {
+                        outline: "2px solid",
+                        outlineOffset: "2px",
+                        outlineColor: "ring"
+                    }
                 })}
             >
                 {theme === "light" ? "🌙" : "☀️"}
