@@ -19,33 +19,7 @@ export const createCharacterSet = (options: {
     return charset;
 };
 
-export const hasRepeatingCharacters = (password: string) => {
-    for (let i = 0; i < password.length - 2; i++) {
-        if (
-            password[i] === password[i + 1] &&
-            password[i] === password[i + 2]
-        ) {
-            return true;
-        }
-    }
-    return false;
-};
 
-export const generatePassword = (length: number, charset: string) => {
-    let password = "";
-    let hasRepeatingChars = false;
-
-    while (password.length < length) {
-        const char = charset[Math.floor(Math.random() * charset.length)];
-        if (hasRepeatingCharacters(password)) {
-            hasRepeatingChars = true;
-            continue;
-        }
-        password += char;
-    }
-
-    return { password, hasRepeatingChars };
-};
 
 interface PasswordStrength {
     score: number;

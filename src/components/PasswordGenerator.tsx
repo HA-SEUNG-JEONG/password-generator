@@ -1,6 +1,6 @@
 // components/PasswordGenerator/index.tsx
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { checkPwnedPassword, createCharacterSet } from "../utils/password";
+import { checkPwnedPassword, generateSecurePassword } from "../utils/password";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
 import { css } from "../../styled-system/css";
@@ -25,39 +25,27 @@ const PasswordGenerator = () => {
 
     const [isPwned, setIsPwned] = useState<boolean | undefined>(false);
 
-    const buildPassword = useCallback((length: number, charset: string) => {
-        const array = new Uint32Array(length);
-        crypto.getRandomValues(array);
-        return Array.from(array, (num) => charset[num % charset.length]).join(
-            ""
-        );
-    }, []);
-
-    const handleGeneratePassword = useCallback(() => {
-        const charset = createCharacterSet(options);
-        const newPassword = buildPassword(options.length, charset);
+    const handleGeneratePassword = useCallback(async () => {
+        const newPassword = generateSecurePassword(options.length);
         setPassword(newPassword);
-    }, [options, buildPassword]);
+        const check = await checkPwnedPassword(newPassword);
+        setIsPwned(check);
+    }, [options.length]);
 
     const onChangeOptions = useCallback(
-        async (newOptions: {
+        (newOptions: {
             length?: number;
             lowercase?: boolean;
             uppercase?: boolean;
             numbers?: boolean;
             special?: boolean;
         }) => {
-            if (password) {
-                const check = await checkPwnedPassword(password);
-                setIsPwned(check);
-            }
-
             setOptions((prevOptions) => ({
                 ...prevOptions,
                 ...newOptions
             }));
         },
-        [password]
+        []
     );
 
     useEffect(() => {
