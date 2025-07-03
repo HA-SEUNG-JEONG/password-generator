@@ -24,7 +24,7 @@ interface PasswordOptionsProps {
 
 const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
     const containerStyles = css({
-        spaceY: "4"
+        spaceY: "4",
     });
 
     return (

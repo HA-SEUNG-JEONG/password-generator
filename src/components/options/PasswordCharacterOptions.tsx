@@ -26,7 +26,7 @@ const PasswordCharacterOptions = ({
     onOptionsChange
 }: PasswordCharacterOptionsProps) => {
     const containerStyles = css({
-        spaceY: "2"
+        spaceY: "2",
     });
 
     return (

@@ -1,6 +1,6 @@
 // components/PasswordGenerator/index.tsx
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { checkPwnedPassword, createCharacterSet } from "../utils/password";
+import { checkPwnedPassword, generateSecurePassword } from "../utils/password";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
 import { css } from "../../styled-system/css";
@@ -23,41 +23,29 @@ const PasswordGenerator = () => {
         special: true
     });
 
-    const [isPwned, setIsPwned] = useState<boolean | undefined>(false);
+    const [isPwned, setIsPwned] = useState<boolean>(false);
 
-    const buildPassword = useCallback((length: number, charset: string) => {
-        const array = new Uint32Array(length);
-        crypto.getRandomValues(array);
-        return Array.from(array, (num) => charset[num % charset.length]).join(
-            ""
-        );
-    }, []);
-
-    const handleGeneratePassword = useCallback(() => {
-        const charset = createCharacterSet(options);
-        const newPassword = buildPassword(options.length, charset);
+    const handleGeneratePassword = useCallback(async () => {
+        const newPassword = generateSecurePassword(options);
         setPassword(newPassword);
-    }, [options, buildPassword]);
+        const check = await checkPwnedPassword(newPassword);
+        setIsPwned(check ?? false);
+    }, [options]);
 
     const onChangeOptions = useCallback(
-        async (newOptions: {
+        (newOptions: {
             length?: number;
             lowercase?: boolean;
             uppercase?: boolean;
             numbers?: boolean;
             special?: boolean;
         }) => {
-            if (password) {
-                const check = await checkPwnedPassword(password);
-                setIsPwned(check);
-            }
-
             setOptions((prevOptions) => ({
                 ...prevOptions,
                 ...newOptions
             }));
         },
-        [password]
+        []
     );
 
     useEffect(() => {
@@ -70,7 +58,7 @@ const PasswordGenerator = () => {
                 spaceY: "1.5",
                 display: "flex",
                 flexDirection: "column",
-                padding: "3"
+                padding: "3",
             }),
         []
     );
@@ -79,7 +67,7 @@ const PasswordGenerator = () => {
         () =>
             css({
                 fontSize: "sm",
-                color: "red.500"
+                color: "red.500",
             }),
         []
     );
@@ -92,7 +80,7 @@ const PasswordGenerator = () => {
             />
             {isPwned && (
                 <div className={warningStyles}>
-                    이 비밀번호는 데이터 유출 사고에 노출되었을 수 있습니다.
+                    이 비밀번호는 데이터 유출 사고에 노출되었을 수 있습니다. 다른 비밀번호를 사용하거나, 이 비밀번호를 사용하는 다른 서비스의 비밀번호를 변경하세요.
                 </div>
             )}
             <PasswordOptions options={options} onChange={onChangeOptions} />

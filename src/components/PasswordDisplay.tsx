@@ -18,17 +18,15 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
 
     const handlePasswordCopy = async () => {
         if (!navigator.clipboard) {
-            toast.error("클립보드 지원이 되지 않는 브라우저입니다.");
+            toast.error("클립보드 기능을 사용할 수 없습니다.");
             return;
         }
+
         try {
-            if (password.length === 0) toast.error("비밀번호가 비어있습니다.");
-            else {
-                await navigator.clipboard.writeText(password);
-                toast.success("비밀번호가 복사되었습니다.");
-            }
-        } catch (err) {
-            if (err instanceof Error) toast.error(err.message);
+            await navigator.clipboard.writeText(password);
+            toast.success("비밀번호가 복사되었습니다.");
+        } catch (error) {
+            toast.error("비밀번호 복사에 실패했습니다.");
         }
     };
 
@@ -38,19 +36,19 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 p: 6,
                 display: "flex",
                 flexDirection: "column",
-                gap: 4
+                gap: 4,
             })}
         >
             <div
                 className={css({
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                    p: 4,
-                    borderRadius: "md",
-                    bg: "muted",
-                    position: "relative"
-                })}
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                p: 4,
+                borderRadius: "md",
+                bg: "muted",
+                position: "relative",
+            })}
             >
                 <div
                     className={css({
@@ -66,13 +64,13 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         alignItems: "center",
                         justifyContent: "center",
                         position: "relative",
-                        userSelect: "none"
+                        userSelect: "none",
                     })}
                 >
                     <div
                         className={css({
                             width: "100%",
-                            textAlign: "center"
+                            textAlign: "center",
                         })}
                     >
                         {password ? (
@@ -86,7 +84,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                                     border: "none",
                                     background: "transparent",
                                     fontFamily: "monospace",
-                                    outline: "none"
+                                    outline: "none",
                                 })}
                             />
                         ) : (
@@ -107,13 +105,13 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                             display: "flex",
                             alignItems: "center",
                             _hover: {
-                                opacity: 0.8
+                                opacity: 0.8,
                             },
                             _focus: {
                                 outline: "2px solid",
                                 outlineColor: "blue.500",
-                                outlineOffset: "2px"
-                            }
+                                outlineOffset: "2px",
+                            },
                         })}
                         aria-label={
                             showPassword ? "비밀번호 숨기기" : "비밀번호 보기"
@@ -137,20 +135,21 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
 
             <div
                 className={css({
-                    display: "grid",
-                    gap: 2,
-                    gridTemplateColumns: {
-                        base: "1fr",
-                        sm: "repeat(auto-fit, minmax(120px, 1fr))"
-                    },
-                    width: "100%",
-                    maxWidth: "400px",
-                    margin: "0 auto"
-                })}
+                display: "grid",
+                gap: 2,
+                gridTemplateColumns: {
+                    base: "1fr",
+                    sm: "repeat(auto-fit, minmax(120px, 1fr))",
+                },
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto",
+            })}
             >
                 <button
                     type="button"
                     onClick={handlePasswordCopy}
+                    disabled={!password}
                     className={css({
                         display: "inline-flex",
                         alignItems: "center",
@@ -171,8 +170,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         _hover: {
                             background: "primary-hover",
                             transform: "translateY(-1px)",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
-                        }
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                        },
                     })}
                     aria-label="비밀번호 복사하기"
                 >
@@ -202,8 +201,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                         _hover: {
                             background: "secondary-hover",
                             transform: "translateY(-1px)",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
-                        }
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                        },
                     })}
                     aria-label="새로운 비밀번호 생성하기"
                 >
@@ -213,7 +212,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 <KakaoButton
                     options={{
                         objectType: "text",
-                        text: `비밀번호 생성기에서 생성된 비밀번호: ${password}\n복사해서 사용하세요!`,
+                        text: `비밀번호 생성기를 사용해보세요!`,
                         link: {
                             webUrl: window.location.href
                         }
