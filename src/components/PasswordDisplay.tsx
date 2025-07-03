@@ -85,16 +85,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                                     color: "text",
                                     fontFamily: "monospace",
                                     outline: "none",
-                                    bg: "transparent",
-                                    "&[type='password']": {
-                                        color: "text",
-                                        "-webkit-text-fill-color":
-                                            "var(--colors-text)",
-                                        "&::placeholder": {
-                                            color: "text",
-                                            opacity: 0.7
-                                        }
-                                    }
+                                    bg: "transparent"
                                 })}
                             />
                         ) : (
