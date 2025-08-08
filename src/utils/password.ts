@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 const generateSha1 = async (message: string): Promise<string> => {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest("SHA-1", msgBuffer);
@@ -57,6 +59,93 @@ const secureShuffleArray = (array: string[]) => {
 };
 
 // 비밀번호 생성 함수
+interface PassphraseOptions {
+    words: number;
+    language: string;
+    separator: string;
+    capitalize: boolean;
+    includeNumber: boolean;
+}
+
+const defaultPassphraseOptions: PassphraseOptions = {
+    words: 5,
+    language: "en",
+    separator: " ",
+    capitalize: false,
+    includeNumber: false
+};
+
+const wordLists: { [key: string]: string[] } = {
+    en: [
+        "apple",
+        "banana",
+        "cherry",
+        "date",
+        "elderberry",
+        "fig",
+        "grape",
+        "honeydew",
+        "ice cream",
+        "jackfruit",
+        "kiwi",
+        "lemon",
+        "mango",
+        "nectarine",
+        "orange",
+        "pineapple",
+        "quince",
+        "raspberry",
+        "strawberry",
+        "tangerine",
+        "ugli fruit",
+        "victoria plum",
+        "watermelon",
+        "xigua",
+        "yellow passionfruit",
+        "zucchini"
+    ]
+};
+
+export const generateSecurePassphrase = (
+    options?: Partial<PassphraseOptions>
+): string => {
+    const { words, language, separator, capitalize, includeNumber } = {
+        ...defaultPassphraseOptions,
+        ...options
+    };
+
+    if (words < 3 || words > 10) {
+        // throw new Error("Number of words must be between 3 and 10");
+        toast("단어는 3개 이상 10개 이하로 설정해주세요.");
+    }
+
+    if (!wordLists[language]) {
+        throw new Error(`Unsupported language: ${language}`);
+    }
+
+    const wordList = wordLists[language];
+    const selectedWords: string[] = [];
+
+    for (let i = 0; i < words; i++) {
+        const randomIndex = getSecureRandom(wordList.length);
+        let word = wordList[randomIndex];
+
+        if (capitalize) {
+            word = word.charAt(0).toUpperCase() + word.slice(1);
+        }
+
+        selectedWords.push(word);
+    }
+
+    if (includeNumber) {
+        const randomNumber = getSecureRandom(90) + 10; // 10-99
+        const insertAt = getSecureRandom(selectedWords.length + 1);
+        selectedWords.splice(insertAt, 0, randomNumber.toString());
+    }
+
+    return selectedWords.join(separator);
+};
+
 export const generateSecurePassword = (options: {
     length: number;
     lowercase: boolean;
@@ -64,18 +153,17 @@ export const generateSecurePassword = (options: {
     numbers: boolean;
     special: boolean;
     excludeAmbiguous: boolean;
+    mode?: "password" | "passphrase";
+    passphraseOptions?: Partial<PassphraseOptions>;
 }): string => {
+    const { mode = "password", passphraseOptions } = options;
+
+    if (mode === "passphrase") {
+        return generateSecurePassphrase(passphraseOptions);
+    }
+
     const { length, lowercase, uppercase, numbers, special, excludeAmbiguous } =
         options;
-    // let allChars = "";
-    // if (lowercase) allChars += "abcdefghijklmnopqrstuvwxyz";
-    // if (uppercase) allChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // if (numbers) allChars += "0123456789";
-    // if (special) allChars += "!@#$%^&*";
-
-    // if (excludeAmbiguous) {
-    //     allChars = allChars.replace(/[l1o0iOI]/g, "");
-    // }
 
     let lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
     let uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
