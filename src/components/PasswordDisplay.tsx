@@ -1,226 +1,206 @@
-import { useState } from "react";
-import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
+import { useState, useRef, useEffect } from "react";
 import { css } from "../../styled-system/css";
 import CopyIcon from "./CopyIcon";
 import RefreshIcon from "./RefreshIcon";
-import { toast } from "react-toastify";
-import EyeOn from "../assets/eye-1.svg";
-import EyeOff from "../assets/eye-off-1.svg";
-import KakaoButton from "./KakaoButton";
 
 interface PasswordDisplayProps {
     password: string;
-    onRefresh: () => void;
+    onGenerate: () => void;
+    isPwned?: boolean;
 }
 
-const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
+const PasswordDisplay = ({
+    password,
+    onGenerate,
+    isPwned = false
+}: PasswordDisplayProps) => {
+    const [isCopied, setIsCopied] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const displayTimer = useRef<NodeJS.Timeout>();
 
-    const handlePasswordCopy = async () => {
-        if (!navigator.clipboard) {
-            toast.error("클립보드 기능을 사용할 수 없습니다.");
-            return;
-        }
-
+    const copyToClipboard = async () => {
         try {
             await navigator.clipboard.writeText(password);
-            toast.success("비밀번호가 복사되었습니다.");
-        } catch (error) {
-            toast.error("비밀번호 복사에 실패했습니다.");
+            setIsCopied(true);
+
+            // Clear any existing timer
+            if (displayTimer.current) {
+                clearTimeout(displayTimer.current);
+            }
+
+            // Set a new timer
+            displayTimer.current = setTimeout(() => {
+                setIsCopied(false);
+            }, 2000);
+        } catch (err) {
+            console.error("Failed to copy text: ", err);
         }
     };
 
+    // Clean up the timer on component unmount
+    useEffect(() => {
+        return () => {
+            if (displayTimer.current) {
+                clearTimeout(displayTimer.current);
+            }
+        };
+    }, []);
+
+    const containerStyles = css({
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0.75rem 1rem",
+        border: "1px solid",
+        borderColor: "gray.300",
+        borderRadius: "0.375rem",
+        backgroundColor: "white",
+        marginBottom: "1rem",
+        _focusWithin: {
+            borderColor: "blue.500",
+            boxShadow: "0 0 0 1px var(--colors-blue-500)"
+        }
+    });
+
+    const passwordStyles = css({
+        flex: 1,
+        fontFamily: "monospace",
+        fontSize: "1.125rem",
+        border: "none",
+        outline: "none",
+        backgroundColor: "transparent",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+        padding: 0,
+        margin: 0,
+        color: isPwned ? "red.500" : "inherit",
+        fontWeight: isPwned ? "bold" : "normal"
+    });
+
+    const buttonStyles = css({
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0.5rem",
+        border: "none",
+        borderRadius: "0.25rem",
+        backgroundColor: "transparent",
+        cursor: "pointer",
+        color: "gray.500",
+        _hover: {
+            backgroundColor: "gray.100",
+            color: "gray.700"
+        },
+        _focus: {
+            outline: "none",
+            boxShadow: "0 0 0 2px var(--colors-blue-200)"
+        }
+    });
+
+    const warningStyles = css({
+        fontSize: "0.875rem",
+        color: "red.500",
+        marginTop: "0.5rem",
+        display: "flex",
+        alignItems: "center",
+        gap: "0.25rem"
+    });
+
+    const copyButtonLabel = isCopied ? "복사됨!" : "비밀번호 복사";
+    const showPasswordLabel = showPassword
+        ? "비밀번호 가리기"
+        : "비밀번호 표시";
+    const displayPassword = showPassword
+        ? password
+        : "•".repeat(password.length > 20 ? 20 : password.length);
+
     return (
-        <div
-            className={css({
-                p: 6,
-                display: "flex",
-                flexDirection: "column",
-                gap: 4
-            })}
-        >
-            <div
-                className={css({
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                    p: 4,
-                    borderRadius: "md",
-                    bg: "muted",
-                    position: "relative"
-                })}
-            >
-                <div
-                    className={css({
-                        fontSize: "lg",
-                        fontWeight: "medium",
-                        wordBreak: "break-all",
-                        textAlign: "center",
-                        p: 2,
-                        borderRadius: "md",
-                        bg: "card",
-                        minHeight: "60px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        position: "relative",
-                        userSelect: "none"
-                    })}
-                >
-                    <div
-                        className={css({
-                            width: "100%",
-                            textAlign: "center"
-                        })}
-                    >
-                        {password ? (
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                value={password}
-                                readOnly
-                                className={css({
-                                    width: "100%",
-                                    textAlign: "center",
-                                    border: "none",
-                                    color: "text",
-                                    fontFamily: "monospace",
-                                    outline: "none",
-                                    bg: "transparent"
-                                })}
-                            />
-                        ) : (
-                            "비밀번호를 생성해주세요"
-                        )}
-                    </div>
+        <div>
+            <div className={containerStyles}>
+                <input
+                    type="text"
+                    value={displayPassword}
+                    readOnly
+                    className={passwordStyles}
+                    aria-label="생성된 비밀번호"
+                />
+                <div className={css({ display: "flex", gap: "0.25rem" })}>
                     <button
+                        type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className={css({
-                            position: "absolute",
-                            right: "2",
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            padding: "2",
-                            display: "flex",
-                            alignItems: "center",
-                            color: "text", // Add this line
-                            _hover: {
-                                opacity: 0.8
-                            },
-                            _focus: {
-                                outline: "2px solid",
-                                outlineColor: "blue.500",
-                                outlineOffset: "2px"
-                            }
-                        })}
-                        aria-label={
-                            showPassword ? "비밀번호 숨기기" : "비밀번호 보기"
-                        }
+                        className={buttonStyles}
+                        aria-label={showPasswordLabel}
+                        title={showPasswordLabel}
                     >
-                        <img
-                            src={showPassword ? EyeOff : EyeOn}
-                            alt={
-                                showPassword
-                                    ? "비밀번호 숨기기"
-                                    : "비밀번호 보기"
-                            }
-                            width="24"
-                            height="24"
-                        />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            {showPassword ? (
+                                <>
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </>
+                            ) : (
+                                <>
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </>
+                            )}
+                        </svg>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={copyToClipboard}
+                        className={buttonStyles}
+                        aria-label={copyButtonLabel}
+                        title={copyButtonLabel}
+                    >
+                        <CopyIcon />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onGenerate}
+                        className={buttonStyles}
+                        aria-label="새로 생성"
+                        title="새로 생성"
+                    >
+                        <RefreshIcon />
                     </button>
                 </div>
             </div>
 
-            <PasswordStrengthIndicator password={password} />
-
-            <div
-                className={css({
-                    display: "grid",
-                    gap: 2,
-                    gridTemplateColumns: {
-                        base: "1fr",
-                        sm: "repeat(auto-fit, minmax(120px, 1fr))"
-                    },
-                    width: "100%",
-                    maxWidth: "400px",
-                    margin: "0 auto"
-                })}
-            >
-                <button
-                    type="button"
-                    onClick={handlePasswordCopy}
-                    disabled={!password}
-                    className={css({
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 2,
-                        minWidth: "120px",
-                        background: "primary",
-                        borderRadius: "full",
-                        px: 4,
-                        py: 2,
-                        fontWeight: "bold",
-                        color: "primary-foreground",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "sm",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                        transition: "all 0.2s",
-                        _hover: {
-                            background: "primary-hover",
-                            transform: "translateY(-1px)",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
-                        }
-                    })}
-                    aria-label="비밀번호 복사하기"
-                >
-                    <CopyIcon />
-                    복사하기
-                </button>
-                <button
-                    type="button"
-                    onClick={onRefresh}
-                    className={css({
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 2,
-                        minWidth: "120px",
-                        background: "secondary",
-                        borderRadius: "full",
-                        px: 4,
-                        py: 2,
-                        fontWeight: "bold",
-                        color: "secondary-foreground",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "sm",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                        transition: "all 0.2s",
-                        _hover: {
-                            background: "secondary-hover",
-                            transform: "translateY(-1px)",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
-                        }
-                    })}
-                    aria-label="새로운 비밀번호 생성하기"
-                >
-                    <RefreshIcon />
-                    새로 생성
-                </button>
-                <KakaoButton
-                    options={{
-                        objectType: "text",
-                        text: `비밀번호 생성기를 사용해보세요!`,
-                        link: {
-                            webUrl: window.location.href
-                        }
-                    }}
-                />
-            </div>
+            {isPwned && (
+                <div className={warningStyles}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>
+                        이 비밀번호는 데이터 유출 사고에 노출되었을 수 있습니다.
+                        다른 비밀번호를 사용해주세요.
+                    </span>
+                </div>
+            )}
         </div>
     );
 };
