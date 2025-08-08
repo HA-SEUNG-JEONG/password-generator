@@ -19,6 +19,11 @@ interface CharacterOptions {
     };
 }
 
+const PASSPHRASE_CONFIG = {
+    MIN_WORDS_LENGTH: 3,
+    MAX_WORDS_LENGTH: 10
+} as const;
+
 interface PasswordOptionsProps {
     options: CharacterOptions;
     onChange: (options: Partial<CharacterOptions>) => void;
@@ -117,8 +122,8 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
                                 color: "gray.500"
                             })}
                         >
-                            <span>3</span>
-                            <span>10</span>
+                            <span>{PASSPHRASE_CONFIG.MIN_WORDS_LENGTH}</span>
+                            <span>{PASSPHRASE_CONFIG.MAX_WORDS_LENGTH}</span>
                         </div>
                     </div>
 
