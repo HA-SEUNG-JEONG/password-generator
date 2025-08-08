@@ -29,13 +29,6 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
         spaceY: "4"
     });
 
-    // Options for passphrase language
-    const languageOptions = [
-        { value: "en", label: "English" },
-        { value: "ko", label: "한국어" }
-    ];
-
-    // Options for passphrase separators
     const separatorOptions = [
         { value: "-", label: "하이픈 (-)" },
         { value: " ", label: "공백 ( )" },
@@ -44,7 +37,6 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
         { value: "_", label: "언더스코어 (_)" }
     ];
 
-    // Handle passphrase options change
     const handlePassphraseOptionChange = (key: string, value: any) => {
         onChange({
             passphraseOptions: {
@@ -130,48 +122,6 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
                         </div>
                     </div>
 
-                    {/* Language Selection */}
-                    <div>
-                        <label
-                            className={css({
-                                display: "block",
-                                marginBottom: "0.5rem",
-                                fontWeight: "medium"
-                            })}
-                        >
-                            언어
-                        </label>
-                        <select
-                            value={options.passphraseOptions.language}
-                            onChange={(e) =>
-                                handlePassphraseOptionChange(
-                                    "language",
-                                    e.target.value
-                                )
-                            }
-                            className={css({
-                                width: "100%",
-                                padding: "0.5rem",
-                                border: "1px solid",
-                                borderColor: "gray.300",
-                                borderRadius: "0.375rem",
-                                backgroundColor: "white",
-                                "&:focus": {
-                                    outline: "none",
-                                    borderColor: "blue.500",
-                                    ring: "1px solid blue.500"
-                                }
-                            })}
-                        >
-                            {languageOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Separator Selection */}
                     <div>
                         <label
                             className={css({
