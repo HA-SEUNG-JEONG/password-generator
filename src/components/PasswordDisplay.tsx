@@ -16,7 +16,7 @@ const PasswordDisplay = ({
 }: PasswordDisplayProps) => {
     const [isCopied, setIsCopied] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const displayTimer = useRef<NodeJS.Timeout>();
+    const displayTimer = useRef<ReturnType<typeof setTimeout>>();
 
     const copyToClipboard = async () => {
         try {
