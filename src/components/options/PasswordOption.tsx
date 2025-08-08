@@ -42,7 +42,12 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
         { value: "_", label: "언더스코어 (_)" }
     ];
 
-    const handlePassphraseOptionChange = (key: string, value: any) => {
+    const handlePassphraseOptionChange = <
+        T extends keyof CharacterOptions["passphraseOptions"]
+    >(
+        key: T,
+        value: CharacterOptions["passphraseOptions"][T]
+    ) => {
         onChange({
             passphraseOptions: {
                 ...options.passphraseOptions,
