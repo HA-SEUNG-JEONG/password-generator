@@ -3,10 +3,6 @@ import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
 import { css } from "../../styled-system/css";
 import CopyIcon from "./CopyIcon";
 import RefreshIcon from "./RefreshIcon";
-import { toast } from "react-toastify";
-import EyeOn from "../assets/eye-1.svg";
-import EyeOff from "../assets/eye-off-1.svg";
-import KakaoButton from "./KakaoButton";
 
 interface PasswordDisplayProps {
   password: string;
