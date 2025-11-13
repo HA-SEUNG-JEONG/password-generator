@@ -53,6 +53,7 @@ const PasswordGenerator = () => {
       const newPassword = generateSecurePassword(passwordOptions);
 
       if (newPassword === "") {
+        setPwnedCheckError(null);
         setHasEmptyPasswordWarning(true);
         setPassword("");
         setIsPwned(false);
