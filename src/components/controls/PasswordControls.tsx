@@ -1,22 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { css } from "../../../styled-system/css";
 import PasswordLength from "../PasswordLength";
 import { toast } from "react-toastify";
+import { PASSWORD_LENGTH } from "../../constants/password";
+import { useDebounce } from "../../utils/debounce";
 
 interface PasswordLengthControlProps {
     length: number;
     onLengthChange: (length: number) => void;
 }
 
-const PASSWORD_LENGTH = {
-    MIN: 8,
-    MAX: 30
-} as const;
-
 const PasswordLengthControl = ({
     length,
     onLengthChange
 }: PasswordLengthControlProps) => {
+    const [localLength, setLocalLength] = useState(length);
     const containerStyles = css({ spaceY: "2" });
 
     const inputStyles = css({
@@ -38,15 +36,31 @@ const PasswordLengthControl = ({
         },
     });
 
+    const debouncedOnLengthChange = useDebounce((value: number) => {
+        onLengthChange(value);
+    }, 300);
+
+    useEffect(() => {
+        setLocalLength(length);
+    }, [length]);
+
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value);
 
-        if (value > PASSWORD_LENGTH.MAX) {
-            toast.error(`비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다.`);
+        if (isNaN(value) || value < PASSWORD_LENGTH.MIN) {
+            setLocalLength(PASSWORD_LENGTH.MIN);
             return;
         }
 
-        onLengthChange(value);
+        if (value > PASSWORD_LENGTH.MAX) {
+            toast.error(`비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다.`);
+            setLocalLength(PASSWORD_LENGTH.MAX);
+            debouncedOnLengthChange(PASSWORD_LENGTH.MAX);
+            return;
+        }
+
+        setLocalLength(value);
+        debouncedOnLengthChange(value);
     };
 
     return (
@@ -64,7 +78,7 @@ const PasswordLengthControl = ({
                 aria-valuemin={PASSWORD_LENGTH.MIN}
                 aria-valuemax={PASSWORD_LENGTH.MAX}
                 aria-valuenow={length}
-                value={length}
+                value={localLength}
                 onChange={handlePasswordChange}
                 className={inputStyles}
                 step={1}
@@ -73,7 +87,7 @@ const PasswordLengthControl = ({
                 비밀번호 길이를 {PASSWORD_LENGTH.MIN}자에서{" "}
                 {PASSWORD_LENGTH.MAX}자 사이로 조절할 수 있습니다.
             </div>
-            <PasswordLength passwordLength={Math.round(length)} />
+            <PasswordLength passwordLength={Math.round(localLength)} />
         </div>
     );
 };

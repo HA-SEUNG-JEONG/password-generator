@@ -1,10 +1,5 @@
 import { css } from "../../styled-system/css";
-
-const PASSWORD_LENGTH = {
-    MIN: 8,
-    RECOMMEND: 12,
-    MAX: 30
-} as const;
+import { PASSWORD_LENGTH } from "../constants/password";
 
 const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
     const containerStyles = css({

@@ -32,13 +32,22 @@ export const checkPwnedPassword = async (password: string) => {
                     .some((line) => line.startsWith(suffix.toUpperCase()));
             } catch (error) {
                 retries++;
-                if (retries === MAX_RETRIES) throw error;
+                if (retries === MAX_RETRIES) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    if (errorMessage.includes("429") || errorMessage.includes("rate limit")) {
+                        throw new Error("429");
+                    }
+                    if (errorMessage.includes("network") || errorMessage.includes("fetch")) {
+                        throw new Error("network");
+                    }
+                    throw error;
+                }
                 await delay(Math.pow(2, retries) * 1000);
             }
         }
     } catch (error) {
         console.error("Password check failed:", error);
-        return false;
+        throw error;
     }
 };
 
@@ -67,15 +76,6 @@ export const generateSecurePassword = (options: {
 }): string => {
     const { length, lowercase, uppercase, numbers, special, excludeAmbiguous } =
         options;
-    // let allChars = "";
-    // if (lowercase) allChars += "abcdefghijklmnopqrstuvwxyz";
-    // if (uppercase) allChars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // if (numbers) allChars += "0123456789";
-    // if (special) allChars += "!@#$%^&*";
-
-    // if (excludeAmbiguous) {
-    //     allChars = allChars.replace(/[l1o0iOI]/g, "");
-    // }
 
     let lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
     let uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

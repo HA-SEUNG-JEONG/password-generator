@@ -1,27 +1,11 @@
 import PasswordCharacterOptions from "./PasswordCharacterOptions";
 import PasswordLengthControl from "../controls/PasswordControls";
 import { css } from "../../../styled-system/css";
-
-interface CharacterOptions {
-    lowercase: boolean;
-    uppercase: boolean;
-    numbers: boolean;
-    special: boolean;
-    excludeAmbiguous: boolean;
-}
+import { PasswordOptions as PasswordOptionsType } from "../../types/password";
 
 interface PasswordOptionsProps {
-    options: {
-        length: number;
-    } & CharacterOptions;
-    onChange: (options: {
-        length?: number;
-        lowercase?: boolean;
-        uppercase?: boolean;
-        numbers?: boolean;
-        special?: boolean;
-        excludeAmbiguous?: boolean;
-    }) => void;
+    options: PasswordOptionsType;
+    onChange: (options: Partial<PasswordOptionsType>) => void;
 }
 
 const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
@@ -37,7 +21,7 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
         >
             <PasswordLengthControl
                 length={options.length}
-                onLengthChange={(length) => onChange({ ...options, length })}
+                onLengthChange={(length) => onChange({ length })}
             />
             <PasswordCharacterOptions
                 options={options}

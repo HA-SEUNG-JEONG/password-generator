@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { css } from "../../../styled-system/css";
 
 interface CheckboxOptionProps {
@@ -90,4 +90,4 @@ const CheckboxOption = ({
     );
 };
 
-export default CheckboxOption;
+export default memo(CheckboxOption);
