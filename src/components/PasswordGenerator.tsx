@@ -118,12 +118,6 @@ const PasswordGenerator = () => {
           ...prevOptions,
           ...newOptions
         };
-        const newPassword = generateSecurePassword({
-          ...updatedOptions,
-          mode: updatedOptions.mode || "password",
-          passphraseOptions: updatedOptions.passphraseOptions
-        });
-        setPassword(newPassword);
         debouncedCheckPwned(updatedOptions);
         return updatedOptions;
       });
