@@ -47,7 +47,11 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
           p: 4,
           borderRadius: "md",
           bg: "muted",
-          position: "relative"
+          position: "relative",
+          width: "100%",
+          maxWidth: "100%",
+          overflow: "hidden",
+          boxSizing: "border-box"
         })}
       >
         <div
@@ -64,13 +68,21 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
             alignItems: "center",
             justifyContent: "center",
             position: "relative",
-            userSelect: "none"
+            userSelect: "none",
+            overflow: "hidden",
+            width: "100%",
+            maxWidth: "100%",
+            boxSizing: "border-box"
           })}
         >
           <div
             className={css({
               width: "100%",
-              textAlign: "center"
+              textAlign: "center",
+              paddingRight: "40px",
+              overflow: "hidden",
+              minWidth: 0,
+              flex: "1 1 0%"
             })}
           >
             {password ? (
@@ -82,12 +94,19 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 aria-label="생성된 비밀번호"
                 className={css({
                   width: "100%",
+                  maxWidth: "100%",
+                  minWidth: 0,
                   textAlign: "center",
                   border: "none",
                   color: "text",
                   fontFamily: "monospace",
                   outline: "none",
-                  bg: "transparent"
+                  bg: "transparent",
+                  wordBreak: "break-all",
+                  overflowWrap: "break-word",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  boxSizing: "border-box"
                 })}
               />
             ) : (

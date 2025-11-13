@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { css } from "../../../styled-system/css";
 import PasswordLength from "../PasswordLength";
 import { toast } from "react-toastify";
-import { PASSWORD_LENGTH } from "../../constants/password";
+import { PASSWORD_LENGTH } from "../../constants/passwordConfig";
 import { useDebounce } from "../../utils/debounce";
 
 interface PasswordLengthControlProps {

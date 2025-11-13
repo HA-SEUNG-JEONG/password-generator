@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { PASSPHRASE_CONFIG } from "../constants/passwordConfig";
 
 const generateSha1 = async (message: string): Promise<string> => {
     const msgBuffer = new TextEncoder().encode(message);
@@ -123,9 +124,9 @@ export const generateSecurePassphrase = (
         ...options
     };
 
-    if (words < 3 || words > 10) {
+    if (words < PASSPHRASE_CONFIG.MIN_WORDS_LENGTH || words > PASSPHRASE_CONFIG.MAX_WORDS_LENGTH) {
         // throw new Error("Number of words must be between 3 and 10");
-        toast("단어는 3개 이상 10개 이하로 설정해주세요.");
+        toast(`단어는 ${PASSPHRASE_CONFIG.MIN_WORDS_LENGTH}개 이상 ${PASSPHRASE_CONFIG.MAX_WORDS_LENGTH}개 이하로 설정해주세요.`);
     }
 
     if (!wordLists[language]) {
@@ -234,3 +235,4 @@ function getRandomChar(charset: string): string {
     const randomIndex = getSecureRandom(charset.length);
     return charset[randomIndex];
 }
+

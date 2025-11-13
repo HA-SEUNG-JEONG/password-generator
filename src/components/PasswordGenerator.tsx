@@ -1,6 +1,9 @@
 // components/PasswordGenerator/index.tsx
 import { useEffect, useState, useCallback } from "react";
-import { checkPwnedPassword, generateSecurePassword } from "../utils/password";
+import {
+  checkPwnedPassword,
+  generateSecurePassword
+} from "../utils/passwordGenerator";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
 import { css } from "../../styled-system/css";
@@ -40,7 +43,15 @@ const PasswordGenerator = () => {
     uppercase: true,
     numbers: true,
     special: true,
-    excludeAmbiguous: false
+    excludeAmbiguous: false,
+    mode: "password",
+    passphraseOptions: {
+      words: 5,
+      language: "en",
+      separator: " ",
+      capitalize: false,
+      includeNumber: false
+    }
   });
 
   const [isPwned, setIsPwned] = useState<boolean>(false);
@@ -50,7 +61,11 @@ const PasswordGenerator = () => {
 
   const generateAndCheckPassword = useCallback(
     async (passwordOptions: PasswordOptionsType) => {
-      const newPassword = generateSecurePassword(passwordOptions);
+      const newPassword = generateSecurePassword({
+        ...passwordOptions,
+        mode: passwordOptions.mode || "password",
+        passphraseOptions: passwordOptions.passphraseOptions
+      });
 
       if (newPassword === "") {
         setPwnedCheckError(null);
@@ -103,7 +118,11 @@ const PasswordGenerator = () => {
           ...prevOptions,
           ...newOptions
         };
-        const newPassword = generateSecurePassword(updatedOptions);
+        const newPassword = generateSecurePassword({
+          ...updatedOptions,
+          mode: updatedOptions.mode || "password",
+          passphraseOptions: updatedOptions.passphraseOptions
+        });
         setPassword(newPassword);
         debouncedCheckPwned(updatedOptions);
         return updatedOptions;
