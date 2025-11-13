@@ -4,6 +4,7 @@ import PasswordLength from "../PasswordLength";
 import { toast } from "react-toastify";
 import { PASSWORD_LENGTH } from "../../constants/passwordConfig";
 import { useDebounce } from "../../utils/debounce";
+import { ERROR_MESSAGES } from "../../constants/messages";
 
 interface PasswordLengthControlProps {
   length: number;
@@ -54,7 +55,7 @@ const PasswordLengthControl = ({
     }
 
     if (value > PASSWORD_LENGTH.MAX) {
-      toast.error(`비밀번호는 최대 ${PASSWORD_LENGTH.MAX}자 이하여야 합니다.`);
+      toast.error(ERROR_MESSAGES.PASSWORD_LENGTH_MAX(PASSWORD_LENGTH.MAX));
       setLocalLength(PASSWORD_LENGTH.MAX);
       debouncedOnLengthChange(PASSWORD_LENGTH.MAX);
       return;

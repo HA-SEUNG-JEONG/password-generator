@@ -2,7 +2,10 @@ import PasswordCharacterOptions from "./PasswordCharacterOptions";
 import PasswordLengthControl from "../controls/PasswordControls";
 import { css } from "../../../styled-system/css";
 import { PasswordOptions as PasswordOptionsType } from "../../types/password";
-import { PASSPHRASE_CONFIG } from "../../constants/passwordConfig";
+import {
+  PASSPHRASE_CONFIG,
+  DEFAULT_PASSPHRASE_OPTIONS
+} from "../../constants/passwordConfig";
 import CheckboxOption from "./CheckboxOption";
 
 interface PasswordOptionsProps {
@@ -79,13 +82,8 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
   });
 
   const isPassphraseMode = options.mode === "passphrase";
-  const passphraseOptions = options.passphraseOptions || {
-    words: 5,
-    language: "en",
-    separator: " ",
-    capitalize: false,
-    includeNumber: false
-  };
+  const passphraseOptions =
+    options.passphraseOptions || DEFAULT_PASSPHRASE_OPTIONS;
 
   return (
     <div

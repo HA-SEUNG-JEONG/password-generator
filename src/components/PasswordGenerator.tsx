@@ -1,14 +1,13 @@
-// components/PasswordGenerator/index.tsx
 import { useEffect, useState, useCallback } from "react";
-import {
-  checkPwnedPassword,
-  generateSecurePassword
-} from "../utils/passwordGenerator";
+import { generateSecurePassword } from "../utils/passwordGenerator";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
 import { css } from "../../styled-system/css";
 import { PasswordOptions as PasswordOptionsType } from "../types/password";
 import { useDebounce } from "../utils/debounce";
+import { DEFAULT_PASSPHRASE_OPTIONS } from "../constants/passwordConfig";
+import { ERROR_MESSAGES } from "../constants/messages";
+import { usePwnedCheck } from "../hooks/usePwnedCheck";
 
 const containerStyles = css({
   spaceY: "1.5",
@@ -45,71 +44,55 @@ const PasswordGenerator = () => {
     special: true,
     excludeAmbiguous: false,
     mode: "password",
-    passphraseOptions: {
-      words: 5,
-      language: "en",
-      separator: " ",
-      capitalize: false,
-      includeNumber: false
-    }
+    passphraseOptions: DEFAULT_PASSPHRASE_OPTIONS
   });
 
-  const [isPwned, setIsPwned] = useState<boolean>(false);
-  const [isCheckingPwned, setIsCheckingPwned] = useState<boolean>(false);
-  const [pwnedCheckError, setPwnedCheckError] = useState<string | null>(null);
   const [hasEmptyPasswordWarning, setHasEmptyPasswordWarning] = useState(false);
+  const {
+    isPwned,
+    isChecking: isCheckingPwned,
+    error: pwnedCheckError,
+    checkPassword: checkPwned
+  } = usePwnedCheck();
 
-  const generateAndCheckPassword = useCallback(
-    async (passwordOptions: PasswordOptionsType) => {
-      const newPassword = generateSecurePassword({
+  const generatePassword = useCallback(
+    (passwordOptions: PasswordOptionsType): string => {
+      return generateSecurePassword({
         ...passwordOptions,
         mode: passwordOptions.mode || "password",
         passphraseOptions: passwordOptions.passphraseOptions
       });
+    },
+    []
+  );
+
+  const handlePasswordGeneration = useCallback(
+    (passwordOptions: PasswordOptionsType) => {
+      const newPassword = generatePassword(passwordOptions);
 
       if (newPassword === "") {
-        setPwnedCheckError(null);
         setHasEmptyPasswordWarning(true);
         setPassword("");
-        setIsPwned(false);
-        setIsCheckingPwned(false);
         return;
       }
 
       setHasEmptyPasswordWarning(false);
       setPassword(newPassword);
-      setIsCheckingPwned(true);
-      setPwnedCheckError(null);
-
-      try {
-        const check = await checkPwnedPassword(newPassword);
-        setIsPwned(check ?? false);
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error && error.message.includes("429")
-            ? "너무 많은 요청이 발생했습니다. 잠시 후 다시 시도해주세요."
-            : error instanceof Error && error.message.includes("network")
-              ? "네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요."
-              : "비밀번호 보안 검사 중 오류가 발생했습니다.";
-        setPwnedCheckError(errorMessage);
-        setIsPwned(false);
-      } finally {
-        setIsCheckingPwned(false);
-      }
+      checkPwned(newPassword);
     },
-    []
+    [generatePassword, checkPwned]
   );
 
-  const debouncedCheckPwned = useDebounce(
+  const debouncedGeneratePassword = useDebounce(
     (passwordOptions: PasswordOptionsType) => {
-      generateAndCheckPassword(passwordOptions);
+      handlePasswordGeneration(passwordOptions);
     },
     500
   );
 
   const handleGeneratePassword = useCallback(() => {
-    generateAndCheckPassword(options);
-  }, [options, generateAndCheckPassword]);
+    handlePasswordGeneration(options);
+  }, [options, handlePasswordGeneration]);
 
   const onChangeOptions = useCallback(
     (newOptions: Partial<PasswordOptionsType>) => {
@@ -118,15 +101,15 @@ const PasswordGenerator = () => {
           ...prevOptions,
           ...newOptions
         };
-        debouncedCheckPwned(updatedOptions);
+        debouncedGeneratePassword(updatedOptions);
         return updatedOptions;
       });
     },
-    [debouncedCheckPwned]
+    [debouncedGeneratePassword]
   );
 
   useEffect(() => {
-    generateAndCheckPassword(options);
+    handlePasswordGeneration(options);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -157,14 +140,12 @@ const PasswordGenerator = () => {
       )}
       {!isCheckingPwned && !pwnedCheckError && isPwned && (
         <div className={warningStyles} role="alert">
-          이 비밀번호는 데이터 유출 사고에 노출되었을 수 있습니다. 다른
-          비밀번호를 사용하거나, 이 비밀번호를 사용하는 다른 서비스의 비밀번호를
-          변경하세요.
+          {ERROR_MESSAGES.PASSWORD_PWNED_WARNING}
         </div>
       )}
       {hasEmptyPasswordWarning && (
         <div className={warningStyles} role="alert">
-          최소 하나 이상의 문자 유형을 선택해야 합니다.
+          {ERROR_MESSAGES.PASSWORD_EMPTY_WARNING}
         </div>
       )}
       <PasswordOptions options={options} onChange={onChangeOptions} />
