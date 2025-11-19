@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { generateSecurePassword } from "../utils/passwordGenerator";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
@@ -8,6 +8,7 @@ import { useDebounce } from "../utils/debounce";
 import { DEFAULT_PASSPHRASE_OPTIONS } from "../constants/passwordConfig";
 import { ERROR_MESSAGES } from "../constants/messages";
 import { usePwnedCheck } from "../hooks/usePwnedCheck";
+import { DEBOUNCE_DELAY } from "../constants/timing";
 
 const containerStyles = css({
   spaceY: "1.5",
@@ -35,7 +36,25 @@ const errorStyles = css({
 });
 
 const PasswordGenerator = () => {
-  const [password, setPassword] = useState("");
+  // 초기 비밀번호 생성을 lazy initialization으로 처리
+  const [password, setPassword] = useState(() => {
+    const initialOptions: PasswordOptionsType = {
+      length: 12,
+      lowercase: true,
+      uppercase: true,
+      numbers: true,
+      special: true,
+      excludeAmbiguous: false,
+      mode: "password",
+      passphraseOptions: DEFAULT_PASSPHRASE_OPTIONS
+    };
+    return generateSecurePassword({
+      ...initialOptions,
+      mode: initialOptions.mode || "password",
+      passphraseOptions: initialOptions.passphraseOptions
+    });
+  });
+
   const [options, setOptions] = useState<PasswordOptionsType>({
     length: 12,
     lowercase: true,
@@ -54,6 +73,9 @@ const PasswordGenerator = () => {
     error: pwnedCheckError,
     checkPassword: checkPwned
   } = usePwnedCheck();
+
+  // 초기 렌더링 여부 추적
+  const isInitialMount = useRef(true);
 
   const generatePassword = useCallback(
     (passwordOptions: PasswordOptionsType): string => {
@@ -87,7 +109,7 @@ const PasswordGenerator = () => {
     (passwordOptions: PasswordOptionsType) => {
       handlePasswordGeneration(passwordOptions);
     },
-    500
+    DEBOUNCE_DELAY.PASSWORD_GENERATION
   );
 
   const handleGeneratePassword = useCallback(() => {
@@ -108,10 +130,13 @@ const PasswordGenerator = () => {
     [debouncedGeneratePassword]
   );
 
+  // 초기 마운트 시 한 번만 Pwned 체크
   useEffect(() => {
-    handlePasswordGeneration(options);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      checkPwned(password);
+    }
+  }, [password, checkPwned]);
 
   return (
     <div className={containerStyles}>

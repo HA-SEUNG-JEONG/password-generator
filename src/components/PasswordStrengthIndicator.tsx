@@ -1,8 +1,9 @@
 import { strengthLevels, StrengthLevel } from "@/utils/strengthLevel";
 import zxcvbn from "zxcvbn";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { css } from "../../styled-system/css";
 import { useDebounce } from "../utils/debounce";
+import { DEBOUNCE_DELAY } from "../constants/timing";
 
 interface PasswordStrengthIndicatorProps {
     password: string;
@@ -14,23 +15,41 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
     const [currentStrength, setCurrentStrength] = useState<StrengthLevel>(strengthLevels[0]);
     const [score, setScore] = useState(0);
 
-    const getStrengthLevel = (score: number): StrengthLevel => {
+    const getStrengthLevel = useCallback((score: number): StrengthLevel => {
         return (
             strengthLevels.find((level) => level.score === score) ||
             strengthLevels[0]
         );
-    };
+    }, []);
 
-    const updateStrength = useDebounce((pwd: string) => {
+    // useCallback으로 메모이제이션하여 불필요한 리렌더링 방지
+    const updateStrengthCallback = useCallback((pwd: string) => {
+        if (!pwd) {
+            setScore(0);
+            setCurrentStrength(strengthLevels[0]);
+            return;
+        }
         const result = zxcvbn(pwd);
         const strength = getStrengthLevel(result.score);
         setScore(result.score);
         setCurrentStrength(strength);
-    }, 200);
+    }, [getStrengthLevel]);
+
+    const updateStrength = useDebounce(
+        updateStrengthCallback,
+        DEBOUNCE_DELAY.STRENGTH_CHECK
+    );
+
+    // debounce된 함수를 ref로 관리하여 의존성 배열에서 제외
+    const updateStrengthRef = useRef(updateStrength);
+    
+    useEffect(() => {
+        updateStrengthRef.current = updateStrength;
+    }, [updateStrength]);
 
     useEffect(() => {
-        updateStrength(password);
-    }, [password, updateStrength]);
+        updateStrengthRef.current(password);
+    }, [password]);
 
     const containerStyles = css({
         display: "flex",
@@ -67,8 +86,21 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
     });
 
     return (
-        <div className={containerStyles}>
-            <div className={progressBarContainerStyles}>
+        <div 
+            className={containerStyles}
+            id="password-strength"
+            role="status"
+            aria-live="polite"
+            aria-label={`비밀번호 강도: ${currentStrength.message}`}
+        >
+            <div 
+                className={progressBarContainerStyles}
+                role="progressbar"
+                aria-valuenow={score}
+                aria-valuemin={0}
+                aria-valuemax={4}
+                aria-label="비밀번호 강도 수준"
+            >
                 <div className={progressBarStyles}></div>
             </div>
             <p className={messageStyles}>

@@ -1,7 +1,7 @@
 import { css } from "../styled-system/css";
 import PasswordGenerator from "./components/PasswordGenerator";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { KakaoProvider } from "./contexts/KakaoContext";
 
 const App = () => {
     const [theme, setTheme] = useState(() => {
@@ -18,50 +18,28 @@ const App = () => {
         setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
     };
 
-    useEffect(() => {
-        const initKakao = () => {
-            const kakaoKey = import.meta.env.VITE_REST_API_KEY;
-
-            if (window.Kakao && !window.Kakao.isInitialized()) {
-                try {
-                    window.Kakao.init(kakaoKey);
-                } catch (error) {
-                    toast.error("카카오 SDK 초기화 실패");
-                }
-            }
-        };
-
-        if (document.readyState === "complete") {
-            initKakao();
-        } else {
-            window.addEventListener("load", initKakao);
-        }
-
-        return () => {
-            window.removeEventListener("load", initKakao);
-        };
-    }, []);
-
     return (
-        <div
-            className={css({
-                minHeight: "screen",
-                transitionProperty: "colors",
-                transitionDuration: "200ms",
-                borderRadius: "lg",
-                border: "1px solid",
-                bg: "card",
-                color: "card-foreground",
-                shadow: "sm",
-                p: { base: "4", md: "8" },
-                maxWidth: "500px",
-                margin: "0 auto"
-            })}
-        >
+        <KakaoProvider>
+            <div
+                className={css({
+                    minHeight: "screen",
+                    transitionProperty: "colors",
+                    transitionDuration: "200ms",
+                    borderRadius: "lg",
+                    border: "1px solid",
+                    bg: "card",
+                    color: "card-foreground",
+                    shadow: "sm",
+                    p: { base: "4", md: "8" },
+                    maxWidth: "500px",
+                    margin: "0 auto"
+                })}
+            >
             <button
                 onClick={toggleTheme}
-                aria-label={`Switch to ${theme === "light" ? "dark" : "light"}`}
-                title={`Switch to ${theme === "light" ? "dark" : "light"}`}
+                aria-label={`${theme === "light" ? "다크" : "라이트"} 모드로 전환`}
+                aria-pressed={theme === "dark"}
+                type="button"
                 className={css({
                     position: "absolute",
                     top: "4",
@@ -71,7 +49,12 @@ const App = () => {
                     cursor: "pointer",
                     fontSize: "xl",
                     color: "text",
-                    "&:focus": {
+                    padding: "2",
+                    borderRadius: "md",
+                    _hover: {
+                        opacity: 0.8
+                    },
+                    _focus: {
                         outline: "2px solid",
                         outlineOffset: "2px",
                         outlineColor: "ring"
@@ -80,8 +63,9 @@ const App = () => {
             >
                 {theme === "light" ? "🌙" : "☀️"}
             </button>
-            <PasswordGenerator />
-        </div>
+                <PasswordGenerator />
+            </div>
+        </KakaoProvider>
     );
 };
 

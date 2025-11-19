@@ -1,5 +1,4 @@
-import { useState, memo } from "react";
-import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
+import { useState, memo, lazy, Suspense } from "react";
 import { css } from "../../styled-system/css";
 import CopyIcon from "./CopyIcon";
 import EyeOff from "../assets/eye-off-1.svg";
@@ -7,6 +6,11 @@ import EyeOn from "../assets/eye-1.svg";
 import RefreshIcon from "./RefreshIcon";
 import { toast } from "react-toastify";
 import KakaoButton from "./KakaoButton";
+
+// 코드 스플리팅: zxcvbn 라이브러리(~800KB)를 포함하는 컴포넌트를 지연 로딩
+const PasswordStrengthIndicator = lazy(
+  () => import("./PasswordStrengthIndicator")
+);
 
 interface PasswordDisplayProps {
   password: string;
@@ -90,8 +94,9 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 readOnly
-                tabIndex={-1}
                 aria-label="생성된 비밀번호"
+                aria-readonly="true"
+                aria-describedby="password-strength"
                 className={css({
                   width: "100%",
                   maxWidth: "100%",
@@ -106,11 +111,20 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                   overflowWrap: "break-word",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  boxSizing: "border-box"
+                  boxSizing: "border-box",
+                  cursor: "text",
+                  userSelect: "all",
+                  _focus: {
+                    outline: "2px solid",
+                    outlineColor: "ring",
+                    outlineOffset: "2px"
+                  }
                 })}
               />
             ) : (
-              "비밀번호를 생성해주세요"
+              <span role="status" aria-live="polite">
+                비밀번호를 생성해주세요
+              </span>
             )}
           </div>
           <button
@@ -126,29 +140,61 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
               padding: "2",
               display: "flex",
               alignItems: "center",
-              color: "text", // Add this line
+              color: "text",
               _hover: {
                 opacity: 0.8
               },
               _focus: {
                 outline: "2px solid",
-                outlineColor: "blue.500",
-                outlineOffset: "2px"
+                outlineColor: "ring",
+                outlineOffset: "2px",
+                borderRadius: "sm"
               }
             })}
             aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+            aria-pressed={showPassword}
+            type="button"
           >
             <img
               src={showPassword ? EyeOff : EyeOn}
               alt={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
               width="24"
               height="24"
+              aria-hidden="true"
             />
           </button>
         </div>
       </div>
 
-      <PasswordStrengthIndicator password={password} />
+      <Suspense
+        fallback={
+          <div
+            className={css({
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              marginTop: "4",
+              height: "50px",
+              justifyContent: "center"
+            })}
+          >
+            <div
+              className={css({
+                display: "inline-block",
+                width: "20px",
+                height: "20px",
+                border: "3px solid",
+                borderColor: "gray.300",
+                borderTopColor: "gray.600",
+                borderRadius: "full",
+                animation: "spin 0.6s linear infinite"
+              })}
+            />
+          </div>
+        }
+      >
+        <PasswordStrengthIndicator password={password} />
+      </Suspense>
 
       <div
         className={css({
@@ -188,11 +234,24 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
               background: "primary-hover",
               transform: "translateY(-1px)",
               boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+            },
+            _focus: {
+              outline: "2px solid",
+              outlineColor: "ring",
+              outlineOffset: "2px"
+            },
+            _disabled: {
+              opacity: 0.5,
+              cursor: "not-allowed",
+              _hover: {
+                transform: "none",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+              }
             }
           })}
-          aria-label="비밀번호 복사하기"
+          aria-label="비밀번호 클립보드에 복사하기"
         >
-          <CopyIcon />
+          <CopyIcon aria-hidden="true" />
           복사하기
         </button>
         <button
@@ -219,11 +278,16 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
               background: "secondary-hover",
               transform: "translateY(-1px)",
               boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+            },
+            _focus: {
+              outline: "2px solid",
+              outlineColor: "ring",
+              outlineOffset: "2px"
             }
           })}
           aria-label="새로운 비밀번호 생성하기"
         >
-          <RefreshIcon />
+          <RefreshIcon aria-hidden="true" />
           새로 생성
         </button>
         <KakaoButton

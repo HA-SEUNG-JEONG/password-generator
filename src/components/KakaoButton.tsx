@@ -2,37 +2,29 @@ import { css } from "../../styled-system/css";
 
 import { KakaoShareOptions } from "../global.d";
 import { toast } from "react-toastify";
+import { useKakaoSDK } from "../contexts/KakaoContext";
 
 interface KakaoButtonProps {
     options: KakaoShareOptions;
 }
 
 const KakaoButton = ({ options }: KakaoButtonProps) => {
-    const handleKakaoShare = () => {
-        const kakaoKey = import.meta.env.VITE_REST_API_KEY;
+    const { isInitialized, error } = useKakaoSDK();
 
-        if (!window.Kakao) {
-            toast.error("카카오 SDK를 불러오지 못했습니다.");
+    const handleKakaoShare = () => {
+        if (error) {
+            toast.error(error);
             return;
         }
 
-        if (!kakaoKey) {
-            toast.error("카카오 API 키가 설정되지 않았습니다.");
+        if (!isInitialized) {
+            toast.error("카카오 SDK가 초기화되지 않았습니다.");
             return;
         }
 
         if (!options.text) {
             toast.error("공유할 비밀번호가 없습니다.");
             return;
-        }
-
-        if (!window.Kakao.isInitialized()) {
-            try {
-                window.Kakao.init(kakaoKey);
-            } catch (error) {
-                toast.error("카카오 SDK 초기화 실패");
-                return;
-            }
         }
 
         try {
