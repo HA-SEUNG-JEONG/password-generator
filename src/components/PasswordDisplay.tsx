@@ -19,6 +19,7 @@ interface PasswordDisplayProps {
 
 const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handlePasswordCopy = async () => {
     if (!navigator.clipboard) {
@@ -32,6 +33,12 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
     } catch (error) {
       toast.error("비밀번호 복사에 실패했습니다.");
     }
+  };
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    onRefresh();
+    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   return (
@@ -256,7 +263,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         </button>
         <button
           type="button"
-          onClick={onRefresh}
+          onClick={handleRefresh}
           className={css({
             display: "inline-flex",
             alignItems: "center",
@@ -287,7 +294,16 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
           })}
           aria-label="새로운 비밀번호 생성하기"
         >
-          <RefreshIcon aria-hidden="true" />
+          <div
+            className={css({
+              display: "flex",
+              alignItems: "center",
+              transition: "transform 0.5s ease-in-out",
+              transform: isRefreshing ? "rotate(180deg)" : "rotate(0deg)"
+            })}
+          >
+            <RefreshIcon aria-hidden="true" />
+          </div>
           새로 생성
         </button>
         <KakaoButton

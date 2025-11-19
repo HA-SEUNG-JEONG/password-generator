@@ -35,36 +35,28 @@ const errorStyles = css({
   color: "orange.500"
 });
 
+const DEFAULT_PASSWORD_OPTIONS: PasswordOptionsType = {
+  length: 12,
+  lowercase: true,
+  uppercase: true,
+  numbers: true,
+  special: true,
+  excludeAmbiguous: false,
+  mode: "password",
+  passphraseOptions: DEFAULT_PASSPHRASE_OPTIONS
+};
+
 const PasswordGenerator = () => {
   // 초기 비밀번호 생성을 lazy initialization으로 처리
   const [password, setPassword] = useState(() => {
-    const initialOptions: PasswordOptionsType = {
-      length: 12,
-      lowercase: true,
-      uppercase: true,
-      numbers: true,
-      special: true,
-      excludeAmbiguous: false,
-      mode: "password",
-      passphraseOptions: DEFAULT_PASSPHRASE_OPTIONS
-    };
     return generateSecurePassword({
-      ...initialOptions,
-      mode: initialOptions.mode || "password",
-      passphraseOptions: initialOptions.passphraseOptions
+      ...DEFAULT_PASSWORD_OPTIONS,
+      mode: DEFAULT_PASSWORD_OPTIONS.mode || "password",
+      passphraseOptions: DEFAULT_PASSWORD_OPTIONS.passphraseOptions
     });
   });
 
-  const [options, setOptions] = useState<PasswordOptionsType>({
-    length: 12,
-    lowercase: true,
-    uppercase: true,
-    numbers: true,
-    special: true,
-    excludeAmbiguous: false,
-    mode: "password",
-    passphraseOptions: DEFAULT_PASSPHRASE_OPTIONS
-  });
+  const [options, setOptions] = useState<PasswordOptionsType>(DEFAULT_PASSWORD_OPTIONS);
 
   const [hasEmptyPasswordWarning, setHasEmptyPasswordWarning] = useState(false);
   const {
@@ -77,20 +69,13 @@ const PasswordGenerator = () => {
   // 초기 렌더링 여부 추적
   const isInitialMount = useRef(true);
 
-  const generatePassword = useCallback(
-    (passwordOptions: PasswordOptionsType): string => {
-      return generateSecurePassword({
+  const handlePasswordGeneration = useCallback(
+    (passwordOptions: PasswordOptionsType) => {
+      const newPassword = generateSecurePassword({
         ...passwordOptions,
         mode: passwordOptions.mode || "password",
         passphraseOptions: passwordOptions.passphraseOptions
       });
-    },
-    []
-  );
-
-  const handlePasswordGeneration = useCallback(
-    (passwordOptions: PasswordOptionsType) => {
-      const newPassword = generatePassword(passwordOptions);
 
       if (newPassword === "") {
         setHasEmptyPasswordWarning(true);
@@ -102,7 +87,7 @@ const PasswordGenerator = () => {
       setPassword(newPassword);
       checkPwned(newPassword);
     },
-    [generatePassword, checkPwned]
+    [checkPwned]
   );
 
   const debouncedGeneratePassword = useDebounce(
