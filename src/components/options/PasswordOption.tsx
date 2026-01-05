@@ -1,237 +1,200 @@
 import PasswordCharacterOptions from "./PasswordCharacterOptions";
 import PasswordLengthControl from "../controls/PasswordControls";
 import { css } from "../../../styled-system/css";
-
-interface CharacterOptions {
-    length: number;
-    lowercase: boolean;
-    uppercase: boolean;
-    numbers: boolean;
-    special: boolean;
-    excludeAmbiguous: boolean;
-    mode: "password" | "passphrase";
-    passphraseOptions: {
-        words: number;
-        language: string;
-        separator: string;
-        capitalize: boolean;
-        includeNumber: boolean;
-    };
-}
-
-const PASSPHRASE_CONFIG = {
-    MIN_WORDS_LENGTH: 3,
-    MAX_WORDS_LENGTH: 10
-} as const;
+import { PasswordOptions as PasswordOptionsType } from "../../types/password";
+import {
+  PASSPHRASE_CONFIG,
+  DEFAULT_PASSPHRASE_OPTIONS
+} from "../../constants/passwordConfig";
+import CheckboxOption from "./CheckboxOption";
 
 interface PasswordOptionsProps {
-    options: CharacterOptions;
-    onChange: (options: Partial<CharacterOptions>) => void;
+  options: PasswordOptionsType;
+  onChange: (options: Partial<PasswordOptionsType>) => void;
 }
 
 const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
-    const containerStyles = css({
-        spaceY: "4"
+  const containerStyles = css({
+    spaceY: "4"
+  });
+
+  const modeToggleStyles = css({
+    display: "flex",
+    alignItems: "center",
+    gap: "2",
+    padding: "2",
+    borderRadius: "md",
+    border: "2px solid",
+    borderColor: "gray.200",
+    backgroundColor: "gray.50"
+  });
+
+  const modeButtonStyles = (isActive: boolean) =>
+    css({
+      flex: 1,
+      padding: "2",
+      borderRadius: "md",
+      border: "none",
+      cursor: "pointer",
+      fontWeight: "medium",
+      fontSize: "sm",
+      transition: "all 0.2s",
+      backgroundColor: isActive ? "blue.500" : "transparent",
+      color: isActive ? "white" : "gray.700",
+      _hover: {
+        backgroundColor: isActive ? "blue.600" : "gray.100"
+      },
+      _focus: {
+        outline: "2px solid",
+        outlineColor: "blue.500",
+        outlineOffset: "2px"
+      }
     });
 
-    const separatorOptions = [
-        { value: "-", label: "하이픈 (-)" },
-        { value: " ", label: "공백 ( )" },
-        { value: ".", label: "마침표 (.)" },
-        { value: ",", label: "쉼표 (,)" },
-        { value: "_", label: "언더스코어 (_)" }
-    ];
+  const passphraseOptionsStyles = css({
+    spaceY: "2",
+    padding: "3",
+    borderRadius: "md",
+    border: "1px solid",
+    borderColor: "gray.200",
+    backgroundColor: "gray.50"
+  });
 
-    const handlePassphraseOptionChange = (key: string, value: any) => {
-        onChange({
-            passphraseOptions: {
-                ...options.passphraseOptions,
-                [key]: value
-            }
-        });
-    };
+  const inputStyles = css({
+    w: "full",
+    padding: "2",
+    border: "1px solid",
+    borderColor: "gray.300",
+    borderRadius: "md",
+    fontSize: "sm",
+    _focus: {
+      outline: "2px solid",
+      outlineColor: "blue.500",
+      outlineOffset: "2px"
+    }
+  });
 
-    return (
-        <div
-            className={containerStyles}
-            role="group"
-            aria-label="비밀번호 생성 옵션"
+  const labelStyles = css({
+    fontSize: "sm",
+    fontWeight: "medium",
+    color: "text",
+    marginBottom: "1"
+  });
+
+  const isPassphraseMode = options.mode === "passphrase";
+  const passphraseOptions =
+    options.passphraseOptions || DEFAULT_PASSPHRASE_OPTIONS;
+
+  return (
+    <div
+      className={containerStyles}
+      role="group"
+      aria-label="비밀번호 생성 옵션"
+    >
+      <div className={modeToggleStyles}>
+        <button
+          type="button"
+          onClick={() => onChange({ mode: "password" })}
+          className={modeButtonStyles(!isPassphraseMode)}
+          aria-pressed={!isPassphraseMode}
         >
-            {options.mode === "password" ? (
-                <>
-                    <PasswordLengthControl
-                        length={options.length}
-                        onLengthChange={(length) => onChange({ length })}
-                    />
-                    <PasswordCharacterOptions
-                        options={{
-                            lowercase: options.lowercase,
-                            uppercase: options.uppercase,
-                            numbers: options.numbers,
-                            special: options.special,
-                            excludeAmbiguous: options.excludeAmbiguous
-                        }}
-                        onOptionsChange={(newOptions) => onChange(newOptions)}
-                    />
-                </>
-            ) : (
-                <div className={css({ spaceY: "4" })}>
-                    {/* Words Count */}
-                    <div>
-                        <label
-                            className={css({
-                                display: "block",
-                                marginBottom: "0.5rem",
-                                fontWeight: "medium"
-                            })}
-                        >
-                            단어 개수: {options.passphraseOptions.words}
-                        </label>
-                        <input
-                            type="range"
-                            min="3"
-                            max="10"
-                            value={options.passphraseOptions.words}
-                            onChange={(e) =>
-                                handlePassphraseOptionChange(
-                                    "words",
-                                    parseInt(e.target.value)
-                                )
-                            }
-                            className={css({
-                                width: "100%",
-                                height: "0.5rem",
-                                appearance: "none",
-                                backgroundColor: "gray.200",
-                                borderRadius: "0.25rem",
-                                "&::-webkit-slider-thumb": {
-                                    appearance: "none",
-                                    width: "1.25rem",
-                                    height: "1.25rem",
-                                    borderRadius: "50%",
-                                    backgroundColor: "blue.500",
-                                    cursor: "pointer"
-                                }
-                            })}
-                        />
-                        <div
-                            className={css({
-                                display: "flex",
-                                justifyContent: "space-between",
-                                fontSize: "0.75rem",
-                                color: "gray.500"
-                            })}
-                        >
-                            <span>{PASSPHRASE_CONFIG.MIN_WORDS_LENGTH}</span>
-                            <span>{PASSPHRASE_CONFIG.MAX_WORDS_LENGTH}</span>
-                        </div>
-                    </div>
+          비밀번호
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange({ mode: "passphrase" })}
+          className={modeButtonStyles(isPassphraseMode)}
+          aria-pressed={isPassphraseMode}
+        >
+          Passphrase
+        </button>
+      </div>
 
-                    <div>
-                        <label
-                            className={css({
-                                display: "block",
-                                marginBottom: "0.5rem",
-                                fontWeight: "medium"
-                            })}
-                        >
-                            구분자
-                        </label>
-                        <select
-                            value={options.passphraseOptions.separator}
-                            onChange={(e) =>
-                                handlePassphraseOptionChange(
-                                    "separator",
-                                    e.target.value
-                                )
-                            }
-                            className={css({
-                                width: "100%",
-                                padding: "0.5rem",
-                                border: "1px solid",
-                                borderColor: "gray.300",
-                                borderRadius: "0.375rem",
-                                backgroundColor: "white",
-                                "&:focus": {
-                                    outline: "none",
-                                    borderColor: "blue.500",
-                                    ring: "1px solid blue.500"
-                                }
-                            })}
-                        >
-                            {separatorOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Additional Options */}
-                    <div
-                        className={css({
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "0.5rem"
-                        })}
-                    >
-                        <label
-                            className={css({
-                                display: "flex",
-                                alignItems: "center",
-                                cursor: "pointer"
-                            })}
-                        >
-                            <input
-                                type="checkbox"
-                                checked={options.passphraseOptions.capitalize}
-                                onChange={(e) =>
-                                    handlePassphraseOptionChange(
-                                        "capitalize",
-                                        e.target.checked
-                                    )
-                                }
-                                className={css({
-                                    marginRight: "0.5rem",
-                                    width: "1rem",
-                                    height: "1rem",
-                                    cursor: "pointer"
-                                })}
-                            />
-                            <span>단어 첫 글자 대문자로 표시</span>
-                        </label>
-                        <label
-                            className={css({
-                                display: "flex",
-                                alignItems: "center",
-                                cursor: "pointer"
-                            })}
-                        >
-                            <input
-                                type="checkbox"
-                                checked={
-                                    options.passphraseOptions.includeNumber
-                                }
-                                onChange={(e) =>
-                                    handlePassphraseOptionChange(
-                                        "includeNumber",
-                                        e.target.checked
-                                    )
-                                }
-                                className={css({
-                                    marginRight: "0.5rem",
-                                    width: "1rem",
-                                    height: "1rem",
-                                    cursor: "pointer"
-                                })}
-                            />
-                            <span>숫자 포함</span>
-                        </label>
-                    </div>
-                </div>
-            )}
+      {isPassphraseMode ? (
+        <div className={passphraseOptionsStyles}>
+          <div>
+            <label className={labelStyles} htmlFor="passphrase-words">
+              단어 개수: {passphraseOptions.words || 5}
+            </label>
+            <input
+              id="passphrase-words"
+              type="range"
+              min={PASSPHRASE_CONFIG.MIN_WORDS_LENGTH}
+              max={PASSPHRASE_CONFIG.MAX_WORDS_LENGTH}
+              value={passphraseOptions.words || 5}
+              onChange={(e) =>
+                onChange({
+                  passphraseOptions: {
+                    ...passphraseOptions,
+                    words: Number(e.target.value)
+                  }
+                })
+              }
+              className={inputStyles}
+            />
+          </div>
+          <div>
+            <label className={labelStyles} htmlFor="passphrase-separator">
+              구분자
+            </label>
+            <input
+              id="passphrase-separator"
+              type="text"
+              value={passphraseOptions.separator || " "}
+              onChange={(e) =>
+                onChange({
+                  passphraseOptions: {
+                    ...passphraseOptions,
+                    separator: e.target.value
+                  }
+                })
+              }
+              className={inputStyles}
+              maxLength={1}
+              placeholder=" "
+            />
+          </div>
+          <CheckboxOption
+            checked={passphraseOptions.capitalize || false}
+            onChange={(checked) =>
+              onChange({
+                passphraseOptions: {
+                  ...passphraseOptions,
+                  capitalize: checked
+                }
+              })
+            }
+            label="단어 첫 글자 대문자화"
+            description="각 단어의 첫 글자를 대문자로 변환"
+          />
+          <CheckboxOption
+            checked={passphraseOptions.includeNumber || false}
+            onChange={(checked) =>
+              onChange({
+                passphraseOptions: {
+                  ...passphraseOptions,
+                  includeNumber: checked
+                }
+              })
+            }
+            label="숫자 포함"
+            description="랜덤 숫자를 passphrase에 추가"
+          />
         </div>
-    );
+      ) : (
+        <>
+          <PasswordLengthControl
+            length={options.length}
+            onLengthChange={(length) => onChange({ length })}
+          />
+          <PasswordCharacterOptions
+            options={options}
+            onOptionsChange={onChange}
+          />
+        </>
+      )}
+    </div>
+  );
 };
 
 export default PasswordOptions;

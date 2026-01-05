@@ -1,56 +1,55 @@
 {
-    "name": "password-generator",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@testing-library/jest-dom": "^5.17.0",
-        "@testing-library/react": "^13.4.0",
-        "@testing-library/user-event": "^13.5.0",
-        "@types/jest": "^27.5.2",
-        "@types/node": "^20.0.0",
-        "@types/react": "^18.2.48",
-        "@types/react-dom": "^18.2.18",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0",
-        "react-toastify": "^10.0.6",
-        "typescript": "^4.9.5",
-        "web-vitals": "^2.1.4",
-        "zxcvbn": "^4.4.2"
-    },
-    "scripts": {
-        "prepare": "panda codegen",
-        "dev": "panda codegen && vite",
-        "build": "panda codegen && tsc && vite build",
-        "panda": "npx panda",
-        "panda:dev": "npx panda --watch",
-        "serve": "vite preview"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "devDependencies": {
-        "@pandacss/dev": "^0.53.0",
-        "@types/crypto-js": "^4.2.2",
-        "@types/zxcvbn": "^4.4.5",
-        "@vitejs/plugin-react": "^4.3.4",
-        "autoprefixer": "^10.4.20",
-        "postcss": "^8.5.2",
-        "tailwindcss": "^3.4.17",
-        "vite": "^6.2.0"
-    }
+  "name": "password-generator",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-toastify": "^10.0.6",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4",
+    "zxcvbn": "^4.4.2"
+  },
+  "scripts": {
+    "prepare": "panda codegen",
+    "dev": "panda codegen && vite",
+    "build": "panda codegen && tsc && vite build",
+    "panda": "npx panda",
+    "panda:dev": "npx panda --watch",
+    "serve": "vite preview"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@pandacss/dev": "^0.53.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/zxcvbn": "^4.4.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.2",
+    "vite": "^6.2.0"
+  }
 }

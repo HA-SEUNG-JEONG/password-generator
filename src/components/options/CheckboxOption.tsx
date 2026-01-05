@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { css } from "../../../styled-system/css";
 
 interface CheckboxOptionProps {
@@ -14,6 +14,9 @@ const CheckboxOption = ({
     label,
     description
 }: CheckboxOptionProps) => {
+    // 고유 ID 생성 (description이 있을 경우 aria-describedby에 사용)
+    const descriptionId = description ? `desc-${label.replace(/\s+/g, "-")}` : undefined;
+
     const containerStyles = css({
         display: "flex",
         alignItems: "center",
@@ -22,12 +25,13 @@ const CheckboxOption = ({
         cursor: "pointer",
         padding: "1",
         borderRadius: "md",
-        "&:hover": {
+        _hover: {
             color: "gray.900",
             backgroundColor: "gray.100"
         },
-        "&:focus-within": {
-            outline: "2px solid token(colors.blue.500)",
+        _focusWithin: {
+            outline: "2px solid",
+            outlineColor: "ring",
             outlineOffset: "2px"
         }
     });
@@ -38,8 +42,9 @@ const CheckboxOption = ({
         borderRadius: "0.25rem",
         border: "1px solid #E2E8F0",
         cursor: "pointer",
-        "&:focus-visible": {
-            outline: "2px solid token(colors.blue.500)",
+        _focusVisible: {
+            outline: "2px solid",
+            outlineColor: "ring",
             outlineOffset: "2px"
         }
     });
@@ -56,15 +61,18 @@ const CheckboxOption = ({
         color: "text",
         userSelect: "none",
         cursor: "pointer",
-        "&:hover": {
+        _hover: {
             color: "gray.900"
         }
     });
 
     const descriptionStyles = css({
         fontSize: "xs",
-        color: "text",
-        userSelect: "none"
+        color: "gray.600",
+        userSelect: "none",
+        _dark: {
+            color: "gray.400"
+        }
     });
 
     return (
@@ -75,19 +83,20 @@ const CheckboxOption = ({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     onChange(e.target.checked)
                 }
-                role="checkbox"
-                aria-checked={checked}
                 aria-label={label}
+                aria-describedby={descriptionId}
                 className={checkboxStyles}
             />
             <div className={labelContainerStyles}>
                 <span className={labelStyles}>{label}</span>
                 {description && (
-                    <span className={descriptionStyles}>{description}</span>
+                    <span id={descriptionId} className={descriptionStyles}>
+                        {description}
+                    </span>
                 )}
             </div>
         </label>
     );
 };
 
-export default CheckboxOption;
+export default memo(CheckboxOption);
