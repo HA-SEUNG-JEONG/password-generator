@@ -39,7 +39,7 @@ const PasswordCharacterOptions = ({
   const isLastOption = (key: string) => {
     // Only main character options can be last, not excludeAmbiguous
     if (key === "excludeAmbiguous") return false;
-    return checkedCount === 1 && options[key as keyof CharacterOptions];
+    return checkedCount === 1 && options[key as keyof CharacterOptions] === true;
   };
 
   const labelStyles = css({
