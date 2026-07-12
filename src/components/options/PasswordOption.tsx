@@ -35,8 +35,8 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
     padding: "2",
     borderRadius: "md",
     border: "2px solid",
-    borderColor: "gray.200",
-    backgroundColor: "gray.50"
+    borderColor: "border",
+    backgroundColor: "muted"
   });
 
   const modeButtonStyles = (isActive: boolean) =>
@@ -49,14 +49,14 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
       fontWeight: "medium",
       fontSize: "sm",
       transition: "all 0.2s",
-      backgroundColor: isActive ? "blue.500" : "transparent",
-      color: isActive ? "white" : "gray.700",
+      backgroundColor: isActive ? "primary" : "transparent",
+      color: isActive ? "white" : "text",
       _hover: {
-        backgroundColor: isActive ? "blue.600" : "gray.100"
+        backgroundColor: isActive ? "primary-hover" : "muted"
       },
       _focus: {
         outline: "2px solid",
-        outlineColor: "blue.500",
+        outlineColor: "primary",
         outlineOffset: "2px"
       }
     });
@@ -66,20 +66,20 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
     padding: "3",
     borderRadius: "md",
     border: "1px solid",
-    borderColor: "gray.200",
-    backgroundColor: "gray.50"
+    borderColor: "border",
+    backgroundColor: "muted"
   });
 
   const inputStyles = css({
     w: "full",
     padding: "2",
     border: "1px solid",
-    borderColor: "gray.300",
+    borderColor: "border",
     borderRadius: "md",
     fontSize: "sm",
     _focus: {
       outline: "2px solid",
-      outlineColor: "blue.500",
+      outlineColor: "primary",
       outlineOffset: "2px"
     }
   });
@@ -95,7 +95,7 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
     css({
       fontSize: "sm",
       marginTop: "1",
-      color: isWeak ? "red.600" : "gray.600",
+      color: isWeak ? "red.600" : "muted-foreground",
       fontWeight: isWeak ? "semibold" : "normal"
     });
 
