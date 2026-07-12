@@ -28,21 +28,47 @@ const PasswordCharacterOptions = ({
     spaceY: "2"
   });
 
+  // Count checked character options (excluding excludeAmbiguous)
+  const checkedCount = [
+    options.lowercase,
+    options.uppercase,
+    options.numbers,
+    options.special
+  ].filter(Boolean).length;
+
+  const isLastOption = (key: string) => {
+    // Only main character options can be last, not excludeAmbiguous
+    if (key === "excludeAmbiguous") return false;
+    return checkedCount === 1 && options[key as keyof CharacterOptions];
+  };
+
   return (
     <div
       className={containerStyles}
       role="group"
       aria-label="비밀번호 문자 옵션"
     >
-      {OPTIONS.map(({ key, label, description }) => (
-        <CheckboxOption
-          key={key}
-          checked={options[key]}
-          onChange={(checked) => onOptionsChange({ [key]: checked })}
-          label={label}
-          description={description}
-        />
-      ))}
+      {OPTIONS.map(({ key, label, description }) => {
+        const isDisabled = isLastOption(key);
+        const finalDescription = isDisabled
+          ? `${description} (최소 1개 옵션 필수)`
+          : description;
+
+        return (
+          <CheckboxOption
+            key={key}
+            checked={options[key]}
+            onChange={(checked) => {
+              if (!isDisabled || checked) {
+                onOptionsChange({ [key]: checked });
+              }
+            }}
+            label={label}
+            description={finalDescription}
+            disabled={isDisabled}
+          />
+        );
+      })}
     </div>
   );
 };
