@@ -4,6 +4,7 @@ export interface CharacterOptions {
   numbers: boolean;
   special: boolean;
   excludeAmbiguous: boolean;
+  customExclude?: string;
 }
 
 export interface PassphraseOptions {

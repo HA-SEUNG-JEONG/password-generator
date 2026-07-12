@@ -242,6 +242,7 @@ export const generateSecurePassword = (options: {
     numbers: boolean;
     special: boolean;
     excludeAmbiguous: boolean;
+    customExclude?: string;
     mode?: "password" | "passphrase";
     passphraseOptions?: Partial<PassphraseOptions>;
 }): string => {
@@ -251,9 +252,21 @@ export const generateSecurePassword = (options: {
         return generateSecurePassphrase(passphraseOptions);
     }
 
-    const { length, lowercase, uppercase, numbers, special, excludeAmbiguous } = options;
+    const { length, lowercase, uppercase, numbers, special, excludeAmbiguous, customExclude } = options;
 
-    const characterSets = getCharacterSets(excludeAmbiguous);
+    let characterSets = getCharacterSets(excludeAmbiguous);
+
+    // Filter each character set by customExclude BEFORE pool building and guaranteed injection
+    if (customExclude) {
+        const excludeSet = new Set(customExclude);
+        characterSets = {
+            lowercase: characterSets.lowercase.split("").filter((char) => !excludeSet.has(char)).join(""),
+            uppercase: characterSets.uppercase.split("").filter((char) => !excludeSet.has(char)).join(""),
+            numbers: characterSets.numbers.split("").filter((char) => !excludeSet.has(char)).join(""),
+            special: characterSets.special.split("").filter((char) => !excludeSet.has(char)).join("")
+        };
+    }
+
     const allChars = buildCharacterPool(characterSets, {
         lowercase,
         uppercase,

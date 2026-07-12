@@ -42,6 +42,27 @@ const PasswordCharacterOptions = ({
     return checkedCount === 1 && options[key as keyof CharacterOptions];
   };
 
+  const labelStyles = css({
+    fontSize: "sm",
+    fontWeight: "medium",
+    color: "text",
+    marginBottom: "1"
+  });
+
+  const inputStyles = css({
+    w: "full",
+    padding: "2",
+    border: "1px solid",
+    borderColor: "border",
+    borderRadius: "md",
+    fontSize: "sm",
+    _focus: {
+      outline: "2px solid",
+      outlineColor: "primary",
+      outlineOffset: "2px"
+    }
+  });
+
   return (
     <div
       className={containerStyles}
@@ -69,6 +90,19 @@ const PasswordCharacterOptions = ({
           />
         );
       })}
+      <div className={css({ spaceY: "1" })}>
+        <label className={labelStyles} htmlFor="custom-exclude">
+          제외할 문자
+        </label>
+        <input
+          id="custom-exclude"
+          type="text"
+          value={options.customExclude || ""}
+          onChange={(e) => onOptionsChange({ customExclude: e.target.value })}
+          className={inputStyles}
+          placeholder="제외할 문자를 입력하세요 (예: !@#)"
+        />
+      </div>
     </div>
   );
 };
