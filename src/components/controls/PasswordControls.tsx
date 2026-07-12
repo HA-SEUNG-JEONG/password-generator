@@ -21,6 +21,11 @@ const PasswordLengthControl = ({
   const inputStyles = css({
     w: "full",
     cursor: "pointer",
+    appearance: "textfield",
+    "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
+      WebkitAppearance: "none",
+      margin: 0
+    },
     "&:focus-visible": {
       outline: "2px solid token(colors.blue.600)",
       outlineOffset: "2px"

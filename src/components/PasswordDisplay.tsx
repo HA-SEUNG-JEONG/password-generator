@@ -119,7 +119,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   boxSizing: "border-box",
-                  cursor: "text",
+                  cursor: "default",
                   userSelect: "all",
                   _focus: {
                     outline: "2px solid",
@@ -144,7 +144,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
               background: "none",
               border: "none",
               cursor: "pointer",
-              padding: "2",
+              padding: "2.5",
               display: "flex",
               alignItems: "center",
               color: "text",
@@ -181,7 +181,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
               flexDirection: "column",
               alignItems: "center",
               marginTop: "4",
-              height: "50px",
+              minHeight: "40px",
               justifyContent: "center"
             })}
           >
@@ -229,7 +229,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
             background: "primary",
             borderRadius: "full",
             px: 4,
-            py: 2,
+            py: 3,
             fontWeight: "bold",
             color: "primary-foreground",
             border: "none",
@@ -248,11 +248,15 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
               outlineOffset: "2px"
             },
             _disabled: {
-              opacity: 0.5,
+              opacity: 0.6,
               cursor: "not-allowed",
+              background: "muted",
+              color: "secondary",
+              boxShadow: "none",
               _hover: {
                 transform: "none",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                background: "muted",
+                boxShadow: "none"
               }
             }
           })}
@@ -273,7 +277,7 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
             background: "secondary",
             borderRadius: "full",
             px: 4,
-            py: 2,
+            py: 3,
             fontWeight: "bold",
             color: "secondary-foreground",
             border: "none",
