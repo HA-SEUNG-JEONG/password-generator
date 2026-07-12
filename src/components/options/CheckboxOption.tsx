@@ -26,8 +26,8 @@ const CheckboxOption = ({
         padding: "1",
         borderRadius: "md",
         _hover: {
-            color: "gray.900",
-            backgroundColor: "gray.100"
+            color: "text",
+            backgroundColor: "muted"
         },
         _focusWithin: {
             outline: "2px solid",
@@ -40,7 +40,8 @@ const CheckboxOption = ({
         width: "1.2rem",
         height: "1.2rem",
         borderRadius: "0.25rem",
-        border: "1px solid #E2E8F0",
+        border: "1px solid",
+        borderColor: "border",
         cursor: "pointer"
     });
 
@@ -57,17 +58,14 @@ const CheckboxOption = ({
         userSelect: "none",
         cursor: "pointer",
         _hover: {
-            color: "gray.900"
+            color: "text"
         }
     });
 
     const descriptionStyles = css({
         fontSize: "xs",
-        color: "gray.600",
-        userSelect: "none",
-        _dark: {
-            color: "gray.400"
-        }
+        color: "muted-foreground",
+        userSelect: "none"
     });
 
     return (

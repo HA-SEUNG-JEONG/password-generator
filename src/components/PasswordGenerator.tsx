@@ -134,8 +134,8 @@ const PasswordGenerator = () => {
               width: "12px",
               height: "12px",
               border: "2px solid",
-              borderColor: "gray.300",
-              borderTopColor: "gray.600",
+              borderColor: "border",
+              borderTopColor: "muted-foreground",
               borderRadius: "full",
               animation: "spin 0.6s linear infinite"
             })}

@@ -15,7 +15,7 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
         : passwordLength < PASSWORD_LENGTH.MIN ||
             passwordLength > PASSWORD_LENGTH.MAX
           ? "orange.700"
-          : "gray.800"
+          : "text"
   });
 
   const lengthDisplayStyles = css({

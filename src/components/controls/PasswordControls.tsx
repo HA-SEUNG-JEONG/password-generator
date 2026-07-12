@@ -27,18 +27,18 @@ const PasswordLengthControl = ({
       margin: 0
     },
     "&:focus-visible": {
-      outline: "2px solid token(colors.blue.600)",
+      outline: "2px solid token(colors.primary)",
       outlineOffset: "2px"
     },
-    border: "2px solid token(colors.gray.200)",
+    border: "2px solid token(colors.border)",
     borderRadius: "md",
     p: "2",
     textAlign: "left",
     fontWeight: "medium",
     fontSize: "md",
-    color: "gray.800",
+    color: "text",
     _hover: {
-      bg: "gray.100"
+      bg: "muted"
     }
   });
 

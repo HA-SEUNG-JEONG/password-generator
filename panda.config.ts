@@ -63,10 +63,22 @@ export default defineConfig({
                             _dark: "#F9FAFB"
                         }
                     },
+                    border: {
+                        value: {
+                            _light: "#E5E7EB",
+                            _dark: "#4B5563"
+                        }
+                    },
                     muted: {
                         value: {
-                            _light: "#F3F4F6",
+                            _light: "#F9FAFB",
                             _dark: "#374151"
+                        }
+                    },
+                    "muted-foreground": {
+                        value: {
+                            _light: "#6B7280",
+                            _dark: "#9CA3AF"
                         }
                     },
                     text: {

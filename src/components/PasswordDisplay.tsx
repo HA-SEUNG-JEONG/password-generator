@@ -191,8 +191,8 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
                 width: "20px",
                 height: "20px",
                 border: "3px solid",
-                borderColor: "gray.300",
-                borderTopColor: "gray.600",
+                borderColor: "border",
+                borderTopColor: "muted-foreground",
                 borderRadius: "full",
                 animation: "spin 0.6s linear infinite"
               })}
