@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { generateSecurePassword } from "../utils/passwordGenerator";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
+import PasswordHistory from "./PasswordHistory";
 import { css } from "../../styled-system/css";
 import { PasswordOptions as PasswordOptionsType } from "../types/password";
 import { useDebounce } from "../utils/debounce";
@@ -57,6 +58,7 @@ const PasswordGenerator = () => {
   });
 
   const [options, setOptions] = useState<PasswordOptionsType>(DEFAULT_PASSWORD_OPTIONS);
+  const [history, setHistory] = useState<string[]>([]);
 
   const [hasEmptyPasswordWarning, setHasEmptyPasswordWarning] = useState(false);
   const {
@@ -85,6 +87,7 @@ const PasswordGenerator = () => {
 
       setHasEmptyPasswordWarning(false);
       setPassword(newPassword);
+      setHistory((prev) => [newPassword, ...prev].slice(0, 10));
       checkPwned(newPassword);
     },
     [checkPwned]
@@ -164,6 +167,7 @@ const PasswordGenerator = () => {
         </div>
       )}
       <PasswordOptions options={options} onChange={onChangeOptions} />
+      <PasswordHistory history={history} />
     </div>
   );
 };
