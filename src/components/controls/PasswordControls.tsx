@@ -15,7 +15,7 @@ const PasswordLengthControl = ({
   length,
   onLengthChange
 }: PasswordLengthControlProps) => {
-  const [localLength, setLocalLength] = useState(length);
+  const [localLength, setLocalLength] = useState<number | string>(length);
   const containerStyles = css({ spaceY: "2" });
 
   const inputStyles = css({
@@ -42,6 +42,20 @@ const PasswordLengthControl = ({
     }
   });
 
+  const rangeStyles = css({
+    w: "full",
+    padding: "2",
+    border: "1px solid",
+    borderColor: "gray.300",
+    borderRadius: "md",
+    fontSize: "sm",
+    _focus: {
+      outline: "2px solid",
+      outlineColor: "blue.500",
+      outlineOffset: "2px"
+    }
+  });
+
   const debouncedOnLengthChange = useDebounce((value: number) => {
     onLengthChange(value);
   }, 300);
@@ -51,23 +65,43 @@ const PasswordLengthControl = ({
   }, [length]);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
+    const inputValue = e.target.value;
 
-    if (isNaN(value) || value < PASSWORD_LENGTH.MIN) {
-      setLocalLength(PASSWORD_LENGTH.MIN);
-      debouncedOnLengthChange(PASSWORD_LENGTH.MIN);
+    // Allow empty string while typing
+    if (inputValue === "") {
+      setLocalLength("");
       return;
     }
 
-    if (value > PASSWORD_LENGTH.MAX) {
+    const value = Number(inputValue);
+
+    // Only update if it's a valid number
+    if (!isNaN(value)) {
+      setLocalLength(value);
+    }
+  };
+
+  const handleBlur = () => {
+    let finalValue = localLength;
+
+    // Convert empty string or non-number to MIN
+    if (finalValue === "" || isNaN(Number(finalValue))) {
+      finalValue = PASSWORD_LENGTH.MIN;
+    } else {
+      finalValue = Number(finalValue);
+    }
+
+    // Clamp to valid range
+    if (finalValue < PASSWORD_LENGTH.MIN) {
       toast.error(ERROR_MESSAGES.PASSWORD_LENGTH_MAX(PASSWORD_LENGTH.MAX));
-      setLocalLength(PASSWORD_LENGTH.MAX);
-      debouncedOnLengthChange(PASSWORD_LENGTH.MAX);
-      return;
+      finalValue = PASSWORD_LENGTH.MIN;
+    } else if (finalValue > PASSWORD_LENGTH.MAX) {
+      toast.error(ERROR_MESSAGES.PASSWORD_LENGTH_MAX(PASSWORD_LENGTH.MAX));
+      finalValue = PASSWORD_LENGTH.MAX;
     }
 
-    setLocalLength(value);
-    debouncedOnLengthChange(value);
+    setLocalLength(finalValue);
+    debouncedOnLengthChange(finalValue);
   };
 
   return (
@@ -82,19 +116,30 @@ const PasswordLengthControl = ({
         min={PASSWORD_LENGTH.MIN}
         max={PASSWORD_LENGTH.MAX}
         aria-label="비밀번호 길이"
-        aria-valuemin={PASSWORD_LENGTH.MIN}
-        aria-valuemax={PASSWORD_LENGTH.MAX}
-        aria-valuenow={localLength}
         value={localLength}
         onChange={handlePasswordChange}
+        onBlur={handleBlur}
         className={inputStyles}
         step={1}
+      />
+      <input
+        type="range"
+        min={PASSWORD_LENGTH.MIN}
+        max={PASSWORD_LENGTH.MAX}
+        value={typeof localLength === "string" ? PASSWORD_LENGTH.MIN : localLength}
+        onChange={(e) => {
+          const value = Number(e.target.value);
+          setLocalLength(value);
+          debouncedOnLengthChange(value);
+        }}
+        className={rangeStyles}
+        aria-label="비밀번호 길이 슬라이더"
       />
       <div id="password-length-description" className="sr-only">
         비밀번호 길이를 {PASSWORD_LENGTH.MIN}자에서 {PASSWORD_LENGTH.MAX}자
         사이로 조절할 수 있습니다.
       </div>
-      <PasswordLength passwordLength={Math.round(localLength)} />
+      <PasswordLength passwordLength={Math.round(typeof localLength === "string" ? PASSWORD_LENGTH.MIN : localLength)} />
     </div>
   );
 };
