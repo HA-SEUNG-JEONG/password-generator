@@ -41,12 +41,7 @@ const CheckboxOption = ({
         height: "1.2rem",
         borderRadius: "0.25rem",
         border: "1px solid #E2E8F0",
-        cursor: "pointer",
-        _focusVisible: {
-            outline: "2px solid",
-            outlineColor: "ring",
-            outlineOffset: "2px"
-        }
+        cursor: "pointer"
     });
 
     const labelContainerStyles = css({

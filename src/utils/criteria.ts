@@ -1,7 +1,7 @@
 const PASSWORD_PATTERNS = {
     SEQUENTIAL: /(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/,
     COMMON_WORDS: /password|123456|qwerty|admin/i,
-    MIXED_CHARS: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).$/
+    MIXED_CHARS: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).*$/
 };
 
 export const criteriaMap = {

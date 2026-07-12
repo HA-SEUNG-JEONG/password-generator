@@ -21,6 +21,11 @@ const PasswordLengthControl = ({
   const inputStyles = css({
     w: "full",
     cursor: "pointer",
+    appearance: "textfield",
+    "&::-webkit-outer-spin-button, &::-webkit-inner-spin-button": {
+      WebkitAppearance: "none",
+      margin: 0
+    },
     "&:focus-visible": {
       outline: "2px solid token(colors.blue.600)",
       outlineOffset: "2px"
@@ -79,7 +84,7 @@ const PasswordLengthControl = ({
         aria-label="비밀번호 길이"
         aria-valuemin={PASSWORD_LENGTH.MIN}
         aria-valuemax={PASSWORD_LENGTH.MAX}
-        aria-valuenow={length}
+        aria-valuenow={localLength}
         value={localLength}
         onChange={handlePasswordChange}
         className={inputStyles}

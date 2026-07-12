@@ -86,13 +86,19 @@ const getSecureRandom = (max: number): number => {
 export const generateSecurePassphrase = (
     options?: Partial<PassphraseOptions>
 ): string => {
-    const { words, language, separator, capitalize, includeNumber } = {
+    const { words: requestedWords, language, separator, capitalize, includeNumber } = {
         ...DEFAULT_PASSPHRASE_OPTIONS,
         ...options
     };
 
-    if (words < PASSPHRASE_CONFIG.MIN_WORDS_LENGTH || words > PASSPHRASE_CONFIG.MAX_WORDS_LENGTH) {
+    // 범위를 벗어나면 경고 후 유효 범위로 clamp (잘못된 값으로 생성 방지)
+    let words = requestedWords;
+    if (requestedWords < PASSPHRASE_CONFIG.MIN_WORDS_LENGTH || requestedWords > PASSPHRASE_CONFIG.MAX_WORDS_LENGTH) {
         toast(ERROR_MESSAGES.PASSPHRASE_WORDS_RANGE(PASSPHRASE_CONFIG.MIN_WORDS_LENGTH, PASSPHRASE_CONFIG.MAX_WORDS_LENGTH));
+        words = Math.min(
+            Math.max(requestedWords, PASSPHRASE_CONFIG.MIN_WORDS_LENGTH),
+            PASSPHRASE_CONFIG.MAX_WORDS_LENGTH
+        );
     }
 
     if (!wordLists[language]) {
@@ -185,6 +191,12 @@ const generatePasswordWithGuaranteedTypes = (
     // 나머지 길이만큼 랜덤 문자 추가
     for (let i = passwordChars.length; i < length; i++) {
         passwordChars.push(getRandomChar(allChars));
+    }
+
+    // Fisher-Yates 셔플: 보장 문자가 고정 위치에 노출되지 않도록 섞음
+    for (let i = passwordChars.length - 1; i > 0; i--) {
+        const j = getSecureRandom(i + 1);
+        [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
     }
 
     return passwordChars.join("");
