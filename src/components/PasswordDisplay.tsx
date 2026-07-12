@@ -1,4 +1,4 @@
-import { useState, memo, lazy, Suspense } from "react";
+import { useState, memo, lazy, Suspense, useMemo } from "react";
 import { css } from "../../styled-system/css";
 import CopyIcon from "./CopyIcon";
 import EyeOff from "../assets/eye-off-1.svg";
@@ -6,6 +6,9 @@ import EyeOn from "../assets/eye-1.svg";
 import RefreshIcon from "./RefreshIcon";
 import { toast } from "react-toastify";
 import KakaoButton from "./KakaoButton";
+import { getPassphraseEntropy } from "../utils/passwordGenerator";
+import { getStrengthLabel } from "../utils/strengthLevel";
+import { PassphraseOptions } from "../types/password";
 
 // 코드 스플리팅: zxcvbn 라이브러리(~800KB)를 포함하는 컴포넌트를 지연 로딩
 const PasswordStrengthIndicator = lazy(
@@ -15,11 +18,25 @@ const PasswordStrengthIndicator = lazy(
 interface PasswordDisplayProps {
   password: string;
   onRefresh: () => void;
+  mode?: string;
+  passphraseOptions?: Partial<PassphraseOptions>;
 }
 
-const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
+const PasswordDisplay = ({
+  password,
+  onRefresh,
+  mode = "password",
+  passphraseOptions
+}: PasswordDisplayProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const entropy = useMemo(() => {
+    if (mode === "passphrase") {
+      return getPassphraseEntropy(passphraseOptions);
+    }
+    return 0;
+  }, [mode, passphraseOptions]);
 
   const handlePasswordCopy = async () => {
     if (!navigator.clipboard) {
@@ -173,35 +190,96 @@ const PasswordDisplay = ({ password, onRefresh }: PasswordDisplayProps) => {
         </div>
       </div>
 
-      <Suspense
-        fallback={
+      {mode === "passphrase" ? (
+        <div
+          className={css({
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginTop: "4"
+          })}
+          id="password-strength"
+          role="status"
+          aria-live="polite"
+          aria-label={`Passphrase 강도: ${getStrengthLabel(entropy)}`}
+        >
           <div
             className={css({
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: "4",
-              minHeight: "40px",
-              justifyContent: "center"
+              width: "100%",
+              backgroundColor: "gray.200",
+              borderRadius: "full",
+              height: "2.5",
+              _dark: {
+                backgroundColor: "gray.700"
+              }
             })}
+            role="progressbar"
+            aria-valuenow={Math.round(entropy)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Passphrase 엔트로피 수준"
           >
             <div
               className={css({
-                display: "inline-block",
-                width: "20px",
-                height: "20px",
-                border: "3px solid",
-                borderColor: "border",
-                borderTopColor: "muted-foreground",
+                height: "2.5",
                 borderRadius: "full",
-                animation: "spin 0.6s linear infinite"
+                transition: "width 0.3s ease",
+                width: `${Math.min(entropy / 100, 1) * 100}%`,
+                backgroundColor:
+                  entropy >= 80
+                    ? "#2563eb"
+                    : entropy >= 60
+                    ? "#16a34a"
+                    : entropy >= 50
+                    ? "#eab308"
+                    : "#f97316"
               })}
             />
           </div>
-        }
-      >
-        <PasswordStrengthIndicator password={password} />
-      </Suspense>
+          <p
+            className={css({
+              fontSize: "sm",
+              marginTop: "2",
+              color: "gray.600",
+              _dark: {
+                color: "gray.300"
+              }
+            })}
+          >
+            {getStrengthLabel(entropy)} ({entropy.toFixed(1)} bits)
+          </p>
+        </div>
+      ) : (
+        <Suspense
+          fallback={
+            <div
+              className={css({
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginTop: "4",
+                minHeight: "40px",
+                justifyContent: "center"
+              })}
+            >
+              <div
+                className={css({
+                  display: "inline-block",
+                  width: "20px",
+                  height: "20px",
+                  border: "3px solid",
+                  borderColor: "border",
+                  borderTopColor: "muted-foreground",
+                  borderRadius: "full",
+                  animation: "spin 0.6s linear infinite"
+                })}
+              />
+            </div>
+          }
+        >
+          <PasswordStrengthIndicator password={password} />
+        </Suspense>
+      )}
 
       <div
         className={css({

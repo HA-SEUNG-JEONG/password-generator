@@ -8,15 +8,9 @@ import {
 } from "../../constants/passwordConfig";
 import CheckboxOption from "./CheckboxOption";
 import { getPassphraseEntropy } from "../../utils/passwordGenerator";
+import { getStrengthLabel } from "../../utils/strengthLevel";
 
 const ENTROPY_WARNING_THRESHOLD = 50;
-
-const getStrengthLabel = (bits: number): string => {
-  if (bits >= 80) return "매우 강함";
-  if (bits >= 60) return "강함";
-  if (bits >= ENTROPY_WARNING_THRESHOLD) return "보통";
-  return "약함";
-};
 
 interface PasswordOptionsProps {
   options: PasswordOptionsType;
@@ -158,11 +152,61 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
             </p>
           </div>
           <div>
-            <label className={labelStyles} htmlFor="passphrase-separator">
+            <label className={labelStyles}>
               구분자
             </label>
+            <div
+              className={css({
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: 2,
+                marginBottom: 2
+              })}
+            >
+              {["-", ".", "_", " "].map((sep) => (
+                <button
+                  key={sep}
+                  type="button"
+                  onClick={() =>
+                    onChange({
+                      passphraseOptions: {
+                        ...passphraseOptions,
+                        separator: sep
+                      }
+                    })
+                  }
+                  className={css({
+                    padding: "2",
+                    borderRadius: "md",
+                    border: "2px solid",
+                    borderColor:
+                      passphraseOptions.separator === sep
+                        ? "blue.500"
+                        : "gray.300",
+                    backgroundColor:
+                      passphraseOptions.separator === sep
+                        ? "blue.50"
+                        : "white",
+                    cursor: "pointer",
+                    fontWeight: "medium",
+                    transition: "all 0.2s",
+                    _hover: {
+                      borderColor: "blue.500"
+                    },
+                    _focus: {
+                      outline: "2px solid",
+                      outlineColor: "blue.500",
+                      outlineOffset: "2px"
+                    }
+                  })}
+                  aria-label={`구분자: ${sep === " " ? "공백" : sep}`}
+                  aria-pressed={passphraseOptions.separator === sep}
+                >
+                  {sep === " " ? "공백" : sep}
+                </button>
+              ))}
+            </div>
             <input
-              id="passphrase-separator"
               type="text"
               value={passphraseOptions.separator || " "}
               onChange={(e) =>
@@ -175,7 +219,8 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
               }
               className={inputStyles}
               maxLength={1}
-              placeholder=" "
+              placeholder="커스텀"
+              aria-label="커스텀 구분자"
             />
           </div>
           <CheckboxOption
