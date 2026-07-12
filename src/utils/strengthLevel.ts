@@ -1,3 +1,5 @@
+const ENTROPY_WARNING_THRESHOLD = 50;
+
 export interface StrengthLevel {
     level: string;
     message: string;
@@ -43,3 +45,10 @@ export const strengthLevels: StrengthLevel[] = [
         score: 4
     }
 ];
+
+export const getStrengthLabel = (bits: number): string => {
+    if (bits >= 80) return "매우 강함";
+    if (bits >= 60) return "강함";
+    if (bits >= ENTROPY_WARNING_THRESHOLD) return "보통";
+    return "약함";
+};

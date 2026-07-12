@@ -125,7 +125,12 @@ const PasswordGenerator = () => {
 
   return (
     <div className={containerStyles}>
-      <PasswordDisplay password={password} onRefresh={handleGeneratePassword} />
+      <PasswordDisplay
+        password={password}
+        onRefresh={handleGeneratePassword}
+        mode={options.mode}
+        passphraseOptions={options.passphraseOptions}
+      />
       {isCheckingPwned && (
         <div className={loadingStyles} role="status" aria-live="polite">
           <span
