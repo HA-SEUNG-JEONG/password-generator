@@ -6,7 +6,8 @@ import { wordLists } from "../constants/wordLists";
 import { PASSPHRASE_CONFIG } from "../constants/passwordConfig";
 import {
     generateSecurePassphrase,
-    getPassphraseEntropy
+    getPassphraseEntropy,
+    generateSecurePassword
 } from "./passwordGenerator";
 
 describe("wordLists.en", () => {
@@ -99,5 +100,78 @@ describe("getPassphraseEntropy", () => {
         const base = getPassphraseEntropy({ words: 5, includeNumber: false });
         const withNumber = getPassphraseEntropy({ words: 5, includeNumber: true });
         expect(withNumber).toBeCloseTo(base + Math.log2(90) + Math.log2(6), 5);
+    });
+});
+
+describe("generateSecurePassword with customExclude", () => {
+    it("제외 문자 포함 안 됨", () => {
+        const password = generateSecurePassword({
+            length: 50,
+            lowercase: true,
+            uppercase: true,
+            numbers: true,
+            special: true,
+            excludeAmbiguous: false,
+            customExclude: "!@#"
+        });
+
+        expect(password).not.toMatch(/[!@#]/);
+    });
+
+    it("여러 제외 문자 필터링", () => {
+        const password = generateSecurePassword({
+            length: 100,
+            lowercase: true,
+            uppercase: true,
+            numbers: true,
+            special: true,
+            excludeAmbiguous: false,
+            customExclude: "abc123"
+        });
+
+        expect(password).not.toMatch(/[abc123]/);
+    });
+
+    it("모든 문자가 제외되면 빈 문자열", () => {
+        const password = generateSecurePassword({
+            length: 12,
+            lowercase: true,
+            uppercase: false,
+            numbers: false,
+            special: false,
+            excludeAmbiguous: false,
+            customExclude: "abcdefghijklmnopqrstuvwxyz"
+        });
+
+        expect(password).toBe("");
+    });
+
+    it("빈 customExclude는 모든 문자 포함", () => {
+        const password = generateSecurePassword({
+            length: 12,
+            lowercase: true,
+            uppercase: true,
+            numbers: true,
+            special: true,
+            excludeAmbiguous: false,
+            customExclude: ""
+        });
+
+        expect(password.length).toBe(12);
+        expect(password).not.toBe("");
+    });
+
+    it("customExclude 없으면 정상 작동", () => {
+        const password = generateSecurePassword({
+            length: 12,
+            lowercase: true,
+            uppercase: true,
+            numbers: true,
+            special: true,
+            excludeAmbiguous: false
+        });
+
+        expect(password.length).toBe(12);
+        expect(password).not.toBe("");
     });
 });

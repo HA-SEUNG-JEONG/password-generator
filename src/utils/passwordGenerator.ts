@@ -242,6 +242,7 @@ export const generateSecurePassword = (options: {
     numbers: boolean;
     special: boolean;
     excludeAmbiguous: boolean;
+    customExclude?: string;
     mode?: "password" | "passphrase";
     passphraseOptions?: Partial<PassphraseOptions>;
 }): string => {
@@ -251,15 +252,21 @@ export const generateSecurePassword = (options: {
         return generateSecurePassphrase(passphraseOptions);
     }
 
-    const { length, lowercase, uppercase, numbers, special, excludeAmbiguous } = options;
+    const { length, lowercase, uppercase, numbers, special, excludeAmbiguous, customExclude } = options;
 
     const characterSets = getCharacterSets(excludeAmbiguous);
-    const allChars = buildCharacterPool(characterSets, {
+    let allChars = buildCharacterPool(characterSets, {
         lowercase,
         uppercase,
         numbers,
         special
     });
+
+    // Filter out custom excluded characters
+    if (customExclude) {
+        const excludeSet = new Set(customExclude);
+        allChars = allChars.split("").filter((char) => !excludeSet.has(char)).join("");
+    }
 
     if (allChars.length === 0) {
         return "";
