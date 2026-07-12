@@ -125,7 +125,25 @@ export const generateSecurePassphrase = (
         selectedWords.splice(insertAt, 0, randomNumber.toString());
     }
 
-    return selectedWords.join(separator);
+    // 빈 구분자는 단어 경계를 소실시키므로 공백으로 방어
+    return selectedWords.join(separator || " ");
+};
+
+/**
+ * Passphrase 엔트로피(bits) 계산 — 공격자가 설정을 안다고 가정
+ * capitalize는 결정적 변환이라 엔트로피에 기여하지 않음
+ */
+export const getPassphraseEntropy = (options?: Partial<PassphraseOptions>): number => {
+    const { words, language, includeNumber } = {
+        ...DEFAULT_PASSPHRASE_OPTIONS,
+        ...options
+    };
+    const listSize = wordLists[language]?.length ?? 0;
+    if (listSize === 0) return 0;
+    return (
+        words * Math.log2(listSize) +
+        (includeNumber ? Math.log2(90) + Math.log2(words + 1) : 0)
+    );
 };
 
 /**

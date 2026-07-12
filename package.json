@@ -22,6 +22,7 @@
     "dev": "panda codegen && vite",
     "build": "panda codegen && tsc && vite build",
     "panda": "npx panda",
+    "test": "vitest run",
     "panda:dev": "npx panda --watch",
     "serve": "vite preview"
   },
@@ -50,6 +51,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vitest": "^4.1.10"
   }
 }
