@@ -7,6 +7,16 @@ import {
   DEFAULT_PASSPHRASE_OPTIONS
 } from "../../constants/passwordConfig";
 import CheckboxOption from "./CheckboxOption";
+import { getPassphraseEntropy } from "../../utils/passwordGenerator";
+
+const ENTROPY_WARNING_THRESHOLD = 50;
+
+const getStrengthLabel = (bits: number): string => {
+  if (bits >= 80) return "매우 강함";
+  if (bits >= 60) return "강함";
+  if (bits >= ENTROPY_WARNING_THRESHOLD) return "보통";
+  return "약함";
+};
 
 interface PasswordOptionsProps {
   options: PasswordOptionsType;
@@ -81,9 +91,19 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
     marginBottom: "1"
   });
 
+  const entropyStyles = (isWeak: boolean) =>
+    css({
+      fontSize: "sm",
+      marginTop: "1",
+      color: isWeak ? "red.600" : "gray.600",
+      fontWeight: isWeak ? "semibold" : "normal"
+    });
+
   const isPassphraseMode = options.mode === "passphrase";
   const passphraseOptions =
     options.passphraseOptions || DEFAULT_PASSPHRASE_OPTIONS;
+  const entropy = getPassphraseEntropy(passphraseOptions);
+  const isWeakEntropy = entropy < ENTROPY_WARNING_THRESHOLD;
 
   return (
     <div
@@ -132,6 +152,10 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
               }
               className={inputStyles}
             />
+            <p className={entropyStyles(isWeakEntropy)} role="status">
+              보안 수준: {getStrengthLabel(entropy)} ({entropy.toFixed(1)} bits)
+              {isWeakEntropy && " ⚠ 4단어 이상 권장"}
+            </p>
           </div>
           <div>
             <label className={labelStyles} htmlFor="passphrase-separator">

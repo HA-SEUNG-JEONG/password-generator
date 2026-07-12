@@ -9,7 +9,7 @@ React context providers.
 ## Key Files
 | File | Description |
 |------|-------------|
-| `KakaoContext.tsx` | `KakaoProvider` — initializes Kakao JS SDK (`window.Kakao.init`) with `VITE_REST_API_KEY` on window load; exposes `{ isInitialized, isLoading, error }` via `useKakaoSDK()` hook (throws outside provider) |
+| `KakaoContext.tsx` | `KakaoProvider` — initializes Kakao JS SDK (`window.Kakao.init`) with `VITE_JAVASCRIPT_KEY` on window load; exposes `{ isInitialized, isLoading, error }` via `useKakaoSDK()` hook (throws outside provider) |
 
 ## For AI Agents
 

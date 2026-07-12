@@ -16,7 +16,7 @@ export const KakaoProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initKakao = () => {
-      const kakaoKey = import.meta.env.VITE_REST_API_KEY;
+      const kakaoKey = import.meta.env.VITE_JAVASCRIPT_KEY;
 
       if (!kakaoKey) {
         setError("카카오 API 키가 설정되지 않았습니다.");
