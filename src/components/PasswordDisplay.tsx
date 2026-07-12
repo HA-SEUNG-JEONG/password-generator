@@ -29,7 +29,8 @@ const PasswordDisplay = ({
   passphraseOptions
 }: PasswordDisplayProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showCopyFeedback, setShowCopyFeedback] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const entropy = useMemo(() => {
     if (mode === "passphrase") {
@@ -46,16 +47,17 @@ const PasswordDisplay = ({
 
     try {
       await navigator.clipboard.writeText(password);
-      toast.success("비밀번호가 복사되었습니다.");
+      setShowCopyFeedback(true);
+      const timeout = setTimeout(() => setShowCopyFeedback(false), 1500);
+      return () => clearTimeout(timeout);
     } catch (error) {
       toast.error("비밀번호 복사에 실패했습니다.");
     }
   };
 
   const handleRefresh = () => {
-    setIsRefreshing(true);
+    setRefreshKey((prev) => prev + 1);
     onRefresh();
-    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   return (
@@ -341,7 +343,7 @@ const PasswordDisplay = ({
           aria-label="비밀번호 클립보드에 복사하기"
         >
           <CopyIcon aria-hidden="true" />
-          복사하기
+          {showCopyFeedback ? "복사됨 ✓" : "복사하기"}
         </button>
         <button
           type="button"
@@ -377,11 +379,11 @@ const PasswordDisplay = ({
           aria-label="새로운 비밀번호 생성하기"
         >
           <div
+            key={refreshKey}
             className={css({
               display: "flex",
               alignItems: "center",
-              transition: "transform 0.5s ease-in-out",
-              transform: isRefreshing ? "rotate(180deg)" : "rotate(0deg)"
+              animation: "spin-once 0.36s ease-in-out"
             })}
           >
             <RefreshIcon aria-hidden="true" />

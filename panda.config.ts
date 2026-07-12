@@ -13,6 +13,12 @@ export default defineConfig({
     // Useful for theme customization
     theme: {
         extend: {
+            keyframes: {
+                "spin-once": {
+                    from: { transform: "rotate(0deg)" },
+                    to: { transform: "rotate(360deg)" }
+                }
+            },
             semanticTokens: {
                 colors: {
                     primary: {
