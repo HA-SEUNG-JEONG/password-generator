@@ -1,19 +1,8 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { css } from "styled-system/css";
 import CheckboxOption from "./CheckboxOption";
 import { CharacterOptions } from "../../types/password";
-
-const OPTIONS = [
-  { key: "lowercase" as const, label: "소문자 포함", description: "a-z" },
-  { key: "uppercase" as const, label: "대문자 포함", description: "A-Z" },
-  { key: "numbers" as const, label: "숫자 포함", description: "0-9" },
-  { key: "special" as const, label: "특수문자 포함", description: "!@#$%^&*" },
-  {
-    key: "excludeAmbiguous" as const,
-    label: "모호한 문자 제외",
-    description: "l, 1, o, 0, i, O, I"
-  }
-];
+import { useLocale } from "../../contexts/LocaleContext";
 
 interface PasswordCharacterOptionsProps {
   options: CharacterOptions;
@@ -24,6 +13,20 @@ const PasswordCharacterOptions = ({
   options,
   onOptionsChange
 }: PasswordCharacterOptionsProps) => {
+  const { t } = useLocale();
+
+  const OPTIONS = useMemo(() => [
+    { key: "lowercase" as const, label: t.passwordOptions.lowercase, description: "a-z" },
+    { key: "uppercase" as const, label: t.passwordOptions.uppercase, description: "A-Z" },
+    { key: "numbers" as const, label: t.passwordOptions.numbers, description: "0-9" },
+    { key: "special" as const, label: t.passwordOptions.special, description: "!@#$%^&*" },
+    {
+      key: "excludeAmbiguous" as const,
+      label: t.passwordOptions.excludeAmbiguous,
+      description: "l, 1, o, 0, i, O, I"
+    }
+  ], [t]);
+
   const containerStyles = css({
     spaceY: "2"
   });
@@ -67,12 +70,12 @@ const PasswordCharacterOptions = ({
     <div
       className={containerStyles}
       role="group"
-      aria-label="비밀번호 문자 옵션"
+      aria-label={t.passwordOptions.optionsLabel}
     >
       {OPTIONS.map(({ key, label, description }) => {
         const isDisabled = isLastOption(key);
         const finalDescription = isDisabled
-          ? `${description} (최소 1개 옵션 필수)`
+          ? `${description} (${t.passwordOptions.requireAtLeastOne})`
           : description;
 
         return (
@@ -92,7 +95,7 @@ const PasswordCharacterOptions = ({
       })}
       <div className={css({ spaceY: "1" })}>
         <label className={labelStyles} htmlFor="custom-exclude">
-          제외할 문자
+          {t.passwordOptions.customExcludeLabel}
         </label>
         <input
           id="custom-exclude"
@@ -100,7 +103,7 @@ const PasswordCharacterOptions = ({
           value={options.customExclude || ""}
           onChange={(e) => onOptionsChange({ customExclude: e.target.value })}
           className={inputStyles}
-          placeholder="제외할 문자를 입력하세요 (예: !@#)"
+          placeholder={t.passwordOptions.customExcludePlaceholder}
         />
       </div>
     </div>

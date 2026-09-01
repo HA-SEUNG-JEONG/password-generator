@@ -1,10 +1,14 @@
-import { toast } from "react-toastify";
 import { PASSPHRASE_CONFIG, DEFAULT_PASSPHRASE_OPTIONS } from "../constants/passwordConfig";
-import { ERROR_MESSAGES } from "../constants/messages";
 import { CHARACTER_SETS, removeAmbiguousChars } from "../constants/characterSets";
 import { wordLists } from "../constants/wordLists";
 import { PassphraseOptions } from "../types/password";
 import { isNetworkError, isRateLimitError } from "../types/errors";
+
+interface PwnedCheckErrorMessages {
+    tooManyRequests: string;
+    networkError: string;
+    pwnedCheckGeneric: string;
+}
 
 /**
  * SHA-1 해시 생성
@@ -20,7 +24,10 @@ const generateSha1 = async (message: string): Promise<string> => {
  * Have I Been Pwned API를 사용하여 비밀번호가 유출되었는지 확인
  * Exponential backoff를 사용한 재시도 로직 포함
  */
-export const checkPwnedPassword = async (password: string): Promise<boolean> => {
+export const checkPwnedPassword = async (
+    password: string,
+    errorMessages: PwnedCheckErrorMessages
+): Promise<boolean> => {
     const delay = (ms: number): Promise<void> =>
         new Promise((resolve) => setTimeout(resolve, ms));
     const MAX_RETRIES = 3;
@@ -55,18 +62,18 @@ export const checkPwnedPassword = async (password: string): Promise<boolean> => 
                 retries++;
                 if (retries === MAX_RETRIES) {
                     if (isRateLimitError(error)) {
-                        throw new Error(ERROR_MESSAGES.PWNED_CHECK_TOO_MANY_REQUESTS);
+                        throw new Error(errorMessages.tooManyRequests);
                     }
                     if (isNetworkError(error)) {
-                        throw new Error(ERROR_MESSAGES.PWNED_CHECK_NETWORK_ERROR);
+                        throw new Error(errorMessages.networkError);
                     }
-                    throw new Error(ERROR_MESSAGES.PWNED_CHECK_GENERIC);
+                    throw new Error(errorMessages.pwnedCheckGeneric);
                 }
                 await delay(Math.pow(2, retries) * 1000);
             }
         }
 
-        throw new Error(ERROR_MESSAGES.PWNED_CHECK_GENERIC);
+        throw new Error(errorMessages.pwnedCheckGeneric);
     } catch (error) {
         console.error("Password check failed:", error);
         throw error;
@@ -84,7 +91,8 @@ const getSecureRandom = (max: number): number => {
 
 
 export const generateSecurePassphrase = (
-    options?: Partial<PassphraseOptions>
+    options?: Partial<PassphraseOptions>,
+    onClamped?: (min: number, max: number) => void
 ): string => {
     const { words: requestedWords, language, separator, capitalize, includeNumber } = {
         ...DEFAULT_PASSPHRASE_OPTIONS,
@@ -94,7 +102,7 @@ export const generateSecurePassphrase = (
     // 범위를 벗어나면 경고 후 유효 범위로 clamp (잘못된 값으로 생성 방지)
     let words = requestedWords;
     if (requestedWords < PASSPHRASE_CONFIG.MIN_WORDS_LENGTH || requestedWords > PASSPHRASE_CONFIG.MAX_WORDS_LENGTH) {
-        toast(ERROR_MESSAGES.PASSPHRASE_WORDS_RANGE(PASSPHRASE_CONFIG.MIN_WORDS_LENGTH, PASSPHRASE_CONFIG.MAX_WORDS_LENGTH));
+        onClamped?.(PASSPHRASE_CONFIG.MIN_WORDS_LENGTH, PASSPHRASE_CONFIG.MAX_WORDS_LENGTH);
         words = Math.min(
             Math.max(requestedWords, PASSPHRASE_CONFIG.MIN_WORDS_LENGTH),
             PASSPHRASE_CONFIG.MAX_WORDS_LENGTH
@@ -235,21 +243,24 @@ const generatePasswordWithoutGuaranteedTypes = (
     return passwordChars.join("");
 };
 
-export const generateSecurePassword = (options: {
-    length: number;
-    lowercase: boolean;
-    uppercase: boolean;
-    numbers: boolean;
-    special: boolean;
-    excludeAmbiguous: boolean;
-    customExclude?: string;
-    mode?: "password" | "passphrase";
-    passphraseOptions?: Partial<PassphraseOptions>;
-}): string => {
+export const generateSecurePassword = (
+    options: {
+        length: number;
+        lowercase: boolean;
+        uppercase: boolean;
+        numbers: boolean;
+        special: boolean;
+        excludeAmbiguous: boolean;
+        customExclude?: string;
+        mode?: "password" | "passphrase";
+        passphraseOptions?: Partial<PassphraseOptions>;
+    },
+    onClamped?: (min: number, max: number) => void
+): string => {
     const { mode = "password", passphraseOptions } = options;
 
     if (mode === "passphrase") {
-        return generateSecurePassphrase(passphraseOptions);
+        return generateSecurePassphrase(passphraseOptions, onClamped);
     }
 
     const { length, lowercase, uppercase, numbers, special, excludeAmbiguous, customExclude } = options;

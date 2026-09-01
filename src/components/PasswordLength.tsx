@@ -1,7 +1,9 @@
 import { css } from "../../styled-system/css";
 import { PASSWORD_LENGTH } from "../constants/passwordConfig";
+import { useLocale } from "../contexts/LocaleContext";
 
 const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
+  const { t } = useLocale();
   const containerStyles = css({
     display: "flex",
     alignItems: "center",
@@ -24,15 +26,15 @@ const PasswordLength = ({ passwordLength }: { passwordLength: number }) => {
 
   const getLengthMessage = (length: number) => {
     if (length < PASSWORD_LENGTH.MIN) {
-      return `최소 ${PASSWORD_LENGTH.MIN}자`;
+      return t.passwordOptions.minLength(PASSWORD_LENGTH.MIN);
     }
     if (length > PASSWORD_LENGTH.MAX) {
-      return `최대 ${PASSWORD_LENGTH.MAX}자`;
+      return t.passwordOptions.maxLength(PASSWORD_LENGTH.MAX);
     }
     if (length < PASSWORD_LENGTH.RECOMMEND) {
-      return `비밀번호 길이: ${length}자 (권장: ${PASSWORD_LENGTH.RECOMMEND}자 이상)`;
+      return t.passwordOptions.lengthDisplay(length, PASSWORD_LENGTH.RECOMMEND);
     }
-    return `비밀번호 길이: ${length}자`;
+    return t.passwordOptions.lengthDisplaySimple(length);
   };
 
   return (

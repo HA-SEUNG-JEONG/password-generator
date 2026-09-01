@@ -4,7 +4,7 @@ import PasswordLength from "../PasswordLength";
 import { toast } from "react-toastify";
 import { PASSWORD_LENGTH } from "../../constants/passwordConfig";
 import { useDebounce } from "../../utils/debounce";
-import { ERROR_MESSAGES } from "../../constants/messages";
+import { useLocale } from "../../contexts/LocaleContext";
 
 interface PasswordLengthControlProps {
   length: number;
@@ -15,6 +15,7 @@ const PasswordLengthControl = ({
   length,
   onLengthChange
 }: PasswordLengthControlProps) => {
+  const { t } = useLocale();
   const [localLength, setLocalLength] = useState<number | string>(length);
   const containerStyles = css({ spaceY: "2" });
 
@@ -93,10 +94,10 @@ const PasswordLengthControl = ({
 
     // Clamp to valid range
     if (finalValue < PASSWORD_LENGTH.MIN) {
-      toast.error(ERROR_MESSAGES.PASSWORD_LENGTH_MAX(PASSWORD_LENGTH.MAX));
+      toast.error(t.passwordOptions.minLength(PASSWORD_LENGTH.MIN));
       finalValue = PASSWORD_LENGTH.MIN;
     } else if (finalValue > PASSWORD_LENGTH.MAX) {
-      toast.error(ERROR_MESSAGES.PASSWORD_LENGTH_MAX(PASSWORD_LENGTH.MAX));
+      toast.error(t.passwordOptions.maxLength(PASSWORD_LENGTH.MAX));
       finalValue = PASSWORD_LENGTH.MAX;
     }
 
@@ -108,14 +109,14 @@ const PasswordLengthControl = ({
     <div
       className={containerStyles}
       role="group"
-      aria-label="비밀번호 길이 조절"
+      aria-label={t.passwordOptions.lengthControlLabel}
       aria-describedby="password-length-description"
     >
       <input
         type="number"
         min={PASSWORD_LENGTH.MIN}
         max={PASSWORD_LENGTH.MAX}
-        aria-label="비밀번호 길이"
+        aria-label={t.passwordOptions.lengthInputLabel}
         value={localLength}
         onChange={handlePasswordChange}
         onBlur={handleBlur}
@@ -133,11 +134,10 @@ const PasswordLengthControl = ({
           debouncedOnLengthChange(value);
         }}
         className={rangeStyles}
-        aria-label="비밀번호 길이 슬라이더"
+        aria-label={t.passwordOptions.lengthSliderLabel}
       />
       <div id="password-length-description" className="sr-only">
-        비밀번호 길이를 {PASSWORD_LENGTH.MIN}자에서 {PASSWORD_LENGTH.MAX}자
-        사이로 조절할 수 있습니다.
+        {t.passwordOptions.lengthControlDescription(PASSWORD_LENGTH.MIN, PASSWORD_LENGTH.MAX)}
       </div>
       <PasswordLength passwordLength={Math.round(typeof localLength === "string" ? PASSWORD_LENGTH.MIN : localLength)} />
     </div>

@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
+import { toast } from "react-toastify";
 import { generateSecurePassword } from "../utils/passwordGenerator";
 import PasswordDisplay from "./PasswordDisplay";
 import PasswordOptions from "./options/PasswordOption";
@@ -7,9 +8,9 @@ import { css } from "../../styled-system/css";
 import { PasswordOptions as PasswordOptionsType } from "../types/password";
 import { useDebounce } from "../utils/debounce";
 import { DEFAULT_PASSPHRASE_OPTIONS } from "../constants/passwordConfig";
-import { ERROR_MESSAGES } from "../constants/messages";
 import { usePwnedCheck } from "../hooks/usePwnedCheck";
 import { DEBOUNCE_DELAY } from "../constants/timing";
+import { useLocale } from "../contexts/LocaleContext";
 
 const containerStyles = css({
   spaceY: "1.5",
@@ -48,6 +49,7 @@ const DEFAULT_PASSWORD_OPTIONS: PasswordOptionsType = {
 };
 
 const PasswordGenerator = () => {
+  const { t } = useLocale();
   // 초기 비밀번호 생성을 lazy initialization으로 처리
   const [password, setPassword] = useState(() => {
     return generateSecurePassword({
@@ -65,7 +67,8 @@ const PasswordGenerator = () => {
     isPwned,
     isChecking: isCheckingPwned,
     error: pwnedCheckError,
-    checkPassword: checkPwned
+    checkPassword: checkPwned,
+    reset: resetPwnedCheck
   } = usePwnedCheck();
 
   // 초기 렌더링 여부 추적
@@ -73,15 +76,25 @@ const PasswordGenerator = () => {
 
   const handlePasswordGeneration = useCallback(
     (passwordOptions: PasswordOptionsType) => {
-      const newPassword = generateSecurePassword({
-        ...passwordOptions,
-        mode: passwordOptions.mode || "password",
-        passphraseOptions: passwordOptions.passphraseOptions
-      });
+      const passphraseOptions = passwordOptions.passphraseOptions;
+      const onClamped = (min: number, max: number) => {
+        const message = t.errors.passphraseWordsRange(min, max);
+        toast.error(message);
+      };
+
+      const newPassword = generateSecurePassword(
+        {
+          ...passwordOptions,
+          mode: passwordOptions.mode || "password",
+          passphraseOptions
+        },
+        passphraseOptions ? onClamped : undefined
+      );
 
       if (newPassword === "") {
         setHasEmptyPasswordWarning(true);
         setPassword("");
+        resetPwnedCheck();
         return;
       }
 
@@ -90,7 +103,7 @@ const PasswordGenerator = () => {
       setHistory((prev) => [newPassword, ...prev].slice(0, 10));
       checkPwned(newPassword);
     },
-    [checkPwned]
+    [checkPwned, resetPwnedCheck, t]
   );
 
   const debouncedGeneratePassword = useDebounce(
@@ -148,7 +161,7 @@ const PasswordGenerator = () => {
               animation: "spin 0.6s linear infinite"
             })}
           />
-          비밀번호 보안 검사 중...
+          {t.passwordGenerator.securityCheckInProgress}
         </div>
       )}
       {pwnedCheckError && (
@@ -158,12 +171,12 @@ const PasswordGenerator = () => {
       )}
       {!isCheckingPwned && !pwnedCheckError && isPwned && (
         <div className={warningStyles} role="alert">
-          {ERROR_MESSAGES.PASSWORD_PWNED_WARNING}
+          {t.errors.passwordPwnedWarning}
         </div>
       )}
       {hasEmptyPasswordWarning && (
         <div className={warningStyles} role="alert">
-          {ERROR_MESSAGES.PASSWORD_EMPTY_WARNING}
+          {t.errors.emptyPasswordWarning}
         </div>
       )}
       <PasswordOptions options={options} onChange={onChangeOptions} />

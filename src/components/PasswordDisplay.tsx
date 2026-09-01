@@ -9,6 +9,7 @@ import KakaoButton from "./KakaoButton";
 import { getPassphraseEntropy } from "../utils/passwordGenerator";
 import { getStrengthLabel } from "../utils/strengthLevel";
 import { PassphraseOptions } from "../types/password";
+import { useLocale } from "../contexts/LocaleContext";
 
 // 코드 스플리팅: zxcvbn 라이브러리(~800KB)를 포함하는 컴포넌트를 지연 로딩
 const PasswordStrengthIndicator = lazy(
@@ -28,6 +29,7 @@ const PasswordDisplay = ({
   mode = "password",
   passphraseOptions
 }: PasswordDisplayProps) => {
+  const { t } = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [showCopyFeedback, setShowCopyFeedback] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -41,7 +43,7 @@ const PasswordDisplay = ({
 
   const handlePasswordCopy = async () => {
     if (!navigator.clipboard) {
-      toast.error("클립보드 기능을 사용할 수 없습니다.");
+      toast.error(t.passwordDisplay.clipboardUnavailable);
       return;
     }
 
@@ -51,7 +53,7 @@ const PasswordDisplay = ({
       const timeout = setTimeout(() => setShowCopyFeedback(false), 1500);
       return () => clearTimeout(timeout);
     } catch (error) {
-      toast.error("비밀번호 복사에 실패했습니다.");
+      toast.error(t.passwordDisplay.copyFailed);
     }
   };
 
@@ -120,7 +122,7 @@ const PasswordDisplay = ({
                 type={showPassword ? "text" : "password"}
                 value={password}
                 readOnly
-                aria-label="생성된 비밀번호"
+                aria-label={t.passwordDisplay.generatePassword}
                 aria-readonly="true"
                 aria-describedby="password-strength"
                 className={css({
@@ -149,7 +151,7 @@ const PasswordDisplay = ({
               />
             ) : (
               <span role="status" aria-live="polite">
-                비밀번호를 생성해주세요
+                {t.passwordDisplay.generatePassword}
               </span>
             )}
           </div>
@@ -177,13 +179,13 @@ const PasswordDisplay = ({
                 borderRadius: "sm"
               }
             })}
-            aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+            aria-label={showPassword ? t.passwordDisplay.hidePassword : t.passwordDisplay.showPassword}
             aria-pressed={showPassword}
             type="button"
           >
             <img
               src={showPassword ? EyeOff : EyeOn}
-              alt={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+              alt={showPassword ? t.passwordDisplay.hidePassword : t.passwordDisplay.showPassword}
               width="24"
               height="24"
               aria-hidden="true"
@@ -203,7 +205,7 @@ const PasswordDisplay = ({
           id="password-strength"
           role="status"
           aria-live="polite"
-          aria-label={`Passphrase 강도: ${getStrengthLabel(entropy)}`}
+          aria-label={t.passwordDisplay.passphraseStrengthLabel(getStrengthLabel(entropy, t.strengthLevels))}
         >
           <div
             className={css({
@@ -219,7 +221,7 @@ const PasswordDisplay = ({
             aria-valuenow={Math.round(entropy)}
             aria-valuemin={0}
             aria-valuemax={100}
-            aria-label="Passphrase 엔트로피 수준"
+            aria-label={t.passwordDisplay.entropyLevelAriaLabel}
           >
             <div
               className={css({
@@ -248,7 +250,7 @@ const PasswordDisplay = ({
               }
             })}
           >
-            {getStrengthLabel(entropy)} ({entropy.toFixed(1)} bits)
+            {getStrengthLabel(entropy, t.strengthLevels)} ({entropy.toFixed(1)} bits)
           </p>
         </div>
       ) : (
@@ -340,10 +342,10 @@ const PasswordDisplay = ({
               }
             }
           })}
-          aria-label="비밀번호 클립보드에 복사하기"
+          aria-label={t.passwordDisplay.copyButton}
         >
           <CopyIcon aria-hidden="true" />
-          {showCopyFeedback ? "복사됨 ✓" : "복사하기"}
+          {showCopyFeedback ? t.passwordDisplay.copiedButton : t.passwordDisplay.copyButton}
         </button>
         <button
           type="button"
@@ -376,7 +378,7 @@ const PasswordDisplay = ({
               outlineOffset: "2px"
             }
           })}
-          aria-label="새로운 비밀번호 생성하기"
+          aria-label={t.passwordDisplay.refreshButton}
         >
           <div
             key={refreshKey}
@@ -388,12 +390,12 @@ const PasswordDisplay = ({
           >
             <RefreshIcon aria-hidden="true" />
           </div>
-          새로 생성
+          {t.passwordDisplay.refreshButton}
         </button>
         <KakaoButton
           options={{
             objectType: "text",
-            text: `비밀번호 생성기를 사용해보세요!`,
+            text: t.kakao.shareText,
             link: {
               webUrl: window.location.href
             }

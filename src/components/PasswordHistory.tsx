@@ -2,6 +2,7 @@ import { memo } from "react";
 import { css } from "../../styled-system/css";
 import CopyIcon from "./CopyIcon";
 import { toast } from "react-toastify";
+import { useLocale } from "../contexts/LocaleContext";
 
 interface PasswordHistoryProps {
   history: string[];
@@ -13,17 +14,19 @@ const maskPassword = (password: string): string => {
 };
 
 const PasswordHistory = ({ history }: PasswordHistoryProps) => {
+  const { t } = useLocale();
+
   const handleCopy = async (password: string) => {
     if (!navigator.clipboard) {
-      toast.error("클립보드 기능을 사용할 수 없습니다.");
+      toast.error(t.passwordDisplay.clipboardUnavailable);
       return;
     }
 
     try {
       await navigator.clipboard.writeText(password);
-      toast.success("비밀번호가 복사되었습니다.");
+      toast.success(t.passwordDisplay.copySuccess);
     } catch (error) {
-      toast.error("비밀번호 복사에 실패했습니다.");
+      toast.error(t.passwordDisplay.copyFailed);
     }
   };
 
@@ -51,7 +54,7 @@ const PasswordHistory = ({ history }: PasswordHistoryProps) => {
           }
         })}
       >
-        생성 이력 ({history.length}/10)
+        {t.passwordHistory.title} ({history.length}/10)
       </summary>
       <div
         className={css({
@@ -82,7 +85,6 @@ const PasswordHistory = ({ history }: PasswordHistoryProps) => {
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap"
               })}
-              title={password}
             >
               {maskPassword(password)}
             </span>
@@ -112,7 +114,7 @@ const PasswordHistory = ({ history }: PasswordHistoryProps) => {
                   outlineOffset: "2px"
                 }
               })}
-              aria-label={`${maskPassword(password)} 복사하기`}
+              aria-label={`${maskPassword(password)} ${t.passwordDisplay.copyButton}`}
             >
               <CopyIcon aria-hidden="true" />
             </button>

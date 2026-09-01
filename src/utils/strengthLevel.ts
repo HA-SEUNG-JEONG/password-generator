@@ -1,3 +1,5 @@
+import { Messages } from "../constants/locales/types";
+
 const ENTROPY_WARNING_THRESHOLD = 50;
 
 export interface StrengthLevel {
@@ -8,47 +10,47 @@ export interface StrengthLevel {
     score: number;
 }
 
-export const strengthLevels: StrengthLevel[] = [
+export const buildStrengthLevels = (strengthMessages: Messages["strengthLevels"]): StrengthLevel[] => [
     {
-        level: "매우 취약",
-        message: "매우 취약한 비밀번호입니다",
+        level: strengthMessages.veryWeak.level,
+        message: strengthMessages.veryWeak.message,
         color: "bg-red-600",
         colorValue: "#dc2626",
         score: 0
     },
     {
-        level: "약함",
-        message: "취약한 비밀번호입니다",
+        level: strengthMessages.weak.level,
+        message: strengthMessages.weak.message,
         color: "bg-orange-500",
         colorValue: "#f97316",
         score: 1
     },
     {
-        level: "보통",
-        message: "적정 수준의 비밀번호입니다",
+        level: strengthMessages.fair.level,
+        message: strengthMessages.fair.message,
         color: "bg-yellow-500",
         colorValue: "#eab308",
         score: 2
     },
     {
-        level: "강함",
-        message: "안전한 비밀번호입니다",
+        level: strengthMessages.strong.level,
+        message: strengthMessages.strong.message,
         color: "bg-green-600",
         colorValue: "#16a34a",
         score: 3
     },
     {
-        level: "매우 강함",
-        message: "매우 안전한 비밀번호입니다",
+        level: strengthMessages.veryStrong.level,
+        message: strengthMessages.veryStrong.message,
         color: "bg-blue-600",
         colorValue: "#2563eb",
         score: 4
     }
 ];
 
-export const getStrengthLabel = (bits: number): string => {
-    if (bits >= 80) return "매우 강함";
-    if (bits >= 60) return "강함";
-    if (bits >= ENTROPY_WARNING_THRESHOLD) return "보통";
-    return "약함";
+export const getStrengthLabel = (bits: number, strengthMessages: Messages["strengthLevels"]): string => {
+    if (bits >= 80) return strengthMessages.veryStrong.level;
+    if (bits >= 60) return strengthMessages.strong.level;
+    if (bits >= ENTROPY_WARNING_THRESHOLD) return strengthMessages.fair.level;
+    return strengthMessages.weak.level;
 };

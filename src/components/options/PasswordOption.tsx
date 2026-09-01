@@ -9,6 +9,7 @@ import {
 import CheckboxOption from "./CheckboxOption";
 import { getPassphraseEntropy } from "../../utils/passwordGenerator";
 import { getStrengthLabel } from "../../utils/strengthLevel";
+import { useLocale } from "../../contexts/LocaleContext";
 
 const ENTROPY_WARNING_THRESHOLD = 50;
 
@@ -18,6 +19,7 @@ interface PasswordOptionsProps {
 }
 
 const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
+  const { t } = useLocale();
   const containerStyles = css({
     spaceY: "4"
   });
@@ -103,7 +105,7 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
     <div
       className={containerStyles}
       role="group"
-      aria-label="비밀번호 생성 옵션"
+      aria-label={t.passwordOptions.optionsLabel}
     >
       <div className={modeToggleStyles}>
         <button
@@ -112,7 +114,7 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
           className={modeButtonStyles(!isPassphraseMode)}
           aria-pressed={!isPassphraseMode}
         >
-          비밀번호
+          {t.passwordOptions.passwordMode}
         </button>
         <button
           type="button"
@@ -120,7 +122,7 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
           className={modeButtonStyles(isPassphraseMode)}
           aria-pressed={isPassphraseMode}
         >
-          Passphrase
+          {t.passwordOptions.passphraseMode}
         </button>
       </div>
 
@@ -128,7 +130,7 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
         <div className={passphraseOptionsStyles}>
           <div>
             <label className={labelStyles} htmlFor="passphrase-words">
-              단어 개수: {passphraseOptions.words || 5}
+              {t.passwordOptions.wordsLabel(passphraseOptions.words || 5)}
             </label>
             <input
               id="passphrase-words"
@@ -147,13 +149,12 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
               className={inputStyles}
             />
             <p className={entropyStyles(isWeakEntropy)} role="status">
-              보안 수준: {getStrengthLabel(entropy)} ({entropy.toFixed(1)} bits)
-              {isWeakEntropy && " ⚠ 4단어 이상 권장"}
+              {t.passwordOptions.securityLevel(getStrengthLabel(entropy, t.strengthLevels), entropy, isWeakEntropy)}
             </p>
           </div>
           <div>
             <label className={labelStyles}>
-              구분자
+              {t.passwordOptions.separatorLabel}
             </label>
             <div
               className={css({
@@ -199,10 +200,10 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
                       outlineOffset: "2px"
                     }
                   })}
-                  aria-label={`구분자: ${sep === " " ? "공백" : sep}`}
+                  aria-label={`${t.passwordOptions.separatorLabel}: ${sep === " " ? t.passwordOptions.space : sep}`}
                   aria-pressed={passphraseOptions.separator === sep}
                 >
-                  {sep === " " ? "공백" : sep}
+                  {sep === " " ? t.passwordOptions.space : sep}
                 </button>
               ))}
             </div>
@@ -219,8 +220,8 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
               }
               className={inputStyles}
               maxLength={1}
-              placeholder="커스텀"
-              aria-label="커스텀 구분자"
+              placeholder={t.passwordOptions.custom}
+              aria-label={t.passwordOptions.customSeparatorLabel}
             />
           </div>
           <CheckboxOption
@@ -233,8 +234,8 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
                 }
               })
             }
-            label="단어 첫 글자 대문자화"
-            description="각 단어의 첫 글자를 대문자로 변환"
+            label={t.passwordOptions.capitalizeLabel}
+            description={t.passwordOptions.capitalizeDesc}
           />
           <CheckboxOption
             checked={passphraseOptions.includeNumber || false}
@@ -246,8 +247,8 @@ const PasswordOptions = ({ options, onChange }: PasswordOptionsProps) => {
                 }
               })
             }
-            label="숫자 포함"
-            description="랜덤 숫자를 passphrase에 추가"
+            label={t.passwordOptions.includeNumberLabel}
+            description={t.passwordOptions.includeNumberDesc}
           />
         </div>
       ) : (

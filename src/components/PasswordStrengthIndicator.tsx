@@ -1,9 +1,10 @@
-import { strengthLevels, StrengthLevel } from "@/utils/strengthLevel";
+import { buildStrengthLevels, StrengthLevel } from "@/utils/strengthLevel";
 import zxcvbn from "zxcvbn";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { css } from "../../styled-system/css";
 import { useDebounce } from "../utils/debounce";
 import { DEBOUNCE_DELAY } from "../constants/timing";
+import { useLocale } from "../contexts/LocaleContext";
 
 interface PasswordStrengthIndicatorProps {
     password: string;
@@ -12,6 +13,8 @@ interface PasswordStrengthIndicatorProps {
 const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
     password
 }) => {
+    const { t } = useLocale();
+    const strengthLevels = useMemo(() => buildStrengthLevels(t.strengthLevels), [t.strengthLevels]);
     const [currentStrength, setCurrentStrength] = useState<StrengthLevel>(strengthLevels[0]);
     const [score, setScore] = useState(0);
 
@@ -20,7 +23,7 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
             strengthLevels.find((level) => level.score === score) ||
             strengthLevels[0]
         );
-    }, []);
+    }, [strengthLevels]);
 
     // useCallback으로 메모이제이션하여 불필요한 리렌더링 방지
     const updateStrengthCallback = useCallback((pwd: string) => {
@@ -91,7 +94,7 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
             id="password-strength"
             role="status"
             aria-live="polite"
-            aria-label={`비밀번호 강도: ${currentStrength.message}`}
+            aria-label={`${t.locale.ariaLabel}: ${currentStrength.message}`}
         >
             <div 
                 className={progressBarContainerStyles}
@@ -99,7 +102,7 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
                 aria-valuenow={score}
                 aria-valuemin={0}
                 aria-valuemax={4}
-                aria-label="비밀번호 강도 수준"
+                aria-label={t.passwordDisplay.strengthLevelAriaLabel}
             >
                 <div className={progressBarStyles}></div>
             </div>

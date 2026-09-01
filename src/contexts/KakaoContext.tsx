@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { toast } from "react-toastify";
+import { useLocale } from "./LocaleContext";
 
 interface KakaoContextType {
   isInitialized: boolean;
@@ -10,6 +11,7 @@ interface KakaoContextType {
 const KakaoContext = createContext<KakaoContextType | undefined>(undefined);
 
 export const KakaoProvider = ({ children }: { children: ReactNode }) => {
+  const { t } = useLocale();
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -19,13 +21,13 @@ export const KakaoProvider = ({ children }: { children: ReactNode }) => {
       const kakaoKey = import.meta.env.VITE_JAVASCRIPT_KEY;
 
       if (!kakaoKey) {
-        setError("카카오 API 키가 설정되지 않았습니다.");
+        setError(t.kakao.apiKeyNotSet);
         setIsLoading(false);
         return;
       }
 
       if (!window.Kakao) {
-        setError("카카오 SDK를 불러오지 못했습니다.");
+        setError(t.kakao.sdkLoadFailed);
         setIsLoading(false);
         return;
       }
@@ -41,8 +43,8 @@ export const KakaoProvider = ({ children }: { children: ReactNode }) => {
         setIsInitialized(true);
         setError(null);
       } catch (err) {
-        setError("카카오 SDK 초기화 실패");
-        toast.error("카카오 SDK 초기화 실패");
+        setError(t.kakao.initializationFailed);
+        toast.error(t.kakao.initializationFailed);
       } finally {
         setIsLoading(false);
       }
@@ -57,7 +59,7 @@ export const KakaoProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       window.removeEventListener("load", initKakao);
     };
-  }, []);
+  }, [t]);
 
   return (
     <KakaoContext.Provider value={{ isInitialized, isLoading, error }}>

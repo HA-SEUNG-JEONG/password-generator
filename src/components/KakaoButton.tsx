@@ -3,6 +3,7 @@ import { css } from "../../styled-system/css";
 import { KakaoShareOptions } from "../global.d";
 import { toast } from "react-toastify";
 import { useKakaoSDK } from "../contexts/KakaoContext";
+import { useLocale } from "../contexts/LocaleContext";
 
 interface KakaoButtonProps {
   options: KakaoShareOptions;
@@ -10,6 +11,7 @@ interface KakaoButtonProps {
 
 const KakaoButton = ({ options }: KakaoButtonProps) => {
   const { isInitialized, error } = useKakaoSDK();
+  const { t } = useLocale();
 
   const handleKakaoShare = () => {
     if (error) {
@@ -18,19 +20,19 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
     }
 
     if (!isInitialized) {
-      toast.error("카카오 SDK가 초기화되지 않았습니다.");
+      toast.error(t.kakao.initializationFailed);
       return;
     }
 
     if (!options.text) {
-      toast.error("공유할 비밀번호가 없습니다.");
+      toast.error(t.kakao.missingShareText);
       return;
     }
 
     try {
       window.Kakao.Share.sendDefault(options);
     } catch (error) {
-      toast.error("카카오톡 공유를 사용할 수 없습니다.");
+      toast.error(t.kakao.initializationFailed);
     }
   };
 
@@ -60,7 +62,7 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
           transform: "translateY(-1px)"
         }
       })}
-      aria-label="카카오톡 공유"
+      aria-label={t.kakao.shareText}
     >
       <svg
         width="20"
@@ -78,7 +80,7 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
           fill="#000000"
         />
       </svg>
-      카카오톡 공유
+      {t.kakao.shareText}
     </button>
   );
 };
