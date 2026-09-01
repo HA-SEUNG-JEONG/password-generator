@@ -73,6 +73,7 @@ const messages: Messages = {
     sdkLoadFailed: "Failed to load Kakao SDK.",
     initializationFailed: "Kakao SDK initialization failed",
     shareText: "Try the password generator!",
+    shareButtonLabel: "Share via Kakao",
     missingShareText: "There is nothing to share.",
   },
   errors: {

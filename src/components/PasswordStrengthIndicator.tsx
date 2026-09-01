@@ -54,6 +54,12 @@ const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps> = ({
         updateStrengthRef.current(password);
     }, [password]);
 
+    useEffect(() => {
+        setCurrentStrength((prev) =>
+            strengthLevels.find((level) => level.score === prev.score) || strengthLevels[0]
+        );
+    }, [strengthLevels]);
+
     const containerStyles = css({
         display: "flex",
         flexDirection: "column",

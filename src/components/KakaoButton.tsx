@@ -41,12 +41,13 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
       type="button"
       onClick={handleKakaoShare}
       className={css({
-        display: "flex",
+        display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         gap: "2",
         minWidth: "120px",
-        py: "1",
+        px: "4",
+        py: "3",
         borderRadius: "full",
         bg: "#FEE500",
         color: "#181600",
@@ -54,6 +55,7 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
         cursor: "pointer",
         fontSize: "sm",
         fontWeight: "bold",
+        whiteSpace: "nowrap",
         transitionProperty: "transform",
         transition: "all 0.2s",
         transitionDuration: "200ms",
@@ -62,7 +64,7 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
           transform: "translateY(-1px)"
         }
       })}
-      aria-label={t.kakao.shareText}
+      aria-label={t.kakao.shareButtonLabel}
     >
       <svg
         width="20"
@@ -72,6 +74,7 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         focusable="false"
+        className={css({ flexShrink: "0" })}
       >
         <circle cx="20" cy="20" r="20" />
 
@@ -80,7 +83,7 @@ const KakaoButton = ({ options }: KakaoButtonProps) => {
           fill="#000000"
         />
       </svg>
-      {t.kakao.shareText}
+      {t.kakao.shareButtonLabel}
     </button>
   );
 };

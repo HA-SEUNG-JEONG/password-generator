@@ -67,6 +67,7 @@ export interface Messages {
     sdkLoadFailed: string;
     initializationFailed: string;
     shareText: string;
+    shareButtonLabel: string;
     missingShareText: string;
   };
   errors: {

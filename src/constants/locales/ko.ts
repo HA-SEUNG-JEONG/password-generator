@@ -73,6 +73,7 @@ const messages: Messages = {
     sdkLoadFailed: "카카오 SDK를 불러오지 못했습니다.",
     initializationFailed: "카카오 SDK 초기화 실패",
     shareText: "비밀번호 생성기를 사용해보세요!",
+    shareButtonLabel: "카카오톡 공유",
     missingShareText: "공유할 내용이 없습니다.",
   },
   errors: {
